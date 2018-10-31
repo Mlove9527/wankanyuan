@@ -1,0 +1,153 @@
+.city li{
+     list-style: none;
+     float:left;
+
+ }
+.shi{
+    margin-top: 5px;
+    margin-left: 100px;
+}
+#sel-city{
+    width:200px;
+    margin-left: 20px;
+}
+.clear{
+    clear:both;
+}
+
+.shang{
+    margin-top: 5px;
+    margin-left: 20px;
+}
+#sel-shangquan{
+    width:200px;
+    margin-left: 20px;
+}
+.bianhao{
+    margin-left: 20px;
+}
+.name{
+    margin-left: 20px;
+}
+.name input{
+    width:150px;
+}
+.activity-status{
+    margin-top: 5px;
+    margin-left: 20px;
+}
+.setpeople{
+    margin-top: 5px;
+    margin-left: 20px;
+}
+.people{
+    margin-left:20px;
+}
+#sel-status{
+    margin-left:20px;
+}
+.newreduce{
+    margin-left: 20px;
+}
+.fan{
+    margin-left: 20px;
+}
+.hot{
+    margin-left:20px;
+}
+.butn{
+  margin-left:20px;
+}
+.enter{
+    margin-left:0px;
+}
+.zhekou{
+    margin-left:20px;
+}
+
+.dele{
+    margin-left:30px;
+}
+.stop{
+    margin-left:30px;
+}
+.center img{
+    margin-left: 10px;
+}
+#div1{
+    width: 170px;
+    height: 100px;
+    border-radius: 50px;
+    position: relative;
+}
+#div2{
+    width: 96px;
+    height: 96px;
+    border-radius: 48px;
+    position: absolute;
+    background: white;
+    box-shadow: 0px 2px 4px rgba(0,0,0,0.4);
+}
+.open1{
+    background: rgba(0,184,0,0.8);
+}
+.open2{
+    top: 2px;
+    right: 1px;
+}
+.close1{
+    background: rgba(255,255,255,0.4);
+    border:3px solid rgba(0,0,0,0.15);
+    border-left: transparent;
+}
+.close2{
+    left: 0px;
+    top: 0px;
+    border:2px solid rgba(0,0,0,0.1);
+}
+/*状态按钮*/
+.btn_fath{
+    margin-top: 10px;
+    position: relative;
+    border-radius: 20px;
+}
+
+.btn1{
+    float: left;
+}
+
+.btn2{
+    float: right;
+}
+.btnSwitch{
+    height: 26px;
+    width: 27px;
+    border:none;
+    color: #fff;
+    line-height: 26px;
+    font-size: 10px;
+    text-align: center;
+    z-index: 1;
+}
+
+.move{
+    z-index: 100;
+    width: 21px;
+    border-radius: 20px;
+    height: 21px;
+    position: absolute;
+    cursor: pointer;
+    border: 1px solid #828282;
+    background-color: #f1eff0;
+    box-shadow: 1px 2px 2px 1px #fff inset,0 0 5px 1px #999;
+}
+.on .move{
+    left: 60px;
+}
+.on.btn_fath{
+    background-color: #5281cd;
+}
+.off.btn_fath{
+    background-color: #828282;
+}
+

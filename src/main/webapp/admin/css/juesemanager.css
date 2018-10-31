@@ -1,0 +1,37 @@
+.manager h2{
+    float:left;
+}
+.manager p{
+    float:left;
+    margin-left: 30px;
+}
+.clear{
+    clear:both;
+}
+.del{
+    margin:20px auto;
+    width: 200px;
+}
+.del button{
+    margin-left: 30px;
+}
+.newcrease{
+    margin-left: 120px;
+    margin-top: 50px;
+}
+.newcrease button{
+    width:100px;
+}
+.del input{
+    width:30px;
+}
+.selc p{
+    float:left;
+    margin-left: 20px;
+}
+.jia{
+    margin-left: 30px;
+}
+.quanxian{
+    overflow: hidden;
+}

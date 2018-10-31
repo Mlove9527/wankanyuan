@@ -1,0 +1,99 @@
+.head{
+    width:100%;
+    height:70px;
+    background:#0294ff;
+    text-align: center;
+    line-height: 70px;
+}
+.head p{
+    width:100px;
+    float:left;
+    font-family:PingFangSC-Regular;
+    font-size:20px;
+    color:#ffffff;
+    margin-left: 120px;
+    height: 66px;
+
+}
+.head p.build{
+    border-bottom: 4px solid #ffffff;
+}
+.zijian{
+    float:left;
+    width:19%;
+    height:117px;
+    line-height: 117px;
+    color:#FFFFFF;
+    background: #ff533f;
+    border-radius: 5px;
+    margin-left: 10px;
+    font-size:1.5rem;
+    text-align: center;
+    color:#FFFFFF;
+
+}
+.get{
+    float:left;
+    margin-left: 130px;
+    margin-top:48px;
+    text-align: center;
+    font-family:PingFangSC-Regular;
+    font-size:1.5em;
+    color:#ffffff;
+}
+.enter{
+    float:left;
+    margin-left: 80px;
+    margin-top: 40px;
+    font-family:PingFangSC-Regular;
+    font-size:14px;
+    color:#ffffff;
+}
+
+
+.tejia{
+    float:left;
+    width:24%;
+    height:117px;
+    text-align: center;
+    line-height:117px;
+    font-size: 1.5rem;
+    color:#FFFFFF;
+    background: #f5a623;
+    border-radius: 5px;
+    margin-left: 10px;
+
+}
+
+
+.new{
+    float:left;
+    width:24%;
+    height:117px;
+    text-align: center;
+    font-size:1.5rem;
+    color:#FFFFFF;
+    line-height: 117px;
+    background:#8dc12e;
+    border-radius: 5px;
+    margin-left: 10px;
+
+}
+
+
+.reduce{
+    float:left;
+    width:24%;
+    text-align: center;
+    font-size:1.5rem;
+    line-height: 117px;
+    height:117px;
+    color:#FFFFFF;
+    background:#ffcc00;
+    border-radius: 5px;
+    margin-left: 10px;
+
+}
+.activie{
+    margin-top: 20px;
+}

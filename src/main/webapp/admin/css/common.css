@@ -1,0 +1,194 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+.web-box {
+	min-width: 1200px;
+	margin: 0 auto;
+	background: #eff3f6;
+}
+
+:root {
+	background: #eff3f6;
+}
+
+.clear{
+	clear: both;
+}
+body{
+	font-size: 14px;
+	font-family: "微软雅黑","PingFangSC-Medium";
+}
+a{
+	text-decoration: none;
+}
+ul,li{
+	list-style: none;
+}
+input,button{
+	outline: none;
+}
+
+/* 引入字体库 */
+@font-face {
+  font-family: "iconfont";
+  src: url('../iconfont/iconfont.eot');
+  /* IE9*/
+  src: url('../iconfont/iconfont.eot#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('../iconfont/iconfont.woff') format('woff'), /* chrome, firefox */ url('../iconfont/iconfont.ttf') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/ url('../iconfont/iconfont.svg#iconfont') format('svg');
+  /* iOS 4.1- */
+}
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-stroke-width: 0.2px;
+  -moz-osx-font-smoothing: grayscale;
+}
+.body {
+  font-size: 14px;
+}
+
+
+/* 导航部分 */
+.nav {
+  background: #262935;
+  width: 12%;
+  float: left;
+  min-height: 1022px;
+}
+.nav li {
+  padding-left: 23px;
+  color: #7f8fa4;
+  height: 47px;
+  line-height: 47px;
+}
+.nav li a {
+  color: #7f8fa4;
+}
+.nav .nav-active {
+  color: #fff;
+  background: #131720;
+}
+.nav .nav-active a {
+  color: #fff;
+}
+.nav .logo {
+  height: 60px;
+  overflow: hidden;
+}
+.logo div {
+  width: 30px;
+  height: 30px;
+  margin: 25px 173px 0 0;
+  background: url(../image/nav-icon1.png);
+}
+.nav .nav-title {
+  height: 35px;
+  margin-top: 30px;
+  line-height: 35px;
+  font-size: 12px;
+}
+
+
+.content-box {
+  width: 88%;
+  float: left;
+  min-height: 1022px;
+  /* 内容上面部分 */
+}
+
+/* 用户信息部分 */
+/* 内容 */
+.content-box {
+  width: 88%;
+  float: left;
+  min-height: 1022px;
+  /* 内容上面部分 */
+  /* 内容上面部分 */
+}
+.content-box .content-top {
+  background: #ffffff;
+  border: 1px solid #e6eaee;
+  height: 67px;
+  /*用户信息*/
+  /* 消息提醒 */
+}
+.content-box .content-top .user-info {
+  height: 67px;
+  border-left: 1px solid #e6eaee;
+  float: right;
+}
+.content-box .content-top .user-info .user-name {
+  position: relative;
+  padding-left: 10px;
+  float: left;
+  font-size: 14px;
+  color: #7f8fa4;
+  text-align: center;
+  line-height: 67px;
+}
+.content-box .content-top .user-info .user-name .login-out {
+  position: absolute;
+  top: 67px;
+  left: 0;
+  text-align: center;
+  width: 100%;
+  color: red;
+  background: #e6eaee;
+  border-radius: 0 0 5px 5px;
+}
+.content-box .content-top .user-info .user-name .login-out .user-quit:hover {
+  cursor: pointer;
+}
+.content-box .content-top .user-info .user-pic {
+  float: left;
+  width: 57px;
+  height: 57px;
+  background: url(../image/icon-jiade.png) no-repeat center center;
+  margin: 5px;
+}
+.content-box .content-top .mesg {
+  width: 23px;
+  height: 24px;
+  float: right;
+  background: url(../image/icon-mesg.png) no-repeat center center;
+  margin-top: 22px;
+  margin-right: 50px;
+  position: relative;
+}
+.content-box .content-top .mesg .mesg-has {
+  width: 12px;
+  height: 12px;
+  position: absolute;
+  top: -2px;
+  right: -1px;
+  background: url(../image/icon-mesg-dian.png) no-repeat center center;
+}
+
+/* tab切换 */
+.content-box .content .WM-tab {
+  background: #0294ff;
+  height: 70px;
+}
+.content-box .content .WM-tab .WM-tab-item {
+  width: 135px;
+  height: 70px;
+  line-height: 70px;
+  text-align: center;
+  margin: 0 48px;
+  float: left;
+  font-size: 18px;
+  color: #ffffff;
+}
+.content-box .content .WM-tab .WM-tab-item:hover {
+  cursor: pointer;
+}
+.content-box .content .WM-tab .WM-tab-item a {
+  color: #ffffff;
+}
+.content-box .content .WM-tab .WM-tab-item-active {
+  height: 66px;
+  border-bottom: 4px solid #fff;
+}

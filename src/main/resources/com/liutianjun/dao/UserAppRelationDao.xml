@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.liutianjun.dao.UserAppRelationDao" >
+  <resultMap id="BaseResultMap" type="com.liutianjun.pojo.UserAppRelation" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="app_id" property="appId" jdbcType="INTEGER" />
+    <result column="app_name" property="appName" jdbcType="VARCHAR" />
+    <result column="creator" property="creator" jdbcType="VARCHAR" />
+    <result column="app_type" property="appType" jdbcType="VARCHAR" />
+    <result column="is_async" property="isAsync" jdbcType="INTEGER" />
+    <result column="keywords" property="keywords" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="app_overview" property="appOverview" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    <if test="fields == null" >
+      id, user_id, app_id, app_name, creator, app_type, is_async, keywords, create_time, 
+      app_overview
+    </if>
+    <if test="fields != null" >
+      ${fields}
+    </if>
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.liutianjun.pojo.UserAppRelationQuery" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from user_app_relation
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+    <if test="startRow != null" >
+      limit #{startRow} , #{pageSize}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    id,user_id,app_id,app_name,creator,app_type,is_async,keywords,create_time,app_overview
+    from user_app_relation
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from user_app_relation
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.liutianjun.pojo.UserAppRelationQuery" >
+    delete from user_app_relation
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.liutianjun.pojo.UserAppRelation" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into user_app_relation (user_id, app_id, app_name, 
+      creator, app_type, is_async, 
+      keywords, create_time, app_overview
+      )
+    values (#{userId,jdbcType=INTEGER}, #{appId,jdbcType=INTEGER}, #{appName,jdbcType=VARCHAR}, 
+      #{creator,jdbcType=VARCHAR}, #{appType,jdbcType=VARCHAR}, #{isAsync,jdbcType=INTEGER}, 
+      #{keywords,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{appOverview,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.liutianjun.pojo.UserAppRelation" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into user_app_relation
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="appId != null" >
+        app_id,
+      </if>
+      <if test="appName != null" >
+        app_name,
+      </if>
+      <if test="creator != null" >
+        creator,
+      </if>
+      <if test="appType != null" >
+        app_type,
+      </if>
+      <if test="isAsync != null" >
+        is_async,
+      </if>
+      <if test="keywords != null" >
+        keywords,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="appOverview != null" >
+        app_overview,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="appId != null" >
+        #{appId,jdbcType=INTEGER},
+      </if>
+      <if test="appName != null" >
+        #{appName,jdbcType=VARCHAR},
+      </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="appType != null" >
+        #{appType,jdbcType=VARCHAR},
+      </if>
+      <if test="isAsync != null" >
+        #{isAsync,jdbcType=INTEGER},
+      </if>
+      <if test="keywords != null" >
+        #{keywords,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="appOverview != null" >
+        #{appOverview,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.liutianjun.pojo.UserAppRelationQuery" resultType="java.lang.Integer" >
+    select count(*) from user_app_relation
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update user_app_relation
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.userId != null" >
+        user_id = #{record.userId,jdbcType=INTEGER},
+      </if>
+      <if test="record.appId != null" >
+        app_id = #{record.appId,jdbcType=INTEGER},
+      </if>
+      <if test="record.appName != null" >
+        app_name = #{record.appName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.creator != null" >
+        creator = #{record.creator,jdbcType=VARCHAR},
+      </if>
+      <if test="record.appType != null" >
+        app_type = #{record.appType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isAsync != null" >
+        is_async = #{record.isAsync,jdbcType=INTEGER},
+      </if>
+      <if test="record.keywords != null" >
+        keywords = #{record.keywords,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null" >
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.appOverview != null" >
+        app_overview = #{record.appOverview,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update user_app_relation
+    set id = #{record.id,jdbcType=INTEGER},
+      user_id = #{record.userId,jdbcType=INTEGER},
+      app_id = #{record.appId,jdbcType=INTEGER},
+      app_name = #{record.appName,jdbcType=VARCHAR},
+      creator = #{record.creator,jdbcType=VARCHAR},
+      app_type = #{record.appType,jdbcType=VARCHAR},
+      is_async = #{record.isAsync,jdbcType=INTEGER},
+      keywords = #{record.keywords,jdbcType=VARCHAR},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      app_overview = #{record.appOverview,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.liutianjun.pojo.UserAppRelation" >
+    update user_app_relation
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="appId != null" >
+        app_id = #{appId,jdbcType=INTEGER},
+      </if>
+      <if test="appName != null" >
+        app_name = #{appName,jdbcType=VARCHAR},
+      </if>
+      <if test="creator != null" >
+        creator = #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="appType != null" >
+        app_type = #{appType,jdbcType=VARCHAR},
+      </if>
+      <if test="isAsync != null" >
+        is_async = #{isAsync,jdbcType=INTEGER},
+      </if>
+      <if test="keywords != null" >
+        keywords = #{keywords,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="appOverview != null" >
+        app_overview = #{appOverview,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.liutianjun.pojo.UserAppRelation" >
+    update user_app_relation
+    set user_id = #{userId,jdbcType=INTEGER},
+      app_id = #{appId,jdbcType=INTEGER},
+      app_name = #{appName,jdbcType=VARCHAR},
+      creator = #{creator,jdbcType=VARCHAR},
+      app_type = #{appType,jdbcType=VARCHAR},
+      is_async = #{isAsync,jdbcType=INTEGER},
+      keywords = #{keywords,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      app_overview = #{appOverview,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectcreatorbyappid" parameterType="com.liutianjun.pojo.UserAppRelation" resultMap="BaseResultMap">
+  SELECT  u.creator FROM user_app_relation u WHERE u.app_id=#{appId} AND u.user_id=#{userId}
+  </select>
+  <delete id="deletefromuserapp" parameterType="com.liutianjun.pojo.UserAppRelation">
+  DELETE FROM user_app_relation WHERE user_app_relation.user_id=#{userId} AND user_app_relation.app_id=#{appId}
+  </delete>
+</mapper>

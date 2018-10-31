@@ -1,0 +1,161 @@
+
+/*国籍*/
+.guoji{
+    width:80%;
+    margin: 0 auto;
+}
+.guo{
+    font-size: 16px;
+    color:#1f6377;
+    margin-left: 20px;
+}
+.ji{
+    overflow: hidden;
+    margin-top: 10px;
+}
+.guojiguoji{
+    width:100px;
+    height:36px;
+    float:left;
+    border:1px solid #9fa9ba;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 36px;
+    margin-left: 20px;
+
+}
+.notguoji{
+    float:left;
+    width:100px;
+    height:36px;
+    border:1px solid #9fa9ba;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 36px;
+    margin-left: 20px;
+}
+
+/*留学国家*/
+.foreigncountry{
+    width:80%;
+    margin:0 auto;
+    margin-top: 20px;
+}
+.liucountry{
+    overflow: hidden;
+}
+.liuxue{
+    float:left;
+    font-size: 16px;
+    color:#1f6377;
+    margin-left: 20px;
+    height:36px;
+    line-height: 36px;
+}
+.liuedit{
+    float:left;
+    font-size:16px;
+    color:#0B90C4;
+    margin-left: 20px;
+    height:36px;
+    line-height: 36px;
+}
+.addnew{
+    float:left;
+    font-size:16px;
+    color:#0B90C4;
+    margin-left: 20px;
+    width:50px;
+    height:36px;
+    border:1px solid #9fa9ba;
+    border-radius: 5px;
+    line-height: 36px;
+    text-align:center;
+}
+
+.country{
+    overflow:hidden;
+}
+
+.country p{
+    float:left;
+    margin-left: 20px;
+    border:1px solid #9fa9ba;
+    border-radius:5px;
+    width:100px;
+    height:36px;
+    text-align:center;
+    line-height: 36px;
+    margin-top: 20px;
+}
+
+/*语种等级*/
+.yuzhongrank{
+    width:80%;
+    margin: 0 auto;
+    margin-top: 20px;
+}
+.lanagerrank{
+    overflow:hidden;
+}
+.yudeng{
+    float:left;
+    font-size: 16px;
+    color:#1f6377;
+    margin-left: 20px;
+    height:36px;
+    line-height: 36px;
+}
+.yuedit{
+    float:left;
+    font-size: 16px;
+    color:#0B90C4;
+    margin-left: 20px;
+    height:36px;
+    line-height: 36px;
+}
+.yuzhong{
+    overflow:hidden;
+}
+.yuzhong p{
+    float:left;
+    margin-left: 20px;
+    border:1px solid #9fa9ba;
+    border-radius:5px;
+    width:100px;
+    height:36px;
+    text-align:center;
+    line-height: 36px;
+    margin-top: 20px;
+}
+
+.dengji{
+    overflow:hidden;
+}
+.dengji p{
+    float:left;
+    margin-left: 20px;
+    border:1px solid #9fa9ba;
+    border-radius:5px;
+    width:100px;
+    height:36px;
+    text-align:center;
+    line-height: 36px;
+    margin-top: 20px;
+}
+.addlangurage{
+    width:50px;
+    height:36px;
+    text-align:center;
+    line-height: 36px;
+    border:1px solid #9fa9ba;
+    float:left;
+    border-radius: 5px;
+    margin-left: 20px;
+}
+/*新增选项确定键*/
+.newoption{
+    width:30%;
+    margin: 0 auto;
+    margin-top: 20px;
+}

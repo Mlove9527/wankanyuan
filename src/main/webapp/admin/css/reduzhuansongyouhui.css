@@ -1,0 +1,82 @@
+.basic-information li{
+    list-style: none;
+}
+.clear{
+    clear:both;
+}
+.condition li{
+    list-style:none;
+}
+.con{
+    float:left;
+    margin-top:5px;
+}
+.condition{
+    float:left;
+}
+.satisfy input{
+    width:100px;
+    margin-left:10px;
+}
+.discount{
+    float:left;
+    margin-top: 6px;
+}
+.manjian{
+    float:left;
+}
+.manjian input{
+    width:100px;
+    margin-left:10px;
+}
+.redu{
+    float:left;
+}
+.commercial{
+    float:left;
+}
+.redu p{
+    float:left;
+    margin-top:5px;
+}
+.redu input{
+    float:left;
+    width:100px;
+}
+.commercial p{
+    float:left;
+    margin-top:5px;
+}
+.commercial input{
+    float:left;
+    width:100px;
+}
+.shanghudan{
+    margin-left: 20px;
+}
+.basic-information li p{
+    float:left;
+}
+.basic-information li input{
+    float:left;
+}
+.save{
+    width:300px;
+
+}
+.save button{
+    width:200px;
+    margin-left: 50px;
+}
+.limit{
+    float:left;
+}
+.redu input{
+    margin-left: 25px;
+}
+.plummet input{
+    margin-left: 10px;
+}
+.dur-activity input{
+    width:100px;
+}

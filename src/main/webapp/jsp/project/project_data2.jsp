@@ -1,0 +1,565 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
+
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+			+ path + "/";
+%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Document</title>
+</head>
+<link rel="stylesheet" type="text/css"
+	href="/wankangyuan/static/css/project1.css" />
+<script type="text/javascript"
+	src="/wankangyuan/jsp/project/js/project1.js"></script>
+<script type="text/javascript">
+	window.onload = function() {
+		project0();
+		project2();
+		// pro_mine();
+		//pro_dataLB();
+	}
+</script>
+<body>
+	<div class="Box">
+		<div class="box">
+			<div class="top">
+				<h1>
+					<img src="/wankangyuan/static/img/newlogo2.png" height="70"
+						width="218" alt="" class="logo" />
+				</h1>
+				<a href="/wankangyuan/project/selectMyProject?user_id=1">
+					<div class="topT active">项目</div>
+				</a> <a href="/wankangyuan/sourceData/getSourceDatas?type=1">
+					<div class="topT">格式数据</div>
+				</a> <a href="/wankangyuan/application/viewMine">
+					<div class="topT ">应用</div>
+				</a>
+				<div class="touxiangK">
+					<a href="/wankangyuan/userInfo"> <img src="${user.headimg }"
+						onerror='this.src="/wankangyuan/static/img/head.jpg"'
+						class="touxiang" />
+					</a>
+					<div class="userbutK">
+						<a href="/wankangyuan/userInfo">
+							<div class="userbut">用户信息</div>
+						</a> <a href="/wankangyuan/message/viewMessage">
+							<div class="userbut">
+								系统消息
+								<c:if test="${systemMSG }">
+									<img
+										src="<%=request.getContextPath()%>/static/img/redpoint.png"
+										height="11" width="11" alt="" class="redpoint2" />
+								</c:if>
+							</div>
+						</a>
+						<div class="userbutline"></div>
+						<a href="/wankangyuan/logout">
+							<div class="userbut">退出登录</div>
+						</a>
+					</div>
+				</div>
+				<div class="nicheng">
+					<shiro:principal />
+				</div>
+				<a href="/wankangyuan/friends/viewFriendsManage">
+					<div class="yanjiuquan">
+						<div class="yanjiuquanT">研究圈</div>
+						<c:if test="${friendMSG}">
+							<img src="<%=request.getContextPath()%>/static/img/redpoint.png"
+								height="11" width="11" alt="" class="redpoint" />
+						</c:if>
+					</div>
+				</a>
+			</div>
+			<div class="top2">
+				<div class="top2C">
+					<div class="top2Ctl active">${project.p_name }</div>
+					<c:if test="${authoritys['74'] == true }">
+						<a href="/wankangyuan/projectTopic/selectProjectTopic"><div
+								class="top2Ctr">讨论版</div></a>
+					</c:if>
+
+					<c:if test="${authoritys['63'] == true }">
+						<a href="/wankangyuan/projectMember/selectProjectMember"><div
+								class="top2Ctr">成员</div></a>
+					</c:if>
+
+					<c:if test="${authoritys['57'] == true }">
+						<a href="/wankangyuan/projectAppEnd/selectProjectAppEnd"><div
+								class="top2Ctr">应用结果</div></a>
+					</c:if>
+
+					<c:if test="${authoritys['42'] == true }">
+						<a
+							href="/wankangyuan/projectApp/selectProjectApp?p_id=${project.id}"><div
+								class="top2Ctr">应用</div></a>
+					</c:if>
+
+					<c:if test="${authoritys['31'] == true }">
+						<a
+							href="/wankangyuan/sourceData/getSourceDatas?type=4&p_id=${project.id}"><div
+								class="top2Ctr active">格式数据</div></a>
+					</c:if>
+
+					<c:if test="${authoritys['27'] == true }">
+						<a
+							href="/wankangyuan/projectFloderFile/selectProjectFloderByProjectId"><div
+								class="top2Ctr">文件</div></a>
+					</c:if>
+
+					<c:if test="${authoritys['11'] == true }">
+						<a href="/wankangyuan/project/getProjectDetail"><div
+								class="top2Ctr ">基本信息</div></a>
+					</c:if>
+
+
+				</div>
+			</div>
+			<div class="top2C">
+				<div class="search">
+					<div class="searchC">
+						<img src="/wankangyuan/static/img/search.png" alt=""
+							class="searchCi"  onclick="searchFirst()"/> <input type="text" class="searchCt"
+							placeholder="搜索数据" value="${searchFirstWord}" />
+					</div>
+				</div>
+			</div>
+
+
+			<div class="shaixuan">
+				<div class="shaixuanC">
+
+					<div class="listZT">
+						<div class="listZTli listZT1">
+							<img src="/wankangyuan/static/img/listZT1.png" alt=""
+								class="listZT1i" /> <img
+								src="/wankangyuan/static/img/listZT1.png" alt=""
+								class="listZT1i" />
+						</div>
+					   <a href="<%=request.getContextPath()%>/jsp/project/project_data.jsp">
+						<div class="listZTli listZT2 active">
+							<div class="listZT2d"></div>
+							<div class="listZT2d"></div>
+							<div class="listZT2d"></div>
+						</div>
+						</a>
+					</div>
+					<div class="jiangeline"></div>
+
+					<div class="shaixuanBT">
+						<div class="shaixuanBTt">筛选</div>
+						<div class="shaixuanBTiK">
+							<img src="/wankangyuan/static/img/sanjiao_blue.png" alt=""
+								class="shaixuanBTi" />
+						</div>
+					</div>
+
+					<div class="jiangeline"></div>
+                    <div class="allK">
+                        <div class="quanxuanK">
+                            <input type="checkbox" class="input_check" id="check0">
+                            <label for="check0"></label>
+                        </div>
+                        <div class="allT">全选</div>
+                    </div>
+
+					<c:if test="${authoritys['30'] == true }">
+						<div class="pro_menu pro_rem">移除</div>
+					</c:if>
+					<c:if test="${authoritys['30'] != true }">
+						<div class="pro_menu pro_rem" style="display: none;">移除</div>
+					</c:if>
+
+					<select id="source_Select" class="pro_menusel">
+						<c:forEach items="${sources}" var="sourcel">
+							<c:if test="${sourcel.cs_id!=source.cs_id}">
+								<option value="${sourcel.cs_id}">${sourcel.cs_name}</option>
+							</c:if>
+							<c:if test="${sourcel.cs_id==source.cs_id}">
+								<option value="${sourcel.cs_id}" selected="selected">${sourcel.cs_name}</option>
+							</c:if>
+						</c:forEach>
+					</select>
+				</div>
+				<div class="shaixuanZK">
+					<div class="shaixuanZKC">
+						<c:forEach items="${source.sourceFields}" var="sourceFieldTemp">
+							<div class="shaixuanZKli">
+								<div class="shaixuanZKliI active"></div>
+								<div class="shaixuanZKliT">${sourceFieldTemp.csf_name}</div>
+							</div>
+						</c:forEach>
+					</div>
+				</div>
+			</div>
+            <div class="PJK2">
+            
+            	<input type="hidden" id="ids" value="${ids}" />
+				<input type="hidden" id="isAll" value="${isAll}" />
+            <c:forEach items="${sourceDatas}" var="sourceData">
+				
+                <div class="PJ2list">
+                    <div class="PJK2li">
+                    <div>
+                    
+                    <c:forEach items="${sourceData}" var="sourceDataField" varStatus="status">
+
+
+
+                    <div class="fuxuanK6">
+
+
+                    <c:if test="${status.index==0}">
+                           <td>
+                                <div class="fuxuanK3">
+                                    <input type="checkbox" class="input_check" name="${sourceDataField}"   value="${sourceDataField}" id="check${sourceDataField}">
+                                    <label for="check${sourceDataField}"></label>
+                                </div>
+                            </td>
+                     </c:if>
+                      </div>
+                     <c:if test="${status.index!=0}">
+                                <div onclick="datainHref('${sourceData[0]}')" style="cursor:pointer;">
+	                        <div class="PJK2litop">
+	                            <a href="#">
+	                                <div class="PJK2litopT PJliCli_1">${sourceDataField}</div>
+	                            </a>
+	                        </div>
+                        </div>
+                       </c:if>
+
+	                        </c:forEach>
+                        </div>
+                         </div>
+                   </div>
+                        </c:forEach>
+                    </div>
+                
+            
+		
+		
+			<div class="pageK" id="box"></div>
+
+			<div class="bottom">
+				<a href="javascript:;">
+					<div class="bot_guanwang">公司官网</div>
+				</a> <a href="javascript:;">
+					<div class="bot_guanyu">关于</div>
+				</a> <a href="javascript:;">
+					<div class="bot_jianyi">反馈建议</div>
+				</a>
+				<div class="botT">Copyright @2018天津万康源科技有限公司</div>
+			</div>
+			<div id="oldCondition" style="display: none;">${oldCondition}</div>
+			 </div>
+		</div>
+		
+		<script type="text/javascript"
+		src="/wankangyuan/static/js/jquery.min.js"></script>
+	<script type="text/javascript" src="/wankangyuan/static/js/paging.js"></script>
+	<script type="text/javascript">
+	
+	$(function(){
+		var ids=$("#ids").val();
+		var idsarr=ids.split(",")
+		var isAll=$("#isAll").val();
+		if(isAll=="true"){
+			var num=0;
+			var afuxuanK=document.querySelectorAll('.input_check');
+        	for(var i = 0; i < afuxuanK.length; i++){
+        		if(idsarr.indexOf(afuxuanK[i].value)>-1){
+        			var checkeds = $("[name='"+afuxuanK[i].value+"']");
+					checkeds.attr("checked","checked")
+        			num++
+        		}
+        	}
+        	console.log(num)
+        	if(num==0){
+				$(".input_check").attr("checked",true);
+        	}
+			
+		}else{
+			//$(".input_check").attr("checked",false);
+			if(idsarr.length>0){
+				for(var i=0;i<idsarr.length;i++){
+					var checkeds = $("[name='"+idsarr[i]+"']");
+					checkeds.attr("checked","checked")
+				} 
+			}
+		} 
+		
+	})
+	
+    
+	var cs_id=$('#source_Select').val();//采集源id
+	var searchId="${searchId}";//操作字段id
+	var searchWord="";//搜索词
+	var desc_asc="${desc_asc}";//排序
+	var oldCondition=$("#oldCondition").html();//累加筛选条件
+	var page="${page}";//页码
+	var p_id = ${project.id};//项目id
+	var searchFirstWord=$(".searchCt").val();
+	//更换采集源，刷新页面
+	$("#source_Select").change(function(){
+		cs_id = $("#source_Select").val();
+			window.location.href="/wankangyuan/sourceData/getSourceDatas?type=4&cs_id="+cs_id+"&p_id="+p_id+"&ids=&isAll=false";
+	
+	});
+	//选择待操作字段
+	$('.PJListli').click(function(){
+		searchId = $(this).attr('id');
+	});
+	//全搜索
+	function searchFirst(){
+		reset();
+		searchFirstWord=$(".searchCt").val();
+		window.location.href="/wankangyuan/sourceData/getSourceDatas?type=4&cs_id="
+				+cs_id+"&searchFirstWord="+searchFirstWord+"&ids=&isAll=false";
+	}
+    $(".searchCt").bind("keypress" , function(event){
+		if(event.keyCode == 13){
+			reset();
+			window.location.href="/wankangyuan/sourceData/getSourceDatas?type=4&cs_id="
+					+cs_id+"&p_id="+p_id+"&searchFirstWord="+this.value+"&ids=&isAll=false";
+			
+		}
+	});
+
+    //点击过滤按钮
+  	$("#guolv").click(function (){
+  		//过滤
+  		filter();
+  	});
+
+  	$('.BTSXcliGLK').keypress(function(e){		
+  		if (e.keyCode == 13) {
+  			filter();
+  		}
+  	})
+  	function filter(){
+  		searchWord=$(".BTSXcliGLK").val();//过滤条件
+  		$.ajax({
+  			type:"post",
+  			url:"/wankangyuan/sourceData/getSourceFieldDatas",
+  			async:true,
+  			data:{
+  				type:4,
+  				cs_id:$('#source_Select').val(),
+  				searchId:searchId,
+  				searchWord:searchWord,
+          		oldCondition:oldCondition
+  			},
+  			success:function(res){
+  				if (res.result) {
+  					var htmlStr =  '<div class="BTSXcli2li">'
+  									+'<input type="checkbox" class="BTSXcli2liI" />'
+  									+'<div class="BTSXcli2liT">空值</div>'
+  								+'</div>'
+  								+'<div class="BTSXcli2li">'
+  								+	'<input type="checkbox" class="BTSXcli2liI"  style="display: none;"/>'
+  								+'</div>';
+  					var data = res.csfDatas;
+  					for (var i in data) {
+  						htmlStr += '<div class="BTSXcli2li">'
+  								+		'<input type="checkbox" class="BTSXcli2liI" />'
+  								+		'<div class="BTSXcli2liT">' + data[i] + '</div>'
+  								+	'</div>';
+  					}
+  					$('.BTSXcli2').html(htmlStr);
+  				}
+  			}
+  		});
+  	};
+	//排序
+	function updown(sc){
+		desc_asc=sc;
+	    window.location.href="/wankangyuan/sourceData/getSourceDatas?type=4&cs_id="+cs_id+"&p_id="+p_id+"&searchId="+searchId+
+	    		"&desc_asc="+desc_asc+"&oldCondition="+oldCondition+"&ids=&isAll=false";
+	}
+	//重置，清空累加筛选条件
+	function chongzhi(){
+		reset();
+		shaixuan(0);
+	}		
+	function reset(){
+		$('#oldCondition').html('');
+		oldCondition="";
+		$.ajax({
+			type:"post",
+			url:"/wankangyuan/sourceData/reset",
+			async:true,
+			data:{					
+			},
+			success:function(data){
+				/* if (data.result) {
+					alert(data.message);
+				} */
+			}
+		});
+		
+	}
+	//数据筛选，支持模糊查询
+	function shaixuan(likeSearch){
+		var afuxuanK=document.querySelectorAll('.BTSXcli2li');
+        var chooseDatasArr = [];
+        for(var i=0;i<afuxuanK.length;i++){
+        	if(afuxuanK[i].querySelectorAll('.BTSXcli2liI')[0].checked){
+        		chooseDatasArr.push(afuxuanK[i].querySelectorAll('.BTSXcli2liT')[0].innerHTML);
+        	}
+        }
+        var chooseDatas=chooseDatasArr.join(",");
+    	window.location.href="/wankangyuan/sourceData/getSourceDatas?type=4&cs_id="+cs_id+"&p_id="+p_id+"&searchId="+
+		searchId+"&desc_asc="+desc_asc+"&likeSearch="+likeSearch
+		+"&searchWord="+searchWord+"&chooseDatas="+chooseDatas+"&oldCondition="+oldCondition;
+	}
+	
+	
+	
+	
+	//分页
+	    function datainHref(sourceDataId){
+    		var cs_id = $("#source_Select").val();
+    		reset();
+    		window.location.href="/wankangyuan/sourceData/getSourceDataById?cs_id="+cs_id+"&sourceDataId="+sourceDataId+"&type=4";
+    	}
+    	$('#box').paging({
+            initPageNo: ${page}, // 初始页码
+            totalPages: Math.ceil(${total}/${rows}), //总页数
+            totalCount: '合计&nbsp;' + ${total} + '&nbsp;条数据', // 条目总数
+            slideSpeed: 600, // 缓动速度。单位毫秒
+            jump: true, //是否支持跳转
+            callback: function(page) { // 回调函数
+                
+            	var user_id=${user.id};
+        		var cs_id = $("#source_Select").val();
+        		//之前选中的id
+        		var ids_str = distinct_ids($("#ids").val());
+        		//之前选中的id+当页选中的id
+        		var ids=getids()+","+ids_str;
+        		//是否全选
+        		var is_all = isAll();
+        		
+                 if(page!=${page}){ 
+                	window.location.href="/wankangyuan/sourceData/getSourceDatas1?type=4&cs_id="+cs_id+"&searchId="+searchId+
+    	    		"&desc_asc="+desc_asc+"&searchWord="+searchWord+"&oldCondition="+oldCondition+"&page="+page+"&strip=${rows}&ids="+ids+"&isAll="+is_all;
+                } 
+            }
+        });  
+    	
+    	//去掉选过的id
+    	function distinct_ids(ids_str){
+    		var ids_arr=ids_str.split(",");
+    		 var sourceDataIds = new Array();
+    		var afuxuanK=document.querySelectorAll('.input_check');
+    		for(var i = 1; i < afuxuanK.length; i++){
+    			var index = ids_arr.indexOf(afuxuanK[i].value);
+    			if (index > -1) {
+    				ids_arr.splice(index, 1);
+    			}
+            }
+    		return ids_arr.join(",")
+    	}
+    	//获取当前页选中的id
+            function getids(){
+            	var p_id = this.id;
+    			var afuxuanK=document.querySelectorAll('.input_check');
+    	        var afuxuan=[];
+    	        var sourceDataIds = new Array();
+    	        var ids="";
+                for(var i = 0; i < afuxuanK.length; i++){
+	                 if(afuxuanK[i].checked &&(afuxuanK[i].value!="on")){
+	                	 sourceDataIds.push(afuxuanK[i].value);
+	                 	//ids+=afuxuanK[i].value+",";
+	                 }
+                }
+                ids=sourceDataIds.join(",");
+                return ids;
+        	}
+            $("#check0").click(function (){
+            	var ids=getids();
+            	if($("#check0").attr('checked')){
+            		$("#isAll").val(true);	 
+            	}else{
+            		$("#isAll").val(false);
+            	}
+            });
+            
+            function isAll(){
+            	var isAll=true;
+            	var afuxuanK=document.querySelectorAll('.input_check');
+            	for(var i = 0; i < afuxuanK.length; i++){
+	                 if(!afuxuanK[i].checked){
+	                	 isAll=false;
+	                 }
+            	}
+            	return isAll;
+            }
+    	
+    	
+    	
+    	$(".pro_rem").click(function (){
+    		
+			var p_id = ${project.id};
+    		var cs_id = $("#source_Select").val();
+    		var afuxuanK=document.querySelectorAll('.fuxuanK2');
+    		
+            var afuxuan=[];
+            for(var i=0;i<afuxuanK.length;i++){
+                afuxuan.push(afuxuanK[i].querySelectorAll('.input_check')[0]);
+            }
+            
+            var sourceDataIds = [];
+            for(var i=0;i<afuxuanK.length;i++){
+            	if(afuxuan[i].checked){
+            		sourceDataIds.push(afuxuan[i].name);
+            	}
+            }
+            
+            if(sourceDataIds == ""){
+            	alert("请勾选源数据！");
+            	return;
+            }
+            
+            $.ajax({
+            	url:"/wankangyuan/projectFormatData/remove",
+            	type:"post",
+            	data:{
+            		p_id:p_id,
+            		cs_id:cs_id,
+            		sourceDataIds:sourceDataIds.join(",")
+            	},
+            	dataType:"json",
+            	success : function(data){
+            		if(data.result == true){
+            			alert(data.message);
+                		var p_id = ${project.id};
+                		var cs_id = $("#source_Select").val();
+                		window.location.href="/wankangyuan/sourceData/getSourceDatas?type=4&p_id="+p_id+"&cs_id="+cs_id
+                				+"&searchId="+searchId+"&desc_asc="+desc_asc+"&searchWord="+searchWord
+                				+"&oldCondition="+oldCondition;
+            		}else{
+            			alert(data.message);
+            		}
+            	},
+            	error : function(){
+            		alert("联网失败");
+            	}
+            });
+    	});
+		
+	</script>
+
+
+
+		
+</body>
+</html>

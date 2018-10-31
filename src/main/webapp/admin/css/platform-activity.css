@@ -1,0 +1,261 @@
+.content .can-enter-content {
+  padding-top: 7px;
+  padding-left: 18px;
+  overflow: hidden;
+}
+.content .can-enter-content .platform-activity-item {
+  width: 31%;
+  max-width: 425px;
+  min-width: 360px;
+  margin: 21px 12px;
+  float: left;
+}
+.content .can-enter-content .platform-activity-item .platform-activity-item-top {
+  height: 42px;
+  background: #fff;
+  margin-bottom: 3px;
+}
+.content .can-enter-content .platform-activity-item .platform-activity-item-top .te {
+  background: #f5a623;
+  border-radius: 3px;
+  width: 22px;
+  height: 22px;
+  margin: 10px 13px;
+  float: left;
+}
+.content .can-enter-content .platform-activity-item .platform-activity-item-top h3 {
+  font-size: 16px;
+  color: #4a4a4a;
+  float: left;
+  line-height: 42px;
+  font-weight: normal;
+}
+.content .can-enter-content .platform-activity-item .platform-activity-item-top span {
+  float: right;
+  font-size: 12px;
+  color: #4a4a4a;
+  line-height: 42px;
+  margin-right: 20px;
+}
+.content .can-enter-content .platform-activity-item .platform-activity-item-top span b {
+  font-weight: normal;
+  color: #ff786c;
+}
+.content .can-enter-content .platform-activity-item .platform-activity-item-bottom {
+  height: 245px;
+  background: #fff;
+  padding-top: 15px;
+  position: relative;
+}
+.content .can-enter-content .platform-activity-item .platform-activity-item-bottom li {
+  overflow: hidden;
+  margin-bottom: 8px;
+  line-height: 22px;
+}
+.content .can-enter-content .platform-activity-item .platform-activity-item-bottom li span {
+  float: left;
+  width: 50px;
+  margin-left: 13px;
+  font-size: 12px;
+  color: #4a4a4a;
+}
+.content .can-enter-content .platform-activity-item .platform-activity-item-bottom li div {
+  float: left;
+  width: 80%;
+  font-size: 12px;
+  color: #9b9b9b;
+  line-height: 22px;
+}
+.content .can-enter-content .platform-activity-item .platform-activity-item-bottom .activity-detail {
+  position: absolute;
+  right: 20px;
+  bottom: 15px;
+}
+.content .can-enter-content .platform-activity-item .platform-activity-item-bottom .activity-detail i {
+  font-size: 20px;
+  color: #9b9b9b;
+}
+.content .platform-tab-box {
+  padding-top: 6px;
+  height: 33px;
+  background: #fafbfc;
+  border: 1px solid #e6eaee;
+}
+.content .platform-tab-box span {
+  line-height: 33px;
+  padding: 0 40px;
+  font-size: 12px;
+  color: #9fa9ba;
+}
+.content .activity-manage {
+  margin: 33px 30px 0 33px;
+  height: 50px;
+  background: #fff;
+}
+.content .activity-manage span {
+  line-height: 50px;
+  padding-left: 16px;
+  font-size: 16px;
+  color: #4a4a4a;
+}
+.content .activity-manage input {
+  background: #ffffff;
+  border: 1px solid #cccfd4;
+  border-radius: 4px;
+  width: 98px;
+  height: 35px;
+  padding-left: 10px;
+  float: right;
+  margin-top: 7px;
+  margin-right: 39px;
+}
+.content .activity-manage button {
+  float: right;
+  border: 0;
+  margin-top: 7px;
+  margin-right: 39px;
+  background: #0294ff;
+  width: 100px;
+  height: 37px;
+  color: #fff;
+  border-radius: 4px;
+}
+.content .menu-box {
+  width: 100%;
+  margin-top: 11px;
+  margin-left: 30px;
+  height: 780px;
+  position: relative;
+  /*overflow: hidden;*/
+}
+.content .menu-box .menu-type-box {
+  overflow-y: scroll;
+  height: 700px;
+  background: #fff;
+  width: 27%;
+  margin-right: 16px;
+  float: left;
+
+}
+.content .menu-box .menu-type-box li {
+  background: #fff;
+  width: 245px;
+  height: 44px;
+  border-bottom: 1px solid #e6eaee;
+  font-size: 14px;
+  padding-left: 13px;
+  line-height: 44px;
+}
+.content .menu-box .menu-type-box .menu-type-active {
+  background: #f2f9ff;
+  color: #469df8;
+}
+.content .menu-box .menu-food-box {
+  height: 700px;
+  overflow-y: scroll;
+  background: #fff;
+  width: 55%;
+  float: left;
+  padding: 9px 29px 0;
+
+}
+.content .menu-box .menu-food-box li {
+  height: 79px;
+  border-bottom: 1px solid #e6eaee;
+}
+.content .menu-box .menu-food-box li .choose-box {
+  width: 28px;
+  height: 79px;
+  line-height: 90px;
+  padding: 0 6px;
+  float: left;
+}
+.content .menu-box .menu-food-box li .food-detail {
+  margin: 0 7px 0 18px;
+  width: 500px;
+  height: 61px;
+  float: left;
+  padding: 9px 0;
+}
+.content .menu-box .menu-food-box li .food-detail div {
+  height: 30px;
+  line-height: 30px;
+}
+.content .menu-box .menu-food-box li .food-detail .food-name {
+  font-size: 14px;
+  color: #354052;
+}
+.content .menu-box .menu-food-box li .food-detail .food-price-num .food-old-price {
+  font-size: 14px;
+  color: #aab2c0;
+  float: left;
+  margin-right: 12px;
+}
+.content .menu-box .menu-food-box li .food-detail .food-price-num .food-new-price {
+  font-size: 16px;
+  color: #e54a64;
+  float: left;
+  margin-right: 28px;
+}
+.content .menu-box .menu-food-box li .food-detail .food-price-num .food-num {
+  font-size: 12px;
+  color: #aab2c0;
+  float: left;
+}
+.content .menu-box .menu-food-box li .food-detail .food-price-num .food-num input {
+  border: 1px solid #aab2c0;
+  width: 57px;
+  height: 16px;
+  margin: 0 -2px 0 4px;
+  padding-left: 3px;
+  margin-right: 3px;
+}
+.content .menu-box .choose-detail {
+
+  width:90%;
+  height: 56px;
+  position: absolute;
+  bottom: 0;
+  background: #e6e6e6;
+  /*box-shadow: 0 0 12px 0 rgba(193, 193, 193, 0.5);*/
+  padding-left: 30px;
+  font-size: 14px;
+  line-height: 56px;
+  color: #0294ff;
+}
+.content .menu-box .choose-detail span {
+  float: left;
+}
+.content .menu-box .choose-detail .choose-num {
+  float: left;
+  width: 80px;
+  margin-left: 18px;
+}
+.content .menu-box .choose-detail button {
+  background: #0294ff;
+  border-radius: 4px;
+  width: 97px;
+  height: 36px;
+  color: #ffffff;
+  border: 0;
+  float: right;
+  margin-right: 34px;
+  margin-top: 10px;
+}
+.arr{
+  height:20px;
+  width:100px;
+  display:none;
+}
+.menu-type-box li{
+  list-style:none;
+}
+.caikid{
+  width:100%;
+}
+.caikid li{
+  list-style: none;
+}
+.kind li{
+  list-style:none;
+}

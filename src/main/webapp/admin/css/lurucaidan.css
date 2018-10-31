@@ -1,0 +1,106 @@
+.liangcai{
+    float:left;
+}
+
+
+.ico{
+    margin-top: 7px;
+    float:left;
+}
+.plus {
+    width:25px;
+    margin-left: 30px;
+}
+.remove{
+    width:23px;
+
+}
+.edit{
+    width:23px;
+}
+.buttn{
+    background: #1875f0;
+    border-radius: 4px;
+    width:80px;
+    height:30px;
+    outline: none;
+    border:none;
+    color:#ffffff;
+}
+.butn{
+    float:left;
+    margin-left: 20px;
+}
+.clear{
+    clear:both;
+}
+.license{
+    margin-left: 180px;
+    width:120px;
+    height:120px;
+    background:url(../images/shop.png);
+    overflow: hidden;
+}
+.munulist{
+   margin-top:20px;
+   margin-left: 100px;
+}
+.clear{
+    clear:both;
+}
+.munulist li{
+    list-style: none;
+    float:left;
+}
+.clear{
+    clear:both;
+}
+.inventory{
+    margin-left: 30px;
+    margin-top:5px;
+}
+.munuprice{
+    margin-top: 5px;
+}
+.price input{
+    width:100px;
+}
+.dollor{
+    margin-left: 10px;
+    margin-top: 5px;
+}
+.num{
+    margin-left:10px;
+    margin-top: 5px;
+}
+.boxprice input{
+    width:100px;
+    margin-left: 13px;
+}
+.plus{
+    margin-top: 5px;
+}
+.tally input{
+    width:100px;
+    margin-left: 26px;
+}
+.category{
+    margin-left: 10px;
+    margin-top:5px;
+}
+.guige{
+    margin-left: 40px;
+    margin-top:5px;
+}
+#sel{
+    width:150px;
+    margin-left: 20px;
+}
+.text textarea{
+    width:500px;
+    margin-left: 26px;
+}
+.sure{
+    margin-left: 300px;
+    padding-bottom: 50px;
+}

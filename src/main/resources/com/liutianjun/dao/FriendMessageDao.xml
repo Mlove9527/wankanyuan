@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.liutianjun.dao.FriendMessageDao" >
+  <resultMap id="BaseResultMap" type="com.liutianjun.pojo.FriendMessage" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="sender_id" property="senderId" jdbcType="INTEGER" />
+    <result column="sender_name" property="senderName" jdbcType="VARCHAR" />
+    <result column="sender_headimg" property="senderHeadimg" jdbcType="VARCHAR" />
+    <result column="receiver_id" property="receiverId" jdbcType="INTEGER" />
+    <result column="receiver_name" property="receiverName" jdbcType="VARCHAR" />
+    <result column="receiver_headimg" property="receiverHeadimg" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="send_time" property="sendTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    <if test="fields == null" >
+      id, sender_id, sender_name, sender_headimg, receiver_id, receiver_name, receiver_headimg, 
+      content, send_time
+    </if>
+    <if test="fields != null" >
+      ${fields}
+    </if>
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.liutianjun.pojo.FriendMessageQuery" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from friend_message
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+    <if test="startRow != null" >
+      limit #{startRow} , #{pageSize}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    id,sender_id,sender_name,sender_headimg,receiver_id,receiver_name,receiver_headimg,content,send_time
+    from friend_message
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from friend_message
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.liutianjun.pojo.FriendMessageQuery" >
+    delete from friend_message
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.liutianjun.pojo.FriendMessage" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into friend_message (sender_id, sender_name, sender_headimg, 
+      receiver_id, receiver_name, receiver_headimg, 
+      content, send_time)
+    values (#{senderId,jdbcType=INTEGER}, #{senderName,jdbcType=VARCHAR}, #{senderHeadimg,jdbcType=VARCHAR}, 
+      #{receiverId,jdbcType=INTEGER}, #{receiverName,jdbcType=VARCHAR}, #{receiverHeadimg,jdbcType=VARCHAR}, 
+      #{content,jdbcType=VARCHAR}, #{sendTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.liutianjun.pojo.FriendMessage" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into friend_message
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="senderId != null" >
+        sender_id,
+      </if>
+      <if test="senderName != null" >
+        sender_name,
+      </if>
+      <if test="senderHeadimg != null" >
+        sender_headimg,
+      </if>
+      <if test="receiverId != null" >
+        receiver_id,
+      </if>
+      <if test="receiverName != null" >
+        receiver_name,
+      </if>
+      <if test="receiverHeadimg != null" >
+        receiver_headimg,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="sendTime != null" >
+        send_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="senderId != null" >
+        #{senderId,jdbcType=INTEGER},
+      </if>
+      <if test="senderName != null" >
+        #{senderName,jdbcType=VARCHAR},
+      </if>
+      <if test="senderHeadimg != null" >
+        #{senderHeadimg,jdbcType=VARCHAR},
+      </if>
+      <if test="receiverId != null" >
+        #{receiverId,jdbcType=INTEGER},
+      </if>
+      <if test="receiverName != null" >
+        #{receiverName,jdbcType=VARCHAR},
+      </if>
+      <if test="receiverHeadimg != null" >
+        #{receiverHeadimg,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="sendTime != null" >
+        #{sendTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.liutianjun.pojo.FriendMessageQuery" resultType="java.lang.Integer" >
+    select count(*) from friend_message
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update friend_message
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.senderId != null" >
+        sender_id = #{record.senderId,jdbcType=INTEGER},
+      </if>
+      <if test="record.senderName != null" >
+        sender_name = #{record.senderName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.senderHeadimg != null" >
+        sender_headimg = #{record.senderHeadimg,jdbcType=VARCHAR},
+      </if>
+      <if test="record.receiverId != null" >
+        receiver_id = #{record.receiverId,jdbcType=INTEGER},
+      </if>
+      <if test="record.receiverName != null" >
+        receiver_name = #{record.receiverName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.receiverHeadimg != null" >
+        receiver_headimg = #{record.receiverHeadimg,jdbcType=VARCHAR},
+      </if>
+      <if test="record.content != null" >
+        content = #{record.content,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sendTime != null" >
+        send_time = #{record.sendTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update friend_message
+    set id = #{record.id,jdbcType=INTEGER},
+      sender_id = #{record.senderId,jdbcType=INTEGER},
+      sender_name = #{record.senderName,jdbcType=VARCHAR},
+      sender_headimg = #{record.senderHeadimg,jdbcType=VARCHAR},
+      receiver_id = #{record.receiverId,jdbcType=INTEGER},
+      receiver_name = #{record.receiverName,jdbcType=VARCHAR},
+      receiver_headimg = #{record.receiverHeadimg,jdbcType=VARCHAR},
+      content = #{record.content,jdbcType=VARCHAR},
+      send_time = #{record.sendTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.liutianjun.pojo.FriendMessage" >
+    update friend_message
+    <set >
+      <if test="senderId != null" >
+        sender_id = #{senderId,jdbcType=INTEGER},
+      </if>
+      <if test="senderName != null" >
+        sender_name = #{senderName,jdbcType=VARCHAR},
+      </if>
+      <if test="senderHeadimg != null" >
+        sender_headimg = #{senderHeadimg,jdbcType=VARCHAR},
+      </if>
+      <if test="receiverId != null" >
+        receiver_id = #{receiverId,jdbcType=INTEGER},
+      </if>
+      <if test="receiverName != null" >
+        receiver_name = #{receiverName,jdbcType=VARCHAR},
+      </if>
+      <if test="receiverHeadimg != null" >
+        receiver_headimg = #{receiverHeadimg,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="sendTime != null" >
+        send_time = #{sendTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.liutianjun.pojo.FriendMessage" >
+    update friend_message
+    set sender_id = #{senderId,jdbcType=INTEGER},
+      sender_name = #{senderName,jdbcType=VARCHAR},
+      sender_headimg = #{senderHeadimg,jdbcType=VARCHAR},
+      receiver_id = #{receiverId,jdbcType=INTEGER},
+      receiver_name = #{receiverName,jdbcType=VARCHAR},
+      receiver_headimg = #{receiverHeadimg,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      send_time = #{sendTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

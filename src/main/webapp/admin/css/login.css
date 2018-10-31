@@ -1,0 +1,132 @@
+/* 
+* @Author: Marte
+* @Date:   2018-05-22 16:37:07
+* @Last Modified by:   Marte
+* @Last Modified time: 2018-05-24 11:40:28
+*/
+*{
+    margin:0;
+    padding:0;
+    text-decoration: none;
+    list-style: none;
+    font-family: Microsoft YaHei;
+    text-align:center;
+}
+body{
+    background:url(../img/bg-login.jpg) center center no-repeat;
+}
+.box{
+    width:100%;
+    /*height:100%;*/
+    height:100px;
+    background:red;
+
+}
+.container{
+    display:table;
+    /*height:100%;*/
+}
+
+.row{
+    /*display: table-cell;*/
+    /*vertical-align: middle;*/
+    margin-top:150px;
+}
+/* centered columns styles */
+.row-centered {
+    text-align:center;
+}
+.col-centered {
+    display:inline-block;
+    float:none;
+    text-align:left;
+    margin-right:-4px;
+}
+
+
+.content{
+    /*display:inline-block;*/
+    text-align:center;
+    vertical-align: middle;
+    display: table-cell;
+}
+.top{
+    margin:0 auto;
+    /*margin-top:100px;*/
+}
+.topT{
+    font-size: 26px;
+    font-weight: 700;
+    color:#fff;
+    margin-bottom:30px;
+}
+.middle{
+    margin:0 auto;
+    padding-top:40px;
+}
+.middlez{
+    width:max-content;
+    /*overflow:auto;*/
+    margin:0 auto;
+}
+.middlezL{
+    width:80px;
+    text-align:right;
+    font-size:16px;
+    display:inline-block;
+    vertical-align: middle;
+    margin-bottom: 10px;
+}
+.middlezR{
+    display:inline-block;
+    vertical-align: middle;
+    width:254px;
+    /*position:relative;*/
+}
+.middlezRp1{
+    width:240px;
+    display:inline-block;
+    vertical-align: middle;
+    text-align: left;
+}
+.middlezRp2{
+    width:130px;
+    float:left;
+    text-align: left;
+}
+.yanzhengK{
+    float:right;
+    width:80px;
+    height:30px;
+    background:#ccc;
+    position:relative;
+}
+.yanzhengI{
+    width:80px;
+    height:30px;
+    cursor:pointer;
+}
+.yanzhengps{
+    position:absolute;
+    bottom:0;
+    left:90px;
+    font-size: 8px;
+    color: #fff;
+    width:300px;
+    text-align: left;
+}
+.bottom{
+    width:300px;
+    margin:0 auto;
+    margin-top:30px;
+    display:flex;
+    justify-content: space-around;
+}
+.bottom input{
+    padding:4px 14px;
+    border:1px solid #d7d7d7;
+    color:#333;
+    font-size:14px;
+    background:#f4f4f4;
+    /*outline: none;*/
+}

@@ -1,0 +1,159 @@
+.city li{
+    list-style: none;
+    float:left;
+
+}
+.shi{
+    margin-top: 5px;
+    margin-left: 100px;
+}
+#sel-city{
+    width:200px;
+    margin-left: 20px;
+}
+.clear{
+    clear:both;
+}
+
+.shang{
+    margin-top: 5px;
+}
+#sel-shangquan{
+    width:200px;
+    margin-left: 20px;
+}
+.bianhao{
+    margin-left: 20px;
+}
+.name{
+    margin-left: 20px;
+}
+.name input{
+    width:150px;
+}
+.activity-status{
+    margin-top: 5px;
+    margin-left: 20px;
+}
+.setpeople{
+    margin-top: 5px;
+    margin-left: 20px;
+}
+.people{
+    margin-left:20px;
+}
+#sel-status{
+    margin-left:20px;
+}
+.newreduce{
+    margin-left: 20px;
+}
+.fan{
+    margin-left: 20px;
+}
+.hot{
+    margin-left:20px;
+}
+.zhekou{
+    margin-left:20px;
+}
+.create{
+    margin-left:30px;
+}
+.dele{
+    margin-left:30px;
+}
+.stop{
+    margin-left:30px;
+}
+.center img{
+    margin-left: 10px;
+}
+.cont input{
+    width:100px;
+    margin-left: 10px;
+}
+.shanghuname{
+    margin-left: 10px;
+    margin-top: 5px;
+}
+.only{
+    margin-left: 20px;
+}
+.only select{
+    width:150px;
+}
+.qishi{
+    margin-left: 10px;
+    margin-top: 5px;
+}
+.chengshi{
+    margin-left: 10px;
+    margin-top: 5px;
+}
+.shangid{
+    margin-top: 5px;
+}
+.menu{
+    float:left;
+    list-style:none;
+}
+.menu1{
+    float:left;
+    margin-left:50px;
+    list-style:none;
+
+}
+.menu1 p{
+    float:left;
+}
+.menu p{
+    float:left;
+}
+.totalinfo{
+    width:98%;
+    height:50px;
+    background: #bce8f1;
+    padding-top: 30px;
+    padding-left:20px;
+    /*opacity: 0.5;*/
+    /*z-index: 0;*/
+}
+.city{
+    margin-top: 20px;
+}
+.order li{
+    float:left;
+    list-style: none;
+}
+.date input{
+    width:150px;
+    margin-left: 20px;
+}
+.zhi{
+    margin-left: 15px;
+    margin-top: 5px;
+}
+.today{
+    margin-left: 20px;
+}
+.three{
+    margin-left: 20px;
+}
+.order{
+    overflow: hidden;
+}
+.yong{
+    margin-left: 200px;
+}
+.shanghutixian{
+    margin-left: 180px;
+}
+.quxiao{
+    width:100px;
+}
+.cancelbtn{
+    text-align: right;
+    padding-right: 50px;
+    margin-top: 20px;
+}

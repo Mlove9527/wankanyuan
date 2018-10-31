@@ -1,0 +1,185 @@
+.liangcai{
+    float:left;
+}
+
+
+.ico{
+  margin-top: 7px;
+    float:left;
+}
+.plus {
+width:25px;
+margin-left: 30px;
+}
+.remove{
+    width:23px;
+
+}
+.edit{
+    width:23px;
+}
+.buttn{
+    background: #1875f0;
+    border-radius: 4px;
+    width:80px;
+    height:30px;
+    outline: none;
+    border:none;
+    color:#ffffff;
+}
+.butn{
+    float:left;
+    margin-left: 20px;
+}
+.clear{
+    clear:both;
+}
+.list{
+    width:8%;
+    padding-left: 50px;
+    height:138px;
+    margin-left: 50px;
+}
+.list li{
+    margin-top: 20px;
+}
+.list1{
+    /*width:100%;*/
+    /*padding-left: 50px;*/
+    margin-top: 20px;
+}
+.list li{
+    /*width:20%;*/
+   list-style: none;
+    width:100px;
+    height:100px;
+    float:left;
+}
+.list1 li{
+    /*width:20%;*/
+    list-style: none;
+    width:100px;
+    height:100px;
+    float:left;
+    margin-left: 50px;
+    margin-top: 20px;
+}
+.list li img{
+    width:100px;
+    height:100px;
+}
+.list1 li img{
+    width:100px;
+    height:100px;
+}
+.hot{
+    margin-top: 30px;
+}
+.list li p{
+text-align: center;
+}
+.list1 li p{
+    text-align: center;
+}
+.page{
+    margin-left: 150px;
+    margin-top: 37px;
+}
+.back{
+    background: #1875f0;
+    border-radius: 4px;
+    width:150px;
+    height:30px;
+    outline: none;
+    border:none;
+    color:#ffffff;
+}
+.fanhui{
+    text-align: right;
+    padding-right: 50px;
+}
+.fan{
+    text-align: right;
+    padding-right: 50px;
+    background: #1875f0;
+    border-radius: 4px;
+    height:30px;
+    outline: none;
+    border:none;
+    color:#ffffff;
+}
+.queding{
+    text-align: right;
+    padding-right: 50px;
+    background: #1875f0;
+    border-radius: 4px;
+    height:30px;
+    outline: none;
+    border:none;
+    color:#ffffff;
+}
+.newxinjian{
+    background: #9a9c9d;
+    width:380px;
+    height:100px;
+    padding-top: 20px;
+    padding-left: 20px;
+}
+.dele{
+    background: #9a9c9d;
+    width:380px;
+    height:100px;
+    padding-top: 20px;
+    padding-left: 20px;
+}
+.menuname{
+    float:left;
+    color:#ffffff;
+}
+.controls{
+    float:left;
+    outline:none;
+    border:none;
+    border-radius: 4px;
+}
+.ren{
+    text-align: center;
+}
+.newset{
+    background: #2a62bc;
+    border-radius: 4px;
+    height:30px;
+    outline: none;
+    border:none;
+    color:#ffffff;
+}
+.fanset{
+    background: #2a62bc;
+    border-radius: 4px;
+    height:30px;
+    outline: none;
+    border:none;
+    color:#ffffff;
+}
+.delset{
+    background: #2a62bc;
+    border-radius: 4px;
+    height:30px;
+    width:100px;
+    outline: none;
+    border:none;
+    color:#ffffff;
+    margin-left: 100px;
+}
+.bacset{
+    background: #2a62bc;
+    border-radius: 4px;
+    height:30px;
+    width:100px;
+    outline: none;
+    border:none;
+    color:#ffffff;
+}
+.cont{
+    margin-top: 35px;
+}

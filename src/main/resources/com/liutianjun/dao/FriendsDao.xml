@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.liutianjun.dao.FriendsDao" >
+  <resultMap id="BaseResultMap" type="com.liutianjun.pojo.Friends" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="friend_id" property="friendId" jdbcType="INTEGER" />
+    <result column="friend_org_id" property="friendOrgId" jdbcType="INTEGER" />
+    <result column="friend_name" property="friendName" jdbcType="VARCHAR" />
+    <result column="friend_rolename" property="friendRolename" jdbcType="VARCHAR" />
+    <result column="friend_headimg" property="friendHeadimg" jdbcType="VARCHAR" />
+    <result column="friend_email" property="friendEmail" jdbcType="VARCHAR" />
+    <result column="friend_profile" property="friendProfile" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    <if test="fields == null" >
+      id, user_id, friend_id, friend_org_id, friend_name, friend_rolename, friend_headimg, 
+      friend_email, friend_profile, create_time, update_time
+    </if>
+    <if test="fields != null" >
+      ${fields}
+    </if>
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.liutianjun.pojo.FriendsQuery" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from friends
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+    <if test="startRow != null" >
+      limit #{startRow} , #{pageSize}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    id,user_id,friend_id,friend_org_id,friend_name,friend_rolename,friend_headimg,friend_email,friend_profile,create_time,update_time
+    from friends
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from friends
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.liutianjun.pojo.FriendsQuery" >
+    delete from friends
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.liutianjun.pojo.Friends" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into friends (user_id, friend_id, friend_org_id, 
+      friend_name, friend_rolename, friend_headimg, 
+      friend_email, friend_profile, create_time, 
+      update_time)
+    values (#{userId,jdbcType=INTEGER}, #{friendId,jdbcType=INTEGER}, #{friendOrgId,jdbcType=INTEGER}, 
+      #{friendName,jdbcType=VARCHAR}, #{friendRolename,jdbcType=VARCHAR}, #{friendHeadimg,jdbcType=VARCHAR}, 
+      #{friendEmail,jdbcType=VARCHAR}, #{friendProfile,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.liutianjun.pojo.Friends" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into friends
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="friendId != null" >
+        friend_id,
+      </if>
+      <if test="friendOrgId != null" >
+        friend_org_id,
+      </if>
+      <if test="friendName != null" >
+        friend_name,
+      </if>
+      <if test="friendRolename != null" >
+        friend_rolename,
+      </if>
+      <if test="friendHeadimg != null" >
+        friend_headimg,
+      </if>
+      <if test="friendEmail != null" >
+        friend_email,
+      </if>
+      <if test="friendProfile != null" >
+        friend_profile,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="friendId != null" >
+        #{friendId,jdbcType=INTEGER},
+      </if>
+      <if test="friendOrgId != null" >
+        #{friendOrgId,jdbcType=INTEGER},
+      </if>
+      <if test="friendName != null" >
+        #{friendName,jdbcType=VARCHAR},
+      </if>
+      <if test="friendRolename != null" >
+        #{friendRolename,jdbcType=VARCHAR},
+      </if>
+      <if test="friendHeadimg != null" >
+        #{friendHeadimg,jdbcType=VARCHAR},
+      </if>
+      <if test="friendEmail != null" >
+        #{friendEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="friendProfile != null" >
+        #{friendProfile,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.liutianjun.pojo.FriendsQuery" resultType="java.lang.Integer" >
+    select count(*) from friends
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update friends
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.userId != null" >
+        user_id = #{record.userId,jdbcType=INTEGER},
+      </if>
+      <if test="record.friendId != null" >
+        friend_id = #{record.friendId,jdbcType=INTEGER},
+      </if>
+      <if test="record.friendOrgId != null" >
+        friend_org_id = #{record.friendOrgId,jdbcType=INTEGER},
+      </if>
+      <if test="record.friendName != null" >
+        friend_name = #{record.friendName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.friendRolename != null" >
+        friend_rolename = #{record.friendRolename,jdbcType=VARCHAR},
+      </if>
+      <if test="record.friendHeadimg != null" >
+        friend_headimg = #{record.friendHeadimg,jdbcType=VARCHAR},
+      </if>
+      <if test="record.friendEmail != null" >
+        friend_email = #{record.friendEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="record.friendProfile != null" >
+        friend_profile = #{record.friendProfile,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null" >
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null" >
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update friends
+    set id = #{record.id,jdbcType=INTEGER},
+      user_id = #{record.userId,jdbcType=INTEGER},
+      friend_id = #{record.friendId,jdbcType=INTEGER},
+      friend_org_id = #{record.friendOrgId,jdbcType=INTEGER},
+      friend_name = #{record.friendName,jdbcType=VARCHAR},
+      friend_rolename = #{record.friendRolename,jdbcType=VARCHAR},
+      friend_headimg = #{record.friendHeadimg,jdbcType=VARCHAR},
+      friend_email = #{record.friendEmail,jdbcType=VARCHAR},
+      friend_profile = #{record.friendProfile,jdbcType=VARCHAR},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.liutianjun.pojo.Friends" >
+    update friends
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="friendId != null" >
+        friend_id = #{friendId,jdbcType=INTEGER},
+      </if>
+      <if test="friendOrgId != null" >
+        friend_org_id = #{friendOrgId,jdbcType=INTEGER},
+      </if>
+      <if test="friendName != null" >
+        friend_name = #{friendName,jdbcType=VARCHAR},
+      </if>
+      <if test="friendRolename != null" >
+        friend_rolename = #{friendRolename,jdbcType=VARCHAR},
+      </if>
+      <if test="friendHeadimg != null" >
+        friend_headimg = #{friendHeadimg,jdbcType=VARCHAR},
+      </if>
+      <if test="friendEmail != null" >
+        friend_email = #{friendEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="friendProfile != null" >
+        friend_profile = #{friendProfile,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.liutianjun.pojo.Friends" >
+    update friends
+    set user_id = #{userId,jdbcType=INTEGER},
+      friend_id = #{friendId,jdbcType=INTEGER},
+      friend_org_id = #{friendOrgId,jdbcType=INTEGER},
+      friend_name = #{friendName,jdbcType=VARCHAR},
+      friend_rolename = #{friendRolename,jdbcType=VARCHAR},
+      friend_headimg = #{friendHeadimg,jdbcType=VARCHAR},
+      friend_email = #{friendEmail,jdbcType=VARCHAR},
+      friend_profile = #{friendProfile,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

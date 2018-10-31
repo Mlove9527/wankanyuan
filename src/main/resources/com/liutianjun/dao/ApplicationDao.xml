@@ -1,0 +1,490 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.liutianjun.dao.ApplicationDao" >
+  <resultMap id="BaseResultMap" type="com.liutianjun.pojo.Application" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="app_name" property="appName" jdbcType="VARCHAR" />
+    <result column="creator" property="creator" jdbcType="VARCHAR" />
+    <result column="app_type" property="appType" jdbcType="VARCHAR" />
+    <result column="keywords" property="keywords" jdbcType="VARCHAR" />
+    <result column="versions" property="versions" jdbcType="VARCHAR" />
+    <result column="is_save_system" property="isSaveSystem" jdbcType="INTEGER" />
+    <result column="is_async" property="isAsync" jdbcType="INTEGER" />
+    <result column="is_display" property="isDisplay" jdbcType="INTEGER" />
+    <result column="compute_node_name" property="computeNodeName" jdbcType="VARCHAR" />
+    <result column="para_address" property="paraAddress" jdbcType="VARCHAR" />
+    <result column="result_address" property="resultAddress" jdbcType="VARCHAR" />
+    <result column="app_intro" property="appIntro" jdbcType="VARCHAR" />
+    <result column="file_result" property="fileResult" jdbcType="VARCHAR" />
+    <result column="file_result_address" property="fileResultAddress" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.liutianjun.pojo.Application" extends="BaseResultMap" >
+    <result column="description" property="description" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    <if test="fields == null" >
+      id, app_name, creator, app_type, keywords, versions, is_save_system, is_async, is_display, 
+      compute_node_name, para_address, result_address, app_intro, file_result, file_result_address, 
+      create_time, update_time
+    </if>
+    <if test="fields != null" >
+      ${fields}
+    </if>
+  </sql>
+  <sql id="Blob_Column_List" >
+    description
+  </sql>
+  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="com.liutianjun.pojo.ApplicationQuery" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from application
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.liutianjun.pojo.ApplicationQuery" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from application
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+    <if test="startRow != null" >
+      limit #{startRow} , #{pageSize}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    id,app_name,creator,app_type,keywords,versions,is_save_system,is_async,is_display,compute_node_name,para_address,result_address,app_intro,file_result,file_result_address,create_time,update_time,description
+    ,
+    <include refid="Blob_Column_List" />
+    from application
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from application
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.liutianjun.pojo.ApplicationQuery" >
+    delete from application
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.liutianjun.pojo.Application" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into application (app_name, creator, app_type, 
+      keywords, versions, is_save_system, 
+      is_async, is_display, compute_node_name, 
+      para_address, result_address, app_intro, 
+      file_result, file_result_address, create_time, 
+      update_time, description)
+    values (#{appName,jdbcType=VARCHAR}, #{creator,jdbcType=VARCHAR}, #{appType,jdbcType=VARCHAR}, 
+      #{keywords,jdbcType=VARCHAR}, #{versions,jdbcType=VARCHAR}, #{isSaveSystem,jdbcType=INTEGER}, 
+      #{isAsync,jdbcType=INTEGER}, #{isDisplay,jdbcType=INTEGER}, #{computeNodeName,jdbcType=VARCHAR}, 
+      #{paraAddress,jdbcType=VARCHAR}, #{resultAddress,jdbcType=VARCHAR}, #{appIntro,jdbcType=VARCHAR}, 
+      #{fileResult,jdbcType=VARCHAR}, #{fileResultAddress,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{description,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.liutianjun.pojo.Application" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into application
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="appName != null" >
+        app_name,
+      </if>
+      <if test="creator != null" >
+        creator,
+      </if>
+      <if test="appType != null" >
+        app_type,
+      </if>
+      <if test="keywords != null" >
+        keywords,
+      </if>
+      <if test="versions != null" >
+        versions,
+      </if>
+      <if test="isSaveSystem != null" >
+        is_save_system,
+      </if>
+      <if test="isAsync != null" >
+        is_async,
+      </if>
+      <if test="isDisplay != null" >
+        is_display,
+      </if>
+      <if test="computeNodeName != null" >
+        compute_node_name,
+      </if>
+      <if test="paraAddress != null" >
+        para_address,
+      </if>
+      <if test="resultAddress != null" >
+        result_address,
+      </if>
+      <if test="appIntro != null" >
+        app_intro,
+      </if>
+      <if test="fileResult != null" >
+        file_result,
+      </if>
+      <if test="fileResultAddress != null" >
+        file_result_address,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="appName != null" >
+        #{appName,jdbcType=VARCHAR},
+      </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="appType != null" >
+        #{appType,jdbcType=VARCHAR},
+      </if>
+      <if test="keywords != null" >
+        #{keywords,jdbcType=VARCHAR},
+      </if>
+      <if test="versions != null" >
+        #{versions,jdbcType=VARCHAR},
+      </if>
+      <if test="isSaveSystem != null" >
+        #{isSaveSystem,jdbcType=INTEGER},
+      </if>
+      <if test="isAsync != null" >
+        #{isAsync,jdbcType=INTEGER},
+      </if>
+      <if test="isDisplay != null" >
+        #{isDisplay,jdbcType=INTEGER},
+      </if>
+      <if test="computeNodeName != null" >
+        #{computeNodeName,jdbcType=VARCHAR},
+      </if>
+      <if test="paraAddress != null" >
+        #{paraAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="resultAddress != null" >
+        #{resultAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="appIntro != null" >
+        #{appIntro,jdbcType=VARCHAR},
+      </if>
+      <if test="fileResult != null" >
+        #{fileResult,jdbcType=VARCHAR},
+      </if>
+      <if test="fileResultAddress != null" >
+        #{fileResultAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.liutianjun.pojo.ApplicationQuery" resultType="java.lang.Integer" >
+    select count(*) from application
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update application
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.appName != null" >
+        app_name = #{record.appName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.creator != null" >
+        creator = #{record.creator,jdbcType=VARCHAR},
+      </if>
+      <if test="record.appType != null" >
+        app_type = #{record.appType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.keywords != null" >
+        keywords = #{record.keywords,jdbcType=VARCHAR},
+      </if>
+      <if test="record.versions != null" >
+        versions = #{record.versions,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isSaveSystem != null" >
+        is_save_system = #{record.isSaveSystem,jdbcType=INTEGER},
+      </if>
+      <if test="record.isAsync != null" >
+        is_async = #{record.isAsync,jdbcType=INTEGER},
+      </if>
+      <if test="record.isDisplay != null" >
+        is_display = #{record.isDisplay,jdbcType=INTEGER},
+      </if>
+      <if test="record.computeNodeName != null" >
+        compute_node_name = #{record.computeNodeName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.paraAddress != null" >
+        para_address = #{record.paraAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="record.resultAddress != null" >
+        result_address = #{record.resultAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="record.appIntro != null" >
+        app_intro = #{record.appIntro,jdbcType=VARCHAR},
+      </if>
+      <if test="record.fileResult != null" >
+        file_result = #{record.fileResult,jdbcType=VARCHAR},
+      </if>
+      <if test="record.fileResultAddress != null" >
+        file_result_address = #{record.fileResultAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null" >
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null" >
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.description != null" >
+        description = #{record.description,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map" >
+    update application
+    set id = #{record.id,jdbcType=INTEGER},
+      app_name = #{record.appName,jdbcType=VARCHAR},
+      creator = #{record.creator,jdbcType=VARCHAR},
+      app_type = #{record.appType,jdbcType=VARCHAR},
+      keywords = #{record.keywords,jdbcType=VARCHAR},
+      versions = #{record.versions,jdbcType=VARCHAR},
+      is_save_system = #{record.isSaveSystem,jdbcType=INTEGER},
+      is_async = #{record.isAsync,jdbcType=INTEGER},
+      is_display = #{record.isDisplay,jdbcType=INTEGER},
+      compute_node_name = #{record.computeNodeName,jdbcType=VARCHAR},
+      para_address = #{record.paraAddress,jdbcType=VARCHAR},
+      result_address = #{record.resultAddress,jdbcType=VARCHAR},
+      app_intro = #{record.appIntro,jdbcType=VARCHAR},
+      file_result = #{record.fileResult,jdbcType=VARCHAR},
+      file_result_address = #{record.fileResultAddress,jdbcType=VARCHAR},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      description = #{record.description,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update application
+    set id = #{record.id,jdbcType=INTEGER},
+      app_name = #{record.appName,jdbcType=VARCHAR},
+      creator = #{record.creator,jdbcType=VARCHAR},
+      app_type = #{record.appType,jdbcType=VARCHAR},
+      keywords = #{record.keywords,jdbcType=VARCHAR},
+      versions = #{record.versions,jdbcType=VARCHAR},
+      is_save_system = #{record.isSaveSystem,jdbcType=INTEGER},
+      is_async = #{record.isAsync,jdbcType=INTEGER},
+      is_display = #{record.isDisplay,jdbcType=INTEGER},
+      compute_node_name = #{record.computeNodeName,jdbcType=VARCHAR},
+      para_address = #{record.paraAddress,jdbcType=VARCHAR},
+      result_address = #{record.resultAddress,jdbcType=VARCHAR},
+      app_intro = #{record.appIntro,jdbcType=VARCHAR},
+      file_result = #{record.fileResult,jdbcType=VARCHAR},
+      file_result_address = #{record.fileResultAddress,jdbcType=VARCHAR},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.liutianjun.pojo.Application" >
+    update application
+    <set >
+      <if test="appName != null" >
+        app_name = #{appName,jdbcType=VARCHAR},
+      </if>
+      <if test="creator != null" >
+        creator = #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="appType != null" >
+        app_type = #{appType,jdbcType=VARCHAR},
+      </if>
+      <if test="keywords != null" >
+        keywords = #{keywords,jdbcType=VARCHAR},
+      </if>
+      <if test="versions != null" >
+        versions = #{versions,jdbcType=VARCHAR},
+      </if>
+      <if test="isSaveSystem != null" >
+        is_save_system = #{isSaveSystem,jdbcType=INTEGER},
+      </if>
+      <if test="isAsync != null" >
+        is_async = #{isAsync,jdbcType=INTEGER},
+      </if>
+      <if test="isDisplay != null" >
+        is_display = #{isDisplay,jdbcType=INTEGER},
+      </if>
+      <if test="computeNodeName != null" >
+        compute_node_name = #{computeNodeName,jdbcType=VARCHAR},
+      </if>
+      <if test="paraAddress != null" >
+        para_address = #{paraAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="resultAddress != null" >
+        result_address = #{resultAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="appIntro != null" >
+        app_intro = #{appIntro,jdbcType=VARCHAR},
+      </if>
+      <if test="fileResult != null" >
+        file_result = #{fileResult,jdbcType=VARCHAR},
+      </if>
+      <if test="fileResultAddress != null" >
+        file_result_address = #{fileResultAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.liutianjun.pojo.Application" >
+    update application
+    set app_name = #{appName,jdbcType=VARCHAR},
+      creator = #{creator,jdbcType=VARCHAR},
+      app_type = #{appType,jdbcType=VARCHAR},
+      keywords = #{keywords,jdbcType=VARCHAR},
+      versions = #{versions,jdbcType=VARCHAR},
+      is_save_system = #{isSaveSystem,jdbcType=INTEGER},
+      is_async = #{isAsync,jdbcType=INTEGER},
+      is_display = #{isDisplay,jdbcType=INTEGER},
+      compute_node_name = #{computeNodeName,jdbcType=VARCHAR},
+      para_address = #{paraAddress,jdbcType=VARCHAR},
+      result_address = #{resultAddress,jdbcType=VARCHAR},
+      app_intro = #{appIntro,jdbcType=VARCHAR},
+      file_result = #{fileResult,jdbcType=VARCHAR},
+      file_result_address = #{fileResultAddress,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      description = #{description,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.liutianjun.pojo.Application" >
+    update application
+    set app_name = #{appName,jdbcType=VARCHAR},
+      creator = #{creator,jdbcType=VARCHAR},
+      app_type = #{appType,jdbcType=VARCHAR},
+      keywords = #{keywords,jdbcType=VARCHAR},
+      versions = #{versions,jdbcType=VARCHAR},
+      is_save_system = #{isSaveSystem,jdbcType=INTEGER},
+      is_async = #{isAsync,jdbcType=INTEGER},
+      is_display = #{isDisplay,jdbcType=INTEGER},
+      compute_node_name = #{computeNodeName,jdbcType=VARCHAR},
+      para_address = #{paraAddress,jdbcType=VARCHAR},
+      result_address = #{resultAddress,jdbcType=VARCHAR},
+      app_intro = #{appIntro,jdbcType=VARCHAR},
+      file_result = #{fileResult,jdbcType=VARCHAR},
+      file_result_address = #{fileResultAddress,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
