@@ -240,7 +240,7 @@
                             
                             <c:forEach items="${source.sourceFields}" var="sourceFieldTemp">
                             <td>
-                                <div class="PJListli" id="${sourceFieldTemp.csf_id}">${sourceFieldTemp.csf_name}</div>
+                                <div class="PJListli" id="${sourceFieldTemp.csf_id}" title="${sourceFieldTemp.description}">${sourceFieldTemp.csf_name}</div>
                             </td>
                             </c:forEach>
                         </tr>
