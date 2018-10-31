@@ -1302,12 +1302,68 @@ function data_create(){
         				
         				var sourceFields = data.source.sourceFields;
         				for(var index in sourceFields){
+        					//先判断是否是必填
+        					if(sourceFields[index].not_null==true){
+        						if(sourceFields[index].type=="字符"){
+        							adddataM.append('<tr>'+
+                               				'<td><div class="adddataMlit">'+sourceFields[index].csf_name+'<span style="color:red">*</span>:</div></td>'+
+                                			'<td><input type="text" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" /></td>'+
+                            			'</tr>');
+            					}else if(sourceFields[index].type=="数值"){
+            						adddataM.append('<tr>'+
+                               				'<td><div class="adddataMlit">'+sourceFields[index].csf_name+'<span style="color:red">*</span>:</div></td>'+
+                                			'<td><input type="number" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" /></td>'+
+                            			'</tr>');
+            					}else if(sourceFields[index].type=="日期"){
+            						adddataM.append('<tr>'+
+                               				'<td><div class="adddataMlit">'+sourceFields[index].csf_name+'<span style="color:red">*</span>:</div></td>'+
+                                			'<td><input type="date" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" /></td>'+
+                            			'</tr>');
+            					}else if(sourceFields[index].type=="图片"){
+            						adddataM.append('<tr>'+
+                               				'<td><div class="adddataMlit">'+sourceFields[index].csf_name+'<span style="color:red">*</span>:</div></td>'+
+                                			'<td><input type="file" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" accept="image/*" /></td>'+
+                            			'</tr>');
+            					}else if(sourceFields[index].type=="文件"){
+            						adddataM.append('<tr>'+
+                               				'<td><div class="adddataMlit">'+sourceFields[index].csf_name+'<span style="color:red">*</span>:</div></td>'+
+                                			'<td><input type="file" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" /></td>'+
+                            			'</tr>');
+            					}
+        					}else{
+        						if(sourceFields[index].type=="字符"){
+        							adddataM.append('<tr>'+
+                               				'<td><div class="adddataMlit">'+sourceFields[index].csf_name+':</div></td>'+
+                                			'<td><input type="text" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" /></td>'+
+                            			'</tr>');
+            					}else if(sourceFields[index].type=="数值"){
+            						adddataM.append('<tr>'+
+                               				'<td><div class="adddataMlit">'+sourceFields[index].csf_name+':</div></td>'+
+                                			'<td><input type="number" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" /></td>'+
+                            			'</tr>');
+            					}else if(sourceFields[index].type=="日期"){
+            						adddataM.append('<tr>'+
+                               				'<td><div class="adddataMlit">'+sourceFields[index].csf_name+':</div></td>'+
+                                			'<td><input type="date" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" /></td>'+
+                            			'</tr>');
+            					}else if(sourceFields[index].type=="图片"){
+            						adddataM.append('<tr>'+
+                               				'<td><div class="adddataMlit">'+sourceFields[index].csf_name+':</div></td>'+
+                                			'<td><input type="file" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" accept="image/*" /></td>'+
+                            			'</tr>');
+            					}else if(sourceFields[index].type=="文件"){
+            						adddataM.append('<tr>'+
+                               				'<td><div class="adddataMlit">'+sourceFields[index].csf_name+':</div></td>'+
+                                			'<td><input type="file" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" /></td>'+
+                            			'</tr>');
+            					}
+        					}
         					
-        					adddataM.append('<tr>'+
+        					/*adddataM.append('<tr>'+
                                    				'<td><div class="adddataMlit">'+sourceFields[index].csf_name+':</div></td>'+
                                     			'<td><input type="text" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" /></td>'+
                                 			'</tr>');
-
+*/
         				}
         	            oadddataK.style.display="block";
         	            adddataPD=1;
