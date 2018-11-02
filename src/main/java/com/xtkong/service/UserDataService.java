@@ -2,11 +2,13 @@ package com.xtkong.service;
 
 import java.util.List;
 
+import com.liutianjun.pojo.UserDataRelation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.xtkong.dao.UserDataDao;
 import com.xtkong.model.UserData;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserDataService {
@@ -15,6 +17,14 @@ public class UserDataService {
 
 	public int insert(Integer uid, String dataid, Integer cs_id) {
 		return userDataDao.insert(uid, dataid, cs_id);
+	}
+
+	@Transactional(rollbackFor={RuntimeException.class, Exception.class})
+	public void insertBatch(List<UserDataRelation> entities) {
+		for(UserDataRelation entity : entities)
+		{
+			userDataDao.insert(entity.getUid(), entity.getDataId(), entity.getCs_id());
+		}
 	}
 
 	public List<UserData> select(Integer uid) {

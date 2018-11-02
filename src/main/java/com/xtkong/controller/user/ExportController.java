@@ -348,10 +348,10 @@ public class ExportController {
 					}
 				}else if(i==5) {
 					if(a==0) {
-						cell.setCellValue("错误提示信息");
+						cell.setCellValue("枚举值");
 					}else {
 						
-						cell.setCellValue(source.getSourceFields().get(a-1).getError_msg());
+						cell.setCellValue(source.getSourceFields().get(a-1).getEmvalue());
 					}
 				}
 			}

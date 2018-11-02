@@ -335,7 +335,10 @@ public class PhoenixClient {
 				phoenixSQL += ",\"" + ConstantsHBase.FAMILY_INFO + "\".\"" + qualifier + "\"";
 			}
 		} else {
-			return phoenixSQL;
+			//modified by tangye 2018-11-01
+			//如果没有传入任何字段,则默认只取ID
+			//return phoenixSQL;
+			phoenixSQL = "SELECT ID";
 		}
 		phoenixSQL += " FROM \"" + tableName + "\"  WHERE  ";
 		String phoenixSQLConditionEqualsAND = getSQLConditionEquals(tableName, conditionEqual, "AND");

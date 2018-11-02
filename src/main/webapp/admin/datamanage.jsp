@@ -310,10 +310,14 @@
 									</div>
 									<div class="addbiaoxli">
 										<div class="addbiaoxlit">是否可枚举：</div>
-										<select name="enumerated" id="">
+										<select name="enumerated" id="enumerated1id">
 											<option value="true" checked="checked">是</option>
 											<option value="false">否</option>
 										</select>
+									</div>
+									<div class="addbiaoxli" id="valueEM1id">
+										<div class="addbiaoxlit">配置枚举值,以逗号隔开：</div>
+										<input type="text" class="addbiaoxlik" name="valueEM" />
 									</div>
 									<div class="addbiaoxli">
 										<div class="addbiaoxlit">是否必填：</div>
@@ -382,6 +386,10 @@
 											<option value="true" checked="checked">是</option>
 											<option value="false">否</option>
 										</select>
+									</div>
+									<div class="addbiaoxli" id="valueEM2id">
+										<div class="addbiaoxlit">配置枚举值,以逗号隔开：</div>
+										<input type="text" class="addbiaoxlik" name="valueEM" />
 									</div>
 									<div class="addbiaoxli">
 										<div class="addbiaoxlit">是否必填：</div>
@@ -805,7 +813,33 @@
 
 	<script type="text/javascript" src="formatField.js"></script>
 	<!-- end: JavaScript -->
-
+<script type="text/javascript">
+	//选择配置枚举值，选中是，则显示这个框，否的话 则不显示这个框
+	$(document).ready(function(){  
+		$('#enumerated1id').change(function(){  
+		var p1=$(this).children('option:selected').text();//这就是selected的值  
+		if(p1=="否"){
+			$("#valueEM1id").css('display','none');
+		}else{
+			$("#valueEM1id").css('display','block');
+		}
+		});  
+		$('#edit_enumerated').change(function(){  
+			var p1=$(this).children('option:selected').text();//这就是selected的值  
+			if(p1=="否"){
+				$("#valueEM2id").css('display','none');
+			}else{
+				$("#valueEM2id").css('display','block');
+			}
+			});
+		var s=$('#edit_enumerated').children('option:selected').text();
+		if(s=="否"){
+			$("#valueEM2id").css('display','none');
+		}else{
+			$("#valueEM2id").css('display','block');
+		}
+		})  
+</script>
 </body>
 
 </html>
