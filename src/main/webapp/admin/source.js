@@ -211,6 +211,7 @@ $("#deleteSourceSubmit").click(function (){
 
 //新增数据源基本信息字段提交按钮，OK
 $("#insertSourceFieldSubmit").click(function (){
+	console.log(insertSourceFieldForm.valueEM.value)
 	$.ajax({
 		url:"/wankangyuan/sourceField/insertSourceField",
 		type:"post",
@@ -225,6 +226,7 @@ $("#insertSourceFieldSubmit").click(function (){
 			description:insertSourceFieldForm.description.value,
 			error_msg:insertSourceFieldForm.error_msg.value,
 			is_view:insertSourceFieldForm.csfield_add_is_view.value,
+			emvalue:insertSourceFieldForm.valueEM.value,//将新增的枚举值放到调的接口中
 			uid:'1'
 		},
 		success : function(data){
@@ -234,6 +236,7 @@ $("#insertSourceFieldSubmit").click(function (){
 				insertSourceFieldForm.check_rule.value="";
 				insertSourceFieldForm.description.value="";
 				insertSourceFieldForm.error_msg.value="";
+				insertSourceFieldForm.valueEM.value="";//同上，将这个数据清空
 				huoqu();
 			}else{
 				alert(data.message);
@@ -262,6 +265,7 @@ $("#updateSourceFieldSubmit").click(function (){
 			description:updateSourceFieldForm.edit_description.value,
 			error_msg:updateSourceFieldForm.edit_error_msg.value,
 			is_view:updateSourceFieldForm.csfield_edit_is_view.value,
+			emvalue:insertSourceFieldForm.valueEM.value,//将新增的枚举值放到调的接口中
 			uid:'1'
 		},
 		success : function(data){

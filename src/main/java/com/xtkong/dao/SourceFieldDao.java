@@ -11,14 +11,14 @@ import org.apache.ibatis.annotations.Update;
 import com.xtkong.model.SourceField;
 
 public interface SourceFieldDao {
-	@Insert("insert into collection_source_field(csf_name,cs_id,type,check_rule,enumerated,not_null,description,error_msg,create_datetime,create_uid,update_datetime,update_uid,is_view) "
-			+ "values(#{csf_name},#{cs_id},#{type},#{check_rule},#{enumerated},#{not_null},#{description},#{error_msg},#{create_datetime},#{create_uid},#{update_datetime},#{update_uid},#{is_view})")
+	@Insert("insert into collection_source_field(csf_name,cs_id,type,check_rule,enumerated,not_null,description,error_msg,create_datetime,create_uid,update_datetime,update_uid,is_view,emvalue) "
+			+ "values(#{csf_name},#{cs_id},#{type},#{check_rule},#{enumerated},#{not_null},#{description},#{error_msg},#{create_datetime},#{create_uid},#{update_datetime},#{update_uid},#{is_view},#{emvalue})")
 	public int insertSourceField(SourceField sourceField);
 
 	@Update("update collection_source_field " + "set csf_name=#{csf_name} , type=#{type} , check_rule=#{check_rule},"
 			+ " enumerated=#{enumerated}, not_null=#{not_null}, description=#{description},"
 			+ "error_msg=#{error_msg},update_datetime=#{update_datetime},update_uid=#{update_uid},"
-			+ "is_view=#{is_view}  " + "where csf_id=#{csf_id}")
+			+ "is_view=#{is_view},emvalue=#{emvalue}  " + "where csf_id=#{csf_id}")
 	public int updateSourceField(SourceField sourceField);
 
 	/**

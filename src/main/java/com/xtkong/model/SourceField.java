@@ -22,8 +22,17 @@ public class SourceField {
 
 	private String creator=""; // 创建人
 	private String updater=""; // 更新人
+	
+	private String emvalue;//枚举值
 
 
+	public String getEmvalue() {
+		return emvalue;
+	}
+
+	public void setEmvalue(String emvalue) {
+		this.emvalue = emvalue;
+	}
 
 	public boolean isIs_view() {
 		return is_view;
