@@ -47,6 +47,7 @@ public class SourceDataController {
 		private List<String> qualifiers;
 		private Map<String, String> conditionEqual;
 		private Map<String, String> conditionLike;
+		private Source source;
 
 		public String getSql() {
 			return sql;
@@ -78,6 +79,14 @@ public class SourceDataController {
 
 		public void setConditionLike(Map<String, String> conditionLike) {
 			this.conditionLike = conditionLike;
+		}
+
+		public Source getSource() {
+			return source;
+		}
+
+		public void setSource(Source source) {
+			this.source = source;
 		}
 	}
 
@@ -270,6 +279,7 @@ public class SourceDataController {
 		result.setQualifiers(qualifiers);
 		result.setConditionEqual(conditionEqual);
 		result.setConditionLike(conditionLike);
+		result.setSource(source);
 
 		return result;
 	}
@@ -327,8 +337,8 @@ public class SourceDataController {
 				oldCondition = null;
 			}
 
-			source = sourceService.getSourceByCs_id(cs_id);// 选取管理源
-			source.setSourceFields(sourceFieldService.getSourceFields(cs_id));
+			//source = sourceService.getSourceByCs_id(cs_id);// 选取管理源
+			//source.setSourceFields(sourceFieldService.getSourceFields(cs_id));
 			/*
 			 * 1，先判断cs_id是否有值
 			 * 		1.1有值的情况直接将值存到session中就行，到其他页面来获取
@@ -337,6 +347,14 @@ public class SourceDataController {
 			 * 			1.2.2没值的话   则不设置
 			 * 
 			 */
+
+			String tableName = ConstantsHBase.TABLE_PREFIX_SOURCE_ + cs_id;// 表名
+			Map<String, Map<String, Object>> result = new HashMap<>();
+
+			SourceDataSQLInfo sourceDataSQLInfo=getSourceDataSQL(cs_id,user,type,searchFirstWord,oldCondition,fieldIds,p_id,searchId,chooseDatas,likeSearch,searchWord,false);
+			source=sourceDataSQLInfo.getSource();
+
+			//不知道这代码什么意思,暂时放在这
 			if(cs_id!=0) {
 				source.setCs_id(cs_id);
 			}else {
@@ -345,11 +363,6 @@ public class SourceDataController {
 					source.setCs_id(attribute.getCs_id());
 				}
 			}
-
-			String tableName = ConstantsHBase.TABLE_PREFIX_SOURCE_ + cs_id;// 表名
-			Map<String, Map<String, Object>> result = new HashMap<>();
-
-			SourceDataSQLInfo sourceDataSQLInfo=getSourceDataSQL(cs_id,user,type,searchFirstWord,oldCondition,fieldIds,p_id,searchId,chooseDatas,likeSearch,searchWord,false);
 
 			String phoenixSQL=sourceDataSQLInfo.getSql();
 			logger.info(phoenixSQL);
