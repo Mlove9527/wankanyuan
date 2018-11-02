@@ -178,6 +178,7 @@
 								<div class="PJK2litop">
 									<a href="#" >
 										<div class="PJK2litopT PJliCli_1">
+										${source.sourceFields[status.index-1].csf_name} : 
 										 <span>${sourceDataField}</span>
 										</div>
 									</a>
