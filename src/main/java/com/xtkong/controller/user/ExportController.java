@@ -62,9 +62,10 @@ public class ExportController {
 
 		// 3.在workbook中添加一个sheet，对应Excel中的一个sheet
 
+		HSSFSheet sheet1 = workbook.createSheet("字段描述");
+		sheet1=sheetSourceDataForm1(sheet1,style,cs_id);
 		HSSFSheet sheet = workbook.createSheet("源数据模版");
 		sheet = sheetSourceDataForm(sheet, style, cs_id);
-
 		try {
 			OutputStream output = response.getOutputStream();
 			workbook.write(output);
@@ -289,6 +290,73 @@ public class ExportController {
 			cell = row.createCell((i));
 			cell.setCellValue(source.getSourceFields().get(i).getCsf_name());
 		}
+		return sheet;
+	}
+	/*
+	 * 这个1是测试生产的excel中对字段的描述信息
+	 */
+	private HSSFSheet sheetSourceDataForm1(HSSFSheet sheet, HSSFCellStyle style, Integer cs_id) {
+		
+		Source source = sourceService.getSourceByCs_id(cs_id);
+		source.setSourceFields(sourceFieldService.getSourceFields(cs_id));
+		
+		
+		for(int a=0;a<=source.getSourceFields().size();a++) {
+			// 4.在sheet中添加表头第0行，老版本poi对excel行数列数有限制short
+			HSSFRow row = sheet.createRow((short)a);
+			
+//			HSSFCell createCell = row.createCell(0);
+//			createCell.setCellValue(source.getSourceFields().get(a).getCsf_name());
+//			HSSFCell createCell = row.createCell(1);
+			
+			for (int i = 0; i < 6; i++) {
+				// 设置表头
+				HSSFCell cell = row.createCell(i);
+				if(i==0) {
+					if(a==0) {
+						cell.setCellValue("字段名");
+					}else {
+						cell.setCellValue(source.getSourceFields().get(a-1).getCsf_name());
+					}
+				}else if(i==1) {
+					if(a==0) {
+						cell.setCellValue("描述信息");
+					}else {
+						
+						cell.setCellValue(source.getSourceFields().get(a-1).getDescription());
+					}
+				}else if(i==2){
+					if(a==0) {
+						cell.setCellValue("类型");
+					}else {
+						
+						cell.setCellValue(source.getSourceFields().get(a-1).getType());
+					}
+				}else if(i==3) {
+					if(a==0) {
+						cell.setCellValue("校验规则");
+					}else {
+						
+						cell.setCellValue(source.getSourceFields().get(a-1).getCheck_rule());
+					}
+				}else if(i==4) {
+					if(a==0) {
+						cell.setCellValue("是否枚举");
+					}else {
+						
+						cell.setCellValue(source.getSourceFields().get(a-1).isEnumerated());
+					}
+				}else if(i==5) {
+					if(a==0) {
+						cell.setCellValue("错误提示信息");
+					}else {
+						
+						cell.setCellValue(source.getSourceFields().get(a-1).getError_msg());
+					}
+				}
+			}
+		}
+		
 		return sheet;
 	}
 

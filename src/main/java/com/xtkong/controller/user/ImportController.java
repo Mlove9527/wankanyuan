@@ -72,7 +72,7 @@ public class ImportController {
 			}
 
 			HSSFWorkbook hssfWorkbook = new HSSFWorkbook(file.getInputStream());
-			HSSFSheet sheetAt = hssfWorkbook.getSheetAt(0);
+			HSSFSheet sheetAt = hssfWorkbook.getSheetAt(1);
 			HSSFCell cell = null;
 			HSSFRow row = null;
 
