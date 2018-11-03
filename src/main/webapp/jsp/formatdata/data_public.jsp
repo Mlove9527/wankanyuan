@@ -542,7 +542,6 @@
          	var chooseDatas = "${chooseDatas}";
          	var likeSearch = "${likeSearch}";
          	
-         	alert(idQuanXuan=="true");
          	if(idQuanXuan=="true"){
          		$.ajax({
         			url:"/wankangyuan/sourceData/addSourceDataAll",
