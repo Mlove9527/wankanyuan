@@ -3,15 +3,20 @@ package com.xtkong.service;
 import java.util.List;
 
 import com.liutianjun.pojo.UserDataRelation;
+
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.xtkong.controller.user.SourceDataController;
 import com.xtkong.dao.UserDataDao;
 import com.xtkong.model.UserData;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserDataService {
+	private static final Logger logger  =  Logger.getLogger(UserDataService.class );
+	
 	@Autowired
 	UserDataDao userDataDao;
 
@@ -23,7 +28,14 @@ public class UserDataService {
 	public void insertBatch(List<UserDataRelation> entities) {
 		for(UserDataRelation entity : entities)
 		{
-			userDataDao.insert(entity.getUid(), entity.getDataId(), entity.getCs_id());
+			try
+			{
+				userDataDao.insert(entity.getUid(), entity.getDataId(), entity.getCs_id());
+			}
+			catch(Exception e)
+			{
+				logger.warn("Insert fail: "+entity.getDataId()+" "+e.getMessage()+"");
+			}
 		}
 	}
 

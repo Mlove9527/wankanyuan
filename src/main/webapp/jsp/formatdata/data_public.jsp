@@ -533,10 +533,46 @@
                   }
              }
     		
-            
-         
-            	var cs_id = $("#source_Select").val();
-            	$.ajax({
+            var cs_id=$('#source_Select').val();//采集源id
+         	var searchId="${searchId}";//操作字段id
+         	var searchWord=$(".BTSXcliGLK").val();//过滤条件
+         	var desc_asc="${desc_asc}";//排序
+         	var oldCondition=$("#oldCondition").html();//累加筛选条件
+         	var searchFirstWord = $(".searchCt").val();
+         	var chooseDatas = "${chooseDatas}";
+         	var likeSearch = "${likeSearch}";
+         	
+         	alert(idQuanXuan=="true");
+         	if(idQuanXuan=="true"){
+         		$.ajax({
+        			url:"/wankangyuan/sourceData/addSourceDataAll",
+        			type:"post",
+        			data:{
+        				cs_id:cs_id,
+                		ids:ids3,
+                		isAll:idQuanXuan,
+                		type:"3",
+                		searchId:searchId,
+                		searchWord:searchWord,
+                		desc_asc:desc_asc,
+                		oldCondition:oldCondition,
+                		searchFirstWord:searchFirstWord,
+                		chooseDatas:chooseDatas,
+                		likeSearch:likeSearch
+        			},
+        			success : function(data){
+        				alert(data.message);
+        				cs_id = $("#source_Select").val();
+        		    	window.location.href="/wankangyuan/sourceData/getSourceDatas?type=3&cs_id="+cs_id+"&searchId="+
+        				searchId+"&desc_asc="+desc_asc+"&searchWord="+searchWord+"&chooseDatas="+chooseDatas+"&oldCondition="+oldCondition+"&page="+page+"&strip=${rows}";
+        			},
+        			error : function(){
+        				alert("网络异常，请稍后重试！");
+        			}
+        			
+        		});
+         	}else{
+         		$.ajax({
         			url:"/wankangyuan/sourceData/addMySource",
         			type:"post",
         			data:{
@@ -555,6 +591,7 @@
         			}
         			
         		});
+         	}
         
     	});
     	
