@@ -431,6 +431,8 @@ public class SourceDataController {
 			httpSession.setAttribute("oldCondition", oldCondition);
 			httpSession.setAttribute("oldSourceType", type);
 			httpSession.setAttribute("searchFirstWord", searchFirstWord);
+			httpSession.setAttribute("chooseDatas", chooseDatas);
+			httpSession.setAttribute("likeSearch", likeSearch);
 
 		}
 		httpSession.setAttribute("allids", ids);
@@ -1051,16 +1053,46 @@ public class SourceDataController {
 	 */
 	@RequestMapping("/open")
 	@ResponseBody
-	public Map<String, Object> open(String cs_id, String sourceDataIds, String ids, boolean isAll) {
+	public Map<String, Object> open(HttpServletRequest request,String cs_id, String ids, boolean isAll,
+    		String searchId, String searchWord,String desc_asc,String oldCondition,
+            String searchFirstWord,String chooseDatas,String likeSearch) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (isAll == true) {
-			String idss = ids.substring(1, ids.length()).replaceAll("check", "");
-			String[] ids1 = idss.split(",");
-			for (int i = 0; i < ids1.length; i++) {
-				sourceDataIds = sourceDataIds.replaceAll(ids1[i] + ",", "");
-			}
+			
+			User user = (User) request.getAttribute("user");
+			Integer uid = user.getId();
+			String tableName = ConstantsHBase.TABLE_PREFIX_SOURCE_ + cs_id;
 
-			if (HBaseSourceDataDao.open(cs_id, sourceDataIds)) {
+			Integer csId = cs_id.equals("")?null:Integer.valueOf(cs_id);
+			Integer searchIdInt = searchId.equals("")?null:Integer.valueOf(searchId);
+			SourceDataSQLInfo sourceDataSQLInfo=getSourceDataSQL(csId,user,"2",searchFirstWord,oldCondition,null,null,searchIdInt,chooseDatas,likeSearch,searchWord,true);
+
+			Map<String, Map<String, Object>> result = PhoenixClient.select(sourceDataSQLInfo.getSql());
+
+			List<List<String>> sourceDatas = null;
+			String resultMsg;
+			for (int j = 0; j < 6; j++) {
+				resultMsg = String.valueOf((result.get("msg")).get("msg"));
+				if (resultMsg.equals("success")) {
+					sourceDatas = (List<List<String>>) result.get("records").get("data");
+					break;
+				} else {
+					PhoenixClient.undefined(resultMsg, tableName, sourceDataSQLInfo.getQualifiers(), sourceDataSQLInfo.getConditionEqual(), sourceDataSQLInfo.getConditionLike());
+					result = PhoenixClient.select(sourceDataSQLInfo.getSql());
+				}
+			}
+            
+			String idsStr = "";
+			if(sourceDatas!=null)
+			{
+				for (List<String> record : sourceDatas)
+				{
+					String idTemp = record.get(0);
+					idsStr=idsStr+idTemp+",";
+				}
+				idsStr = idsStr.substring(0, idsStr.length()-1);
+			}
+			if (HBaseSourceDataDao.open(cs_id, idsStr)) {
 				map.put("result", true);
 				map.put("message", "公开成功");
 			} else {
@@ -1093,15 +1125,45 @@ public class SourceDataController {
 	 */
 	@RequestMapping("/notOpen")
 	@ResponseBody
-	public Map<String, Object> notOpen(String cs_id, String sourceDataIds, String ids, boolean isAll) {
+	public Map<String, Object> notOpen(HttpServletRequest request,String cs_id, String ids, boolean isAll,
+    		String searchId, String searchWord,String desc_asc,String oldCondition,
+            String searchFirstWord,String chooseDatas,String likeSearch) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (isAll == true) {
-			String idss = ids.substring(1, ids.length()).replaceAll("check", "");
-			String[] ids1 = idss.split(",");
-			for (int i = 0; i < ids1.length; i++) {
-				sourceDataIds = sourceDataIds.replaceAll(ids1[i] + ",", "");
+			User user = (User) request.getAttribute("user");
+			Integer uid = user.getId();
+			String tableName = ConstantsHBase.TABLE_PREFIX_SOURCE_ + cs_id;
+
+			Integer csId = cs_id.equals("")?null:Integer.valueOf(cs_id);
+			Integer searchIdInt = searchId.equals("")?null:Integer.valueOf(searchId);
+			SourceDataSQLInfo sourceDataSQLInfo=getSourceDataSQL(csId,user,"2",searchFirstWord,oldCondition,null,null,searchIdInt,chooseDatas,likeSearch,searchWord,true);
+
+			Map<String, Map<String, Object>> result = PhoenixClient.select(sourceDataSQLInfo.getSql());
+
+			List<List<String>> sourceDatas = null;
+			String resultMsg;
+			for (int j = 0; j < 6; j++) {
+				resultMsg = String.valueOf((result.get("msg")).get("msg"));
+				if (resultMsg.equals("success")) {
+					sourceDatas = (List<List<String>>) result.get("records").get("data");
+					break;
+				} else {
+					PhoenixClient.undefined(resultMsg, tableName, sourceDataSQLInfo.getQualifiers(), sourceDataSQLInfo.getConditionEqual(), sourceDataSQLInfo.getConditionLike());
+					result = PhoenixClient.select(sourceDataSQLInfo.getSql());
+				}
 			}
-			if (HBaseSourceDataDao.notopen(cs_id, sourceDataIds)) {
+            
+			String idsStr = "";
+			if(sourceDatas!=null)
+			{
+				for (List<String> record : sourceDatas)
+				{
+					String idTemp = record.get(0);
+					idsStr=idsStr+idTemp+",";
+				}
+				idsStr = idsStr.substring(0, idsStr.length()-1);
+			}
+			if (HBaseSourceDataDao.notopen(cs_id, idsStr)) {
 				map.put("result", true);
 				map.put("message", "取消公开成功");
 			} else {

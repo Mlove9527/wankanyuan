@@ -329,6 +329,7 @@
 	<script type="text/javascript">
 	
 	$(function(){
+		
 		var oquanxuanK=document.querySelectorAll('.quanxuanK')[0];//获取页面中全选框的外部div
 		var oinput_check=oquanxuanK.querySelectorAll('.input_check')[0];//获取上方div内的全选按钮checkbox
 		var oisAll=document.querySelectorAll('#isAll2')[0];//获取隐藏域_存储是否全选的
@@ -442,6 +443,10 @@
 	var oldCondition=$("#oldCondition").html();//累加筛选条件
 	var page="${page}";//页码
 	var searchFirstWord = $(".searchCt").val();
+	var chooseDatas="${chooseDatas}";//筛选框选择数据
+	
+	 
+	
 	//更换采集源，刷新页面
 	$("#source_Select").change(function(){
 		cs_id = $("#source_Select").val();
@@ -648,16 +653,29 @@
                    }
               }
             
-           
-            var cs_id = $("#source_Select").val();
-            
+          	var cs_id=$('#source_Select').val();//采集源id
+        	var searchId="${searchId}";//操作字段id
+        	var searchWord=$(".BTSXcliGLK").val();//过滤条件
+        	var desc_asc="${desc_asc}";//排序
+        	var oldCondition=$("#oldCondition").html();//累加筛选条件
+        	var searchFirstWord = $(".searchCt").val();
+        	var chooseDatas = "${chooseDatas}";
+        	var likeSearch = "${likeSearch}";
+        	
     		$.ajax({
     			url:"/wankangyuan/sourceData/open",
     			type:"post",
     			data:{
-    				isAll:idQuanXuan,
+    				cs_id:cs_id,
             		ids:ids3,
-            		cs_id:cs_id
+            		isAll:idQuanXuan,
+            		searchId:searchId,
+            		searchWord:searchWord,
+            		desc_asc:desc_asc,
+            		oldCondition:oldCondition,
+            		searchFirstWord:searchFirstWord,
+            		chooseDatas:chooseDatas,
+            		likeSearch:likeSearch
     			},
     			success : function(data){
     				alert(data.message);
@@ -694,15 +712,29 @@
             }
             
            
-            var cs_id = $("#source_Select").val();
+            var cs_id=$('#source_Select').val();//采集源id
+        	var searchId="${searchId}";//操作字段id
+        	var searchWord=$(".BTSXcliGLK").val();//过滤条件
+        	var desc_asc="${desc_asc}";//排序
+        	var oldCondition=$("#oldCondition").html();//累加筛选条件
+        	var searchFirstWord = $(".searchCt").val();
+        	var chooseDatas = "${chooseDatas}";
+        	var likeSearch = "${likeSearch}";
             
     		$.ajax({
     			url:"/wankangyuan/sourceData/notOpen",
     			type:"post",
     			data:{
-    				isAll:idQuanXuan,
+    				cs_id:cs_id,
             		ids:ids3,
-            		cs_id:cs_id
+            		isAll:idQuanXuan,
+            		searchId:searchId,
+            		searchWord:searchWord,
+            		desc_asc:desc_asc,
+            		oldCondition:oldCondition,
+            		searchFirstWord:searchFirstWord,
+            		chooseDatas:chooseDatas,
+            		likeSearch:likeSearch
     			},
     			success : function(data){
     				alert(data.message);
