@@ -594,6 +594,15 @@
                 
                 var idQuanXuan= $(" #isAll2").val();
                 var ids3=$(" #ids2").val();
+                
+                var cs_id=$('#source_Select').val();//采集源id
+            	var searchId="${searchId}";//操作字段id
+            	var searchWord=$(".BTSXcliGLK").val();//过滤条件
+            	var desc_asc="${desc_asc}";//排序
+            	var oldCondition=$("#oldCondition").html();//累加筛选条件
+            	var searchFirstWord = $(".searchCt").val();
+            	var chooseDatas = "${chooseDatas}";
+            	var likeSearch = "${likeSearch}";
                
                 if(idQuanXuan =="false"){
                 	 if(ids3 == ""){
@@ -605,15 +614,21 @@
                 
                 var result = confirm("确认删除选中的数据源数据吗？");
         		if(result == true){
-        			var cs_id = $("#source_Select").val();
                     $.ajax({
                     	url:"/wankangyuan/sourceData/deleteSourceDatas",
                     	type:"post",
                     	data:{
-                    		
-                    		isAll:idQuanXuan,
+                    		type:2,
+                    		cs_id:cs_id,
                     		ids:ids3,
-                    		cs_id:cs_id
+                    		isAll:idQuanXuan,
+                    		searchId:searchId,
+                    		searchWord:searchWord,
+                    		desc_asc:desc_asc,
+                    		oldCondition:oldCondition,
+                    		searchFirstWord:searchFirstWord,
+                    		chooseDatas:chooseDatas,
+                    		likeSearch:likeSearch
                     	},
                     	dataType:"json",
                     	success : function(data){
