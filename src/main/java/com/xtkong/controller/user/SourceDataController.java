@@ -114,7 +114,7 @@ public class SourceDataController {
 				null, null, null, false);
 	}
 
-	private SourceDataSQLInfo getSourceDataSQL(Integer cs_id,
+	public SourceDataSQLInfo getSourceDataSQL(Integer cs_id,
 											   User user,
 											   String type,
 											   String searchFirstWord,

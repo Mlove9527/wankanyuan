@@ -770,9 +770,15 @@
     	});
     	//批量导出
     	$(".pro_export").click(function (){
-    		var cs_id = $("#source_Select").val();
-    		
-    		alert(cs_id);
+    		var cs_id=$('#source_Select').val();//采集源id
+         	var searchId="${searchId}";//操作字段id
+         	var searchWord=$(".BTSXcliGLK").val();//过滤条件
+         	var desc_asc="${desc_asc}";//排序
+         	var oldCondition=$("#oldCondition").html();//累加筛选条件
+         	var searchFirstWord = $(".searchCt").val();
+         	var chooseDatas = "${chooseDatas}";
+         	var likeSearch = "${likeSearch}";
+             
     		var idQuanXuan= $("#isAll2").val();
             var ids3=$("#ids2").val();
            
@@ -800,7 +806,10 @@
             	alert("请勾选源数据！");
             	return;
             } */
-            window.location.href="/wankangyuan/export/sourceData?cs_id="+cs_id+"&isAll="+ idQuanXuan+"&ids="+ids3;
+            var param = "type=1&cs_id="+cs_id+"&ids="+ids3+"&isAll="+idQuanXuan+"&searchId="+searchId
+            +"&searchWord="+searchWord+"&desc_asc="+desc_asc+"&oldCondition="+oldCondition+"&searchFirstWord="
+            +searchFirstWord+"&chooseDatas="+chooseDatas+"&likeSearch="+likeSearch;
+            window.location.href="/wankangyuan/export/sourceData?"+param;
             
     	});
     	//批量导入
