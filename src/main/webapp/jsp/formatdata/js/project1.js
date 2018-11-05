@@ -1304,21 +1304,70 @@ function data_create(){
         				for(var index in sourceFields){
         					//先判断是否是必填
         					if(sourceFields[index].not_null==true){
-        						if(sourceFields[index].type=="字符"){
-        							adddataM.append('<tr>'+
-                               				'<td><div class="adddataMlit">'+sourceFields[index].csf_name+'<span style="color:red">*</span>:</div></td>'+
-                                			'<td><input type="text" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" /></td>'+
-                            			'</tr>');
+        						if(sourceFields[index].type=="字符"){//再判断类型
+        							if(sourceFields[index].emvalue!=null&&sourceFields[index].emvalue!=""){//其次判断是否有枚举值，有的话，则select，没的话则直接input
+        								var emvalue=sourceFields[index].emvalue;
+        								ss=emvalue.split(",");
+        								counts=ss.length;
+        								var id=sourceFields[index].csf_id;
+        								 var i;
+        								html = '<option value="0">请选择</option>';
+        								 for (i=1;i <= counts; i++) {
+        								 html += '<option value="'+ss[i-1]+'">'+ss[i-1]+'</option>';
+        								 }
+        								adddataM.append('<tr>'+
+        										'<td><div class="adddataMlit">'+sourceFields[index].csf_name+'<span style="color:red">*</span>:</div></td>'+
+        										'<td><select id="'+sourceFields[index].csf_id +'" class="adddataMliTT adddataMliT">'+html +'</select></td>'+'' +
+        								'</tr>');
+        							}else{
+        								
+        								adddataM.append('<tr>'+
+        										'<td><div class="adddataMlit">'+sourceFields[index].csf_name+'<span style="color:red">*</span>:</div></td>'+
+        										'<td><input type="text" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" /></td>'+
+        								'</tr>');
+        							}
             					}else if(sourceFields[index].type=="数值"){
+            						if(sourceFields[index].emvalue!=null&&sourceFields[index].emvalue!=""){//其次判断是否有枚举值，有的话，则select，没的话则直接input
+        								var emvalue=sourceFields[index].emvalue;
+        								ss=emvalue.split(",");
+        								counts=ss.length;
+        								var id=sourceFields[index].csf_id;
+        								 var i;
+        								html = '<option value="0">请选择</option>';
+        								 for (i=1;i <= counts; i++) {
+        								 html += '<option value="'+ss[i-1]+'">'+ss[i-1]+'</option>';
+        								 }
+        								adddataM.append('<tr>'+
+        										'<td><div class="adddataMlit">'+sourceFields[index].csf_name+'<span style="color:red">*</span>:</div></td>'+
+        										'<td><select id="'+sourceFields[index].csf_id +'" class="adddataMliTT adddataMliT">'+html +'</select></td>'+'' +
+        								'</tr>');
+        							}else{
             						adddataM.append('<tr>'+
                                				'<td><div class="adddataMlit">'+sourceFields[index].csf_name+'<span style="color:red">*</span>:</div></td>'+
                                 			'<td><input type="number" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" /></td>'+
                             			'</tr>');
+        							}
             					}else if(sourceFields[index].type=="日期"){
-            						adddataM.append('<tr>'+
-                               				'<td><div class="adddataMlit">'+sourceFields[index].csf_name+'<span style="color:red">*</span>:</div></td>'+
-                                			'<td><input type="date" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" /></td>'+
-                            			'</tr>');
+            						if(sourceFields[index].emvalue!=null&&sourceFields[index].emvalue!=""){//其次判断是否有枚举值，有的话，则select，没的话则直接input
+        								var emvalue=sourceFields[index].emvalue;
+        								ss=emvalue.split(",");
+        								counts=ss.length;
+        								var id=sourceFields[index].csf_id;
+        								 var i;
+        								html = '<option value="0">请选择</option>';
+        								 for (i=1;i <= counts; i++) {
+        								 html += '<option value="'+ss[i-1]+'">'+ss[i-1]+'</option>';
+        								 }
+        								adddataM.append('<tr>'+
+        										'<td><div class="adddataMlit">'+sourceFields[index].csf_name+'<span style="color:red">*</span>:</div></td>'+
+        										'<td><select id="'+sourceFields[index].csf_id +'" class="adddataMliTT adddataMliT">'+html +'</select></td>'+'' +
+        								'</tr>');
+        							}else{
+	            						adddataM.append('<tr>'+
+	                               				'<td><div class="adddataMlit">'+sourceFields[index].csf_name+'<span style="color:red">*</span>:</div></td>'+
+	                                			'<td><input type="date" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" /></td>'+
+	                            			'</tr>');
+        							}
             					}else if(sourceFields[index].type=="图片"){
             						adddataM.append('<tr>'+
                                				'<td><div class="adddataMlit">'+sourceFields[index].csf_name+'<span style="color:red">*</span>:</div></td>'+
@@ -1332,20 +1381,68 @@ function data_create(){
             					}
         					}else{
         						if(sourceFields[index].type=="字符"){
+        							if(sourceFields[index].emvalue!=null&&sourceFields[index].emvalue!=""){//其次判断是否有枚举值，有的话，则select，没的话则直接input
+        								var emvalue=sourceFields[index].emvalue;
+        								ss=emvalue.split(",");
+        								counts=ss.length;
+        								var id=sourceFields[index].csf_id;
+        								 var i;
+        								html = '<option value="0">请选择</option>';
+        								 for (i=1;i <= counts; i++) {
+        								 html += '<option value="'+ss[i-1]+'">'+ss[i-1]+'</option>';
+        								 }
+        								adddataM.append('<tr>'+
+        										'<td><div class="adddataMlit">'+sourceFields[index].csf_name+'<span style="color:red">*</span>:</div></td>'+
+        										'<td><select id="'+sourceFields[index].csf_id +'" class="adddataMliTT adddataMliT">'+html +'</select></td>'+'' +
+        								'</tr>');
+        							}else{
         							adddataM.append('<tr>'+
                                				'<td><div class="adddataMlit">'+sourceFields[index].csf_name+':</div></td>'+
                                 			'<td><input type="text" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" /></td>'+
                             			'</tr>');
+        							}
             					}else if(sourceFields[index].type=="数值"){
+            						if(sourceFields[index].emvalue!=null&&sourceFields[index].emvalue!=""){//其次判断是否有枚举值，有的话，则select，没的话则直接input
+        								var emvalue=sourceFields[index].emvalue;
+        								ss=emvalue.split(",");
+        								counts=ss.length;
+        								var id=sourceFields[index].csf_id;
+        								 var i;
+        								html = '<option value="0">请选择</option>';
+        								 for (i=1;i <= counts; i++) {
+        								 html += '<option value="'+ss[i-1]+'">'+ss[i-1]+'</option>';
+        								 }
+        								adddataM.append('<tr>'+
+        										'<td><div class="adddataMlit">'+sourceFields[index].csf_name+'<span style="color:red">*</span>:</div></td>'+
+        										'<td><select id="'+sourceFields[index].csf_id +'" class="adddataMliTT adddataMliT">'+html +'</select></td>'+'' +
+        								'</tr>');
+        							}else{
             						adddataM.append('<tr>'+
                                				'<td><div class="adddataMlit">'+sourceFields[index].csf_name+':</div></td>'+
                                 			'<td><input type="number" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" /></td>'+
                             			'</tr>');
+        							}
             					}else if(sourceFields[index].type=="日期"){
+            						if(sourceFields[index].emvalue!=null&&sourceFields[index].emvalue!=""){//其次判断是否有枚举值，有的话，则select，没的话则直接input
+        								var emvalue=sourceFields[index].emvalue;
+        								ss=emvalue.split(",");
+        								counts=ss.length;
+        								var id=sourceFields[index].csf_id;
+        								 var i;
+        								html = '<option value="0">请选择</option>';
+        								 for (i=1;i <= counts; i++) {
+        								 html += '<option value="'+ss[i-1]+'">'+ss[i-1]+'</option>';
+        								 }
+        								adddataM.append('<tr>'+
+        										'<td><div class="adddataMlit">'+sourceFields[index].csf_name+'<span style="color:red">*</span>:</div></td>'+
+        										'<td><select id="'+sourceFields[index].csf_id +'" class="adddataMliTT adddataMliT">'+html +'</select></td>'+'' +
+        								'</tr>');
+        							}else{
             						adddataM.append('<tr>'+
                                				'<td><div class="adddataMlit">'+sourceFields[index].csf_name+':</div></td>'+
                                 			'<td><input type="date" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" /></td>'+
                             			'</tr>');
+        							}
             					}else if(sourceFields[index].type=="图片"){
             						adddataM.append('<tr>'+
                                				'<td><div class="adddataMlit">'+sourceFields[index].csf_name+':</div></td>'+
