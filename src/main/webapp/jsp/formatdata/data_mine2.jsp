@@ -331,7 +331,7 @@
 	var searchFirstWord=$(".searchCt").val();
 	$("#source_Select").change(function(){
 		cs_id = $("#source_Select").val();
-			window.location.href="/wankangyuan/sourceData/getSourceDatas?type=1&cs_id="+cs_id+"&ids="+$("#ids2").val()+"&isAll="+$("#isAll2").val();
+			window.location.href="/wankangyuan/sourceData/getSourceDatas?block=2&type=1&cs_id="+cs_id+"&ids="+$("#ids2").val()+"&isAll="+$("#isAll2").val();
 	
 	});
 
@@ -342,14 +342,14 @@
 	function searchFirst(){
 		reset();
 		searchFirstWord=$(".searchCt").val();
-		window.location.href="/wankangyuan/sourceData/getSourceDatas?type=1&cs_id="
+		window.location.href="/wankangyuan/sourceData/getSourceDatas?block=2&type=1&cs_id="
 				+cs_id+"&searchFirstWord="+searchFirstWord+"&ids="+$("#ids2").val()+"&isAll="+$("#isAll2").val();
 	}
     $(".searchCt").bind("keypress" , function(event){
     	searchFirstWord=this.value;
 		if(event.keyCode == 13){
 			reset();
-			window.location.href="/wankangyuan/sourceData/getSourceDatas?type=1&cs_id="
+			window.location.href="/wankangyuan/sourceData/getSourceDatas?block=2&type=1&cs_id="
 					+cs_id+"&searchFirstWord="+this.value+"&ids="+$("#ids2").val()+"&isAll="+$("#isAll2").val();
 			
 		}
@@ -413,7 +413,7 @@
 	
 	function updown(sc){
 		desc_asc=sc;
-	    window.location.href="/wankangyuan/sourceData/getSourceDatas?type=1&cs_id="+cs_id+"&searchId="+searchId+
+	    window.location.href="/wankangyuan/sourceData/getSourceDatas?block=2&type=1&cs_id="+cs_id+"&searchId="+searchId+
 	    		"&desc_asc="+desc_asc+"&searchWord="+searchWord+"&oldCondition="+oldCondition+"&ids="+$("#ids2").val()+"&isAll="+$("#isAll2").val();
 	}
 
@@ -449,7 +449,7 @@
         	}
         }
         var chooseDatas=chooseDatasArr.join(",");
-    	window.location.href="/wankangyuan/sourceData/getSourceDatas?type=1&cs_id="+cs_id+"&searchId="+
+    	window.location.href="/wankangyuan/sourceData/getSourceDatas?block=2&type=1&cs_id="+cs_id+"&searchId="+
 		searchId+"&desc_asc="+desc_asc+"&likeSearch="+likeSearch
 		+"&searchWord="+searchWord+"&chooseDatas="+chooseDatas+"&oldCondition="+oldCondition+"&ids="+$("#ids2").val()+"&isAll="+$("#isAll2").val();
 	}
@@ -498,7 +498,7 @@
             	success : function(data){
             		if(data.result == true){
             			alert(data.message);
-            			 window.location.href="/wankangyuan/sourceData/getSourceDatas?type=1&cs_id="+cs_id+"&searchId="+searchId+
+            			 window.location.href="/wankangyuan/sourceData/getSourceDatas?block=2&type=1&cs_id="+cs_id+"&searchId="+searchId+
            	    		"&desc_asc="+desc_asc+"&searchWord="+searchWord+"&oldCondition="+oldCondition+"&page="+page+"&strip=${rows}"+"&ids="+$("#ids2").val()+"&isAll="+$("#isAll2").val();
 
             		}else{
