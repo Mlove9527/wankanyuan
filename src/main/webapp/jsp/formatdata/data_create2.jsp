@@ -543,7 +543,7 @@
                     	success : function(data){
                     		if(data.result == true){
                     			alert(data.message);
-                    			window.location.href="/wankangyuan/sourceData/getSourceDatas?block=2&type=2"
+                    			window.location.href="/wankangyuan/sourceData/getSourceDatas?block=2&type=2&cs_id="+cs_id;
                     		}else{
                     			alert(data.message);
                     		}
