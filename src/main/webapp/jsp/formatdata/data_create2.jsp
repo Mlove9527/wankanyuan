@@ -602,7 +602,7 @@
   			},
   			success : function(data){
   				alert(data.message);
-      			window.location.href=window.location.href="/wankangyuan/sourceData/getSourceDatas?block=2&type=2";
+      			window.location.href=window.location.href="/wankangyuan/sourceData/getSourceDatas?block=2&type=2&cs_id="+cs_id;
   			},
   			error : function(){
   				alert("网络异常，请稍后重试！");
@@ -652,7 +652,7 @@
     			},
     			success : function(data){
     				alert(data.message);
-        			window.location.href=window.location.href="/wankangyuan/sourceData/getSourceDatas?block=2&type=2";
+        			window.location.href=window.location.href="/wankangyuan/sourceData/getSourceDatas?block=2&type=2&cs_id="+cs_id;
     			},
     			error : function(){
     				alert("网络异常，请稍后重试！");
