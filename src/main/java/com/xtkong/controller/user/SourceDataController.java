@@ -18,8 +18,6 @@ import com.dzjin.service.ProjectCustomRoleService;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.liutianjun.pojo.User;
-import com.xtkong.dao.ProjectDataDao;
-import com.xtkong.dao.hbase.HBaseFormatDataDao;
 import com.xtkong.dao.hbase.HBaseFormatNodeDao;
 import com.xtkong.dao.hbase.HBaseSourceDataDao;
 import com.xtkong.model.FormatType;
@@ -108,10 +106,10 @@ public class SourceDataController {
 
 	@RequestMapping("/firstIn")
 	public String firstIn(HttpServletRequest request, HttpSession httpSession, String type, Integer page,
-			Integer strip,Integer cs_id) {
+			Integer strip,Integer cs_id, String block) {
 
 		return getSourceDatas(request, httpSession, type, cs_id, page, strip, null, null, null, null, null, null, null,
-				null, null, null, false);
+				null, null, null, false,block);
 	}
 
 	public SourceDataSQLInfo getSourceDataSQL(Integer cs_id,
@@ -309,7 +307,7 @@ public class SourceDataController {
 	public String getSourceDatas(HttpServletRequest request, HttpSession httpSession, String type, Integer cs_id,
 			Integer page, Integer strip, Integer searchId, String desc_asc, String searchWord, String chooseDatas,
 			String oldCond8ition, Integer p_id, String searchFirstWord, String fieldIds, String likeSearch, String ids,
-			boolean isAll) {
+			boolean isAll, String block) {
 		User user = (User) request.getAttribute("user");
 
 		if (page == null) {
@@ -447,11 +445,29 @@ public class SourceDataController {
 			// projects =
 			// projectCustomRoleService.selectMyProject(user.getId());
 			httpSession.setAttribute("projects", projects);// 项目列表
-			return "redirect:/jsp/formatdata/data_mine.jsp";
+			if(null!=block&&block.equals("2")) {
+				//方块格式
+				return "redirect:/jsp/formatdata/data_mine2.jsp";
+			}else {
+				//列表格式
+				return "redirect:/jsp/formatdata/data_mine.jsp";
+			}
 		case "2":
-			return "redirect:/jsp/formatdata/data_create.jsp";
+			if(null!=block&&block.equals("2")) {
+				//方块格式
+				return "redirect:/jsp/formatdata/data_create2.jsp";
+			}else {
+				//列表格式
+				return "redirect:/jsp/formatdata/data_create.jsp";
+			}
 		case "3":
-			return "redirect:/jsp/formatdata/data_public.jsp";
+			if(null!=block&&block.equals("2")) {
+				//方块格式
+				return "redirect:/jsp/formatdata/data_public2.jsp";
+			}else {
+				//列表格式
+				return "redirect:/jsp/formatdata/data_public.jsp";
+			}
 		case "4":
 			return "redirect:/jsp/project/project_data.jsp";
 		case "5":
