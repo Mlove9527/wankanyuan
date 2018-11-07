@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -37,6 +38,7 @@ import com.xtkong.util.ConstantsHBase;
 @Controller
 @RequestMapping("/export")
 public class ExportController {
+	private static final Logger logger  =  Logger.getLogger(ExportController.class );
 	@Autowired
 	SourceService sourceService;
 	@Autowired
@@ -96,7 +98,7 @@ public class ExportController {
     		String searchId, String searchWord,String desc_asc,String oldCondition,
             String searchFirstWord,String chooseDatas,String likeSearch) {
 		response.setContentType("application/vnd.ms-excel");
-
+		//logger.info("ExportController-sourceData: "+ids);
 		HSSFWorkbook workbook = new HSSFWorkbook();
 		HSSFCellStyle style = workbook.createCellStyle();
 		style.setAlignment(HorizontalAlignment.CENTER);
@@ -109,7 +111,7 @@ public class ExportController {
 
 			Integer csId = cs_id.equals("")?null:Integer.valueOf(cs_id);
 			Integer searchIdInt = searchId.equals("")?null:Integer.valueOf(searchId);
-			SourceDataSQLInfo sourceDataSQLInfo=sourceDataController.getSourceDataSQL(csId,user,"2",searchFirstWord,oldCondition,null,null,searchIdInt,chooseDatas,likeSearch,searchWord,true);
+			SourceDataSQLInfo sourceDataSQLInfo=sourceDataController.getSourceDataSQL(csId,user,"2",searchFirstWord,oldCondition,null,null,searchIdInt,chooseDatas,likeSearch,searchWord,true,ids);
 
 			Map<String, Map<String, Object>> result = PhoenixClient.select(sourceDataSQLInfo.getSql());
 

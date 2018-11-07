@@ -123,7 +123,8 @@ public class SourceDataController {
 											   String chooseDatas,
 											   String likeSearch,
 											   String searchWord,
-											   boolean isOnlySelectPK)
+											   boolean isOnlySelectPK,
+											   String excludeIDs)
 	{
 		SourceDataSQLInfo result=new SourceDataSQLInfo();
 		Source source=sourceService.getSourceByCs_id(cs_id);
@@ -258,6 +259,26 @@ public class SourceDataController {
 				oldCondition = oldCondition.substring(0, oldCondition.lastIndexOf("AND"));
 			}
 		}
+
+		//添加排除ID列表
+		String excludeCondition="ID NOT IN (";
+		if(excludeIDs!=null && !excludeIDs.trim().equals(""))
+		{
+			String[] splitIds=excludeIDs.trim().replaceAll("check", "").split(",");
+			if(splitIds.length>0)
+			{
+				for(String id : splitIds)
+				{
+					excludeCondition+="'"+id.trim()+"',";
+				}
+				//去掉最后的逗号
+				excludeCondition=excludeCondition.substring(0,excludeCondition.length()-1);
+				excludeCondition+=")";
+
+				oldCondition+=" "+excludeCondition;
+			}
+		}
+
 		// if (csfCondition != null&& !csfCondition.trim().isEmpty()) {
 		// condition = oldCondition;
 		// }
@@ -278,7 +299,9 @@ public class SourceDataController {
 		result.setConditionEqual(conditionEqual);
 		result.setConditionLike(conditionLike);
 		result.setSource(source);
-
+		logger.info("---------------"+condition);
+		logger.info("---------------"+oldCondition);
+		logger.info("---------------"+phoenixSQL);
 		return result;
 	}
 
@@ -308,6 +331,7 @@ public class SourceDataController {
 			Integer page, Integer strip, Integer searchId, String desc_asc, String searchWord, String chooseDatas,
 			String oldCond8ition, Integer p_id, String searchFirstWord, String fieldIds, String likeSearch, String ids,
 			boolean isAll, String block) {
+		//logger.info("SourceDataController-getSourceDatas: "+ids);
 		User user = (User) request.getAttribute("user");
 
 		if (page == null) {
@@ -349,7 +373,7 @@ public class SourceDataController {
 			String tableName = ConstantsHBase.TABLE_PREFIX_SOURCE_ + cs_id;// 表名
 			Map<String, Map<String, Object>> result = new HashMap<>();
 
-			SourceDataSQLInfo sourceDataSQLInfo=getSourceDataSQL(cs_id,user,type,searchFirstWord,oldCondition,fieldIds,p_id,searchId,chooseDatas,likeSearch,searchWord,false);
+			SourceDataSQLInfo sourceDataSQLInfo=getSourceDataSQL(cs_id,user,type,searchFirstWord,oldCondition,fieldIds,p_id,searchId,chooseDatas,likeSearch,searchWord,false,null);
 			source=sourceDataSQLInfo.getSource();
 
 			//不知道这代码什么意思,暂时放在这
@@ -363,7 +387,7 @@ public class SourceDataController {
 			}
 
 			String phoenixSQL=sourceDataSQLInfo.getSql();
-			logger.info(phoenixSQL);
+			//logger.info(phoenixSQL);
 			total = PhoenixClient.count(phoenixSQL);
 
 			// 排序
@@ -1016,6 +1040,7 @@ public class SourceDataController {
 	public Map<String, Object> deleteSourceDatas(HttpServletRequest request,String type,String cs_id, String ids, boolean isAll,
     		String searchId, String searchWord,String desc_asc,String oldCondition,
             String searchFirstWord,String chooseDatas,String likeSearch) {
+		//logger.info("SourceDataController-deleteSourceDatas: "+ids);
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (isAll == true) {// true 全选状态下 选中的数据rowkey-ids
 			User user = (User) request.getAttribute("user");
@@ -1024,7 +1049,7 @@ public class SourceDataController {
 
 			Integer csId = cs_id.equals("")?null:Integer.valueOf(cs_id);
 			Integer searchIdInt = searchId.equals("")?null:Integer.valueOf(searchId);
-			SourceDataSQLInfo sourceDataSQLInfo=getSourceDataSQL(csId,user,"2",searchFirstWord,oldCondition,null,null,searchIdInt,chooseDatas,likeSearch,searchWord,true);
+			SourceDataSQLInfo sourceDataSQLInfo=getSourceDataSQL(csId,user,"2",searchFirstWord,oldCondition,null,null,searchIdInt,chooseDatas,likeSearch,searchWord,true,ids);
 
 			Map<String, Map<String, Object>> result = PhoenixClient.select(sourceDataSQLInfo.getSql());
 
@@ -1095,6 +1120,7 @@ public class SourceDataController {
 	public Map<String, Object> open(HttpServletRequest request,String cs_id, String ids, boolean isAll,
     		String searchId, String searchWord,String desc_asc,String oldCondition,
             String searchFirstWord,String chooseDatas,String likeSearch) {
+		//logger.info("SourceDataController-open: "+ids);
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (isAll == true) {
 			
@@ -1104,7 +1130,7 @@ public class SourceDataController {
 
 			Integer csId = cs_id.equals("")?null:Integer.valueOf(cs_id);
 			Integer searchIdInt = searchId.equals("")?null:Integer.valueOf(searchId);
-			SourceDataSQLInfo sourceDataSQLInfo=getSourceDataSQL(csId,user,"2",searchFirstWord,oldCondition,null,null,searchIdInt,chooseDatas,likeSearch,searchWord,true);
+			SourceDataSQLInfo sourceDataSQLInfo=getSourceDataSQL(csId,user,"2",searchFirstWord,oldCondition,null,null,searchIdInt,chooseDatas,likeSearch,searchWord,true,ids);
 
 			Map<String, Map<String, Object>> result = PhoenixClient.select(sourceDataSQLInfo.getSql());
 
@@ -1167,6 +1193,7 @@ public class SourceDataController {
 	public Map<String, Object> notOpen(HttpServletRequest request,String cs_id, String ids, boolean isAll,
     		String searchId, String searchWord,String desc_asc,String oldCondition,
             String searchFirstWord,String chooseDatas,String likeSearch) {
+		//logger.info("SourceDataController-notOpen: "+ids);
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (isAll == true) {
 			User user = (User) request.getAttribute("user");
@@ -1175,7 +1202,7 @@ public class SourceDataController {
 
 			Integer csId = cs_id.equals("")?null:Integer.valueOf(cs_id);
 			Integer searchIdInt = searchId.equals("")?null:Integer.valueOf(searchId);
-			SourceDataSQLInfo sourceDataSQLInfo=getSourceDataSQL(csId,user,"2",searchFirstWord,oldCondition,null,null,searchIdInt,chooseDatas,likeSearch,searchWord,true);
+			SourceDataSQLInfo sourceDataSQLInfo=getSourceDataSQL(csId,user,"2",searchFirstWord,oldCondition,null,null,searchIdInt,chooseDatas,likeSearch,searchWord,true,ids);
 
 			Map<String, Map<String, Object>> result = PhoenixClient.select(sourceDataSQLInfo.getSql());
 
@@ -1247,6 +1274,7 @@ public class SourceDataController {
 	@ResponseBody
 	public Map<String, Object> addSourceDataAll(HttpServletRequest request,
 												  Integer cs_id,//采集数据源ID
+												  String ids,
 												  String type,//类型,1为我的,2为我创建的,3为公共的,4和5待扩展
 												  String searchFirstWord,//为搜索关键字
 												  String oldCondition,//为原本所带的查询条件
@@ -1261,7 +1289,7 @@ public class SourceDataController {
 		Integer uid = user.getId();
 		String tableName = ConstantsHBase.TABLE_PREFIX_SOURCE_ + cs_id;
 
-		SourceDataSQLInfo sourceDataSQLInfo=getSourceDataSQL(cs_id,user,type,searchFirstWord,oldCondition,fieldIds,p_id,searchId,chooseDatas,likeSearch,searchWord,true);
+		SourceDataSQLInfo sourceDataSQLInfo=getSourceDataSQL(cs_id,user,type,searchFirstWord,oldCondition,fieldIds,p_id,searchId,chooseDatas,likeSearch,searchWord,true,ids);
 
 		Map<String, Map<String, Object>> result = PhoenixClient.select(sourceDataSQLInfo.getSql());
 
@@ -1393,6 +1421,7 @@ public class SourceDataController {
 	public Map<String, Object> removeSourceDatas(HttpServletRequest request,String type,String cs_id, String ids, boolean isAll,
     		String searchId, String searchWord,String desc_asc,String oldCondition,
             String searchFirstWord,String chooseDatas,String likeSearch) {
+		//logger.info("SourceDataController-removeSourceDatas: "+ids);
 		Map<String, Object> map = new HashMap<String, Object>();
 		User user = (User) request.getAttribute("user");
 		Integer uid = user.getId();
@@ -1403,7 +1432,7 @@ public class SourceDataController {
 			String tableName = ConstantsHBase.TABLE_PREFIX_SOURCE_ + cs_id;
 			Integer csId = cs_id.equals("")?null:Integer.valueOf(cs_id);
 			Integer searchIdInt = searchId.equals("")?null:Integer.valueOf(searchId);
-			SourceDataSQLInfo sourceDataSQLInfo=getSourceDataSQL(csId,user,type,searchFirstWord,oldCondition,null,null,searchIdInt,chooseDatas,likeSearch,searchWord,true);
+			SourceDataSQLInfo sourceDataSQLInfo=getSourceDataSQL(csId,user,type,searchFirstWord,oldCondition,null,null,searchIdInt,chooseDatas,likeSearch,searchWord,true,ids);
 
 			Map<String, Map<String, Object>> result = PhoenixClient.select(sourceDataSQLInfo.getSql());
 
