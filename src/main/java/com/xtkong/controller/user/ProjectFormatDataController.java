@@ -20,6 +20,7 @@ import com.xtkong.service.ProjectNodeService;
 import com.dzjin.model.ProjectCustomRole;
 import com.dzjin.service.ProjectCustomRoleService;
 import com.liutianjun.pojo.User;
+import com.xtkong.controller.user.SourceDataController.SourceDataSQLInfo;
 import com.xtkong.dao.hbase.HBaseFormatNodeDao;
 import com.xtkong.dao.hbase.HBaseProjectDataDao;
 import com.xtkong.dao.hbase.HBaseSourceDataDao;
@@ -52,34 +53,86 @@ public class ProjectFormatDataController {
 	ProjectNodeDataService projectNodeDataService;
 	@Autowired
 	ProjectCustomRoleService projectCustomRoleService;
+	@Autowired
+	SourceDataController sourceDataController;
 
 	@RequestMapping("/insert")
 	@ResponseBody
 	public Map<String, Object> insert(HttpServletRequest request, HttpServletResponse response, HttpSession session,
-			String p_id, String sourceDataIds, String cs_id) {
-		User user = (User) request.getAttribute("user");
-		Integer uid = user.getId();
-		Map<String, Object> map = new HashMap<>();
+			String p_id, String cs_id, String ids, boolean isAll,
+    		String searchId, String searchWord,String desc_asc,String oldCondition,
+            String searchFirstWord,String chooseDatas,String likeSearch,String type) {
 		Integer sum = 0;
 		Integer count = 0;
+		
+		Map<String, Object> map = new HashMap<String, Object>();
 		List<SourceField> sourceFields = sourceFieldService.getSourceFields(Integer.valueOf(cs_id));
-		for (String sourceDataId : sourceDataIds.split(",")) {
-			
-			if (projectDataService.insert(Integer.valueOf(p_id), sourceDataId, Integer.valueOf(cs_id)) == 1) {
-				String pSourceDataId = HBaseProjectDataDao.addProjectWholeSource(p_id, cs_id, String.valueOf(uid),
-						sourceDataId, sourceFields,user.getUsername());
-				if (pSourceDataId != null) {
-					if (projectDataService.updataPDataId(Integer.valueOf(p_id), sourceDataId, Integer.valueOf(cs_id),
-							pSourceDataId) == 1) {
+		User user = (User) request.getAttribute("user");
+		Integer uid = user.getId();
+		String tableName = ConstantsHBase.TABLE_PREFIX_SOURCE_ + cs_id;
+		
+		if (isAll == true) {
+			Integer csId = cs_id.equals("")?null:Integer.valueOf(cs_id);
+			Integer searchIdInt = searchId.equals("")?null:Integer.valueOf(searchId);
+			SourceDataSQLInfo sourceDataSQLInfo=sourceDataController.getSourceDataSQL(csId,user,type,searchFirstWord,oldCondition,null,null,searchIdInt,chooseDatas,likeSearch,searchWord,true,ids);
+			Map<String, Map<String, Object>> result = PhoenixClient.select(sourceDataSQLInfo.getSql());
+
+			List<List<String>> sourceDatas = null;
+			String resultMsg;
+			for (int j = 0; j < 6; j++) {
+				resultMsg = String.valueOf((result.get("msg")).get("msg"));
+				if (resultMsg.equals("success")) {
+					sourceDatas = (List<List<String>>) result.get("records").get("data");
+					break;
+				} else {
+					PhoenixClient.undefined(resultMsg, tableName, sourceDataSQLInfo.getQualifiers(), sourceDataSQLInfo.getConditionEqual(), sourceDataSQLInfo.getConditionLike());
+					result = PhoenixClient.select(sourceDataSQLInfo.getSql());
+				}
+			}
+            
+			String idsStr = "";
+			if(sourceDatas!=null)
+			{
+				for (List<String> record : sourceDatas)
+				{
+					String idTemp = record.get(0);
+					if (projectDataService.insert(Integer.valueOf(p_id), idTemp, Integer.valueOf(cs_id)) == 1) {
+						String pSourceDataId = HBaseProjectDataDao.addProjectWholeSource(p_id, cs_id, String.valueOf(uid),
+								idTemp, sourceFields,user.getUsername());
+						if (pSourceDataId != null) {
+							if (projectDataService.updataPDataId(Integer.valueOf(p_id), idTemp, Integer.valueOf(cs_id),
+									pSourceDataId) == 1) {
+								count++;
+							}
+						}
+					} else {
 						count++;
 					}
+					sum++;
 				}
-			} else {
-				count++;
 			}
-			sum++;
+		} else {
+			if (ids.startsWith(",")) {
+				ids = ids.substring(1, ids.length()).replaceAll("check", "");
+			}
+			for (String sourceDataId : ids.split(",")) {
+				
+				if (projectDataService.insert(Integer.valueOf(p_id), sourceDataId, Integer.valueOf(cs_id)) == 1) {
+					String pSourceDataId = HBaseProjectDataDao.addProjectWholeSource(p_id, cs_id, String.valueOf(uid),
+							sourceDataId, sourceFields,user.getUsername());
+					if (pSourceDataId != null) {
+						if (projectDataService.updataPDataId(Integer.valueOf(p_id), sourceDataId, Integer.valueOf(cs_id),
+								pSourceDataId) == 1) {
+							count++;
+						}
+					}
+				} else {
+					count++;
+				}
+				sum++;
+			}
+			 
 		}
-
 		if (count.equals(sum)) {
 			map.put("result", true);
 			map.put("message", "添加成功！");
@@ -87,9 +140,6 @@ public class ProjectFormatDataController {
 			map.put("result", false);
 			map.put("message", "成功添加" + count + "条，剩余" + (sum - count) + "条关系添加失败！");
 		}
-		map.put("count", count);
-		map.put("sum", sum);
-
 		return map;
 	}
 

@@ -589,10 +589,29 @@
 	
 	  	//将格式数据添加到项目
 		$(".pro_addli").click(function (){
-			
+
+			 var idQuanXuan= $(" #isAll2").val();
+	         var ids3=$(" #ids2").val();
+	        
+	         if(idQuanXuan =="false"){
+	         	 if(ids3 == ""){
+	         		alert("请勾选待移出的选项！");
+	              	return;
+	              }
+	         }
+	        
+	        var cs_id=$('#source_Select').val();//采集源id
+	     	var searchId="${searchId}";//操作字段id
+	     	var searchWord=$(".BTSXcliGLK").val();//过滤条件
+	     	var desc_asc="${desc_asc}";//排序
+	     	var oldCondition=$("#oldCondition").html();//累加筛选条件
+	     	var searchFirstWord = $(".searchCt").val();
+	     	var chooseDatas = "${chooseDatas}";
+	     	var likeSearch = "${likeSearch}";
+	     	
 			var p_id = this.id;
 			//var cs_id = $("#source_Select").val();
-			var afuxuanK=document.querySelectorAll('.fuxuanK2');
+			/* var afuxuanK=document.querySelectorAll('.fuxuanK2');
 	        var afuxuan=[];
 	        for(var i=0;i<afuxuanK.length;i++){
 	            afuxuan.push(afuxuanK[i].querySelectorAll('.input_check')[0]);
@@ -602,19 +621,30 @@
 	        	if(afuxuan[i].checked){
 	        		sourceDataIds.push(afuxuan[i].name);
 	        	}
-	        }
-	        if(sourceDataIds == ""){
+	        } */
+	        /* if(sourceDataIds == ""){
 	        	alert("请勾选源数据！");
 	        	return;
-	        }
+	        } */
 	        $.ajax({
 	        	url:"/wankangyuan/projectFormatData/insert",
 	        	type:"post",
 				async:true,
 	        	data:{
-	        		p_id:p_id,
-	        		sourceDataIds:sourceDataIds.join(","),
-            		cs_id:cs_id
+	        		type:1,
+            		cs_id:cs_id,
+            		ids:ids3,
+            		isAll:idQuanXuan,
+            		searchId:searchId,
+            		searchWord:searchWord,
+            		desc_asc:desc_asc,
+            		oldCondition:oldCondition,
+            		searchFirstWord:searchFirstWord,
+            		chooseDatas:chooseDatas,
+            		likeSearch:likeSearch,
+	        		p_id:p_id
+	        		//sourceDataIds:sourceDataIds.join(","),
+            		//cs_id:cs_id
 	        	},
 	        	dataType:"json",
 	        	success : function(data){
