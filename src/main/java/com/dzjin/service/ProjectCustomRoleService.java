@@ -46,7 +46,7 @@ public class ProjectCustomRoleService {
 		List<ProjectCustomRole> projectCustomRolesTrue=new ArrayList<>();
 		List<ProjectCustomRole> projectCustomRoles = projectCustomRoleDao.selectProjectCustomRolesByUID(user_id);
 		for (ProjectCustomRole projectCustomRole : projectCustomRoles) {
-			if(projectCustomRole.getRolename().equals("创建者")) {
+			if(!projectCustomRole.getRolename().equals("创建者")) {
 				break;
 			}
 			List<String> authoritiesList=Arrays.asList(projectCustomRole.getAuthorities().split(","));

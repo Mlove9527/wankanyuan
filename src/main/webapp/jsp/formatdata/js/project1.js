@@ -1392,7 +1392,7 @@ function data_create(){
         								 html += '<option value="'+ss[i-1]+'">'+ss[i-1]+'</option>';
         								 }
         								adddataM.append('<tr>'+
-        										'<td><div class="adddataMlit">'+sourceFields[index].csf_name+'<span style="color:red">*</span>:</div></td>'+
+        										'<td><div class="adddataMlit">'+sourceFields[index].csf_name+':</div></td>'+
         										'<td><select id="'+sourceFields[index].csf_id +'" class="adddataMliTT adddataMliT">'+html +'</select></td>'+'' +
         								'</tr>');
         							}else{
@@ -1413,7 +1413,7 @@ function data_create(){
         								 html += '<option value="'+ss[i-1]+'">'+ss[i-1]+'</option>';
         								 }
         								adddataM.append('<tr>'+
-        										'<td><div class="adddataMlit">'+sourceFields[index].csf_name+'<span style="color:red">*</span>:</div></td>'+
+        										'<td><div class="adddataMlit">'+sourceFields[index].csf_name+':</div></td>'+
         										'<td><select id="'+sourceFields[index].csf_id +'" class="adddataMliTT adddataMliT">'+html +'</select></td>'+'' +
         								'</tr>');
         							}else{
@@ -1434,7 +1434,7 @@ function data_create(){
         								 html += '<option value="'+ss[i-1]+'">'+ss[i-1]+'</option>';
         								 }
         								adddataM.append('<tr>'+
-        										'<td><div class="adddataMlit">'+sourceFields[index].csf_name+'<span style="color:red">*</span>:</div></td>'+
+        										'<td><div class="adddataMlit">'+sourceFields[index].csf_name+':</div></td>'+
         										'<td><select id="'+sourceFields[index].csf_id +'" class="adddataMliTT adddataMliT">'+html +'</select></td>'+'' +
         								'</tr>');
         							}else{
