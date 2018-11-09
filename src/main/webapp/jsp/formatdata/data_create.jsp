@@ -827,16 +827,77 @@
 	            contentType: false,
 	            processData: false,
 	            success: function (data) {
+	            	console.log(data);
 	            	if(data.result == false){
 	            		alert(data.message)
-	            
+	            		endloading(false);
+	            	}else if(data.result == true){
+	            		endloading(true);
+	            	}else{
+	            		endloading(true);
 	            	}
 	            },
 	            error: function () {
 	            	alert("网络异常，请稍后重试！");
+	            	endloading(false);
 	            }
 	        });
-    		alert("数据导入中，您可先进行其他操作！");
+    		startloading();
+    		/* alert("数据导入中，您可先进行其他操作！"); */
+    	}
+    	
+    	
+    	create_loading();
+    	//批量导入loading
+    	function create_loading(){
+    		var oloading=document.createElement('div');
+    		oloading.className="loading";
+    		var oBox=document.querySelectorAll('.Box')[0];
+    		oBox.appendChild(oloading);
+    		
+    		var oloadimg=document.createElement('img');
+    		oloadimg.className='loadimg';
+    		$(oloadimg).attr('src','/wankangyuan/static/img/loading.gif');
+    		oloading.appendChild(oloadimg);
+    	}
+    	
+    	//startloading(); 
+    	var loadingtimer=null;
+    	var loadingpd=true;//loading计时器判断
+    	function startloading(){
+   			loadingtimer=setTimeout(function(){
+   				if(loadingpd){
+   					$('.loading').css('display','none');
+   	       			alert('文件较大，请耐心等待执行完成,在此期间您可以在平台上处理其它工作');
+   				}else{
+   					clearTimeout(loadingtimer);
+   				}
+   			},5000); 
+   			$('.loading').css('display','block');
+    	}
+    	/* setTimeout(function(){
+    		endloading(true);  
+    	},4000) */
+    	
+    	function endloading(e){
+    		loadingpd=false;
+    		var myDate = new Date();
+    		var year=myDate.getFullYear();
+    		var month=myDate.getMonth()+1;
+    		var date=myDate.getDate();
+    		var hour=myDate.getHours();
+    		var min=myDate.getMinutes();
+    		var sec=myDate.getSeconds();
+    		var time=year+'-'+month+'-'+date+' '+hour+':'+min+':'+sec;
+    		//console.log(time);
+    		
+    		$('.loading').css('display','none');
+    		if(e){
+    			alert(time+'上传数据成功');
+    		}else{
+    			alert(time+'上传数据失败');
+    		}
+    		
     	}
     	
     	//分页
