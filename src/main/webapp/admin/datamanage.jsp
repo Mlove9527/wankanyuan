@@ -387,9 +387,9 @@
 											<option value="false">否</option>
 										</select>
 									</div>
-									<div class="addbiaoxli" id="valueEM2id">
+									<div class="addbiaoxli">
 										<div class="addbiaoxlit">配置枚举值,以逗号隔开：</div>
-										<input type="text" class="addbiaoxlik" name="valueEM" />
+										<input type="text" class="addbiaoxlik" name="valueEM" id="edit_emvalue"/>
 									</div>
 									<div class="addbiaoxli">
 										<div class="addbiaoxlit">是否必填：</div>

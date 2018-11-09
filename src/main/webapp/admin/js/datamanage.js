@@ -242,10 +242,10 @@ $(document).ready(function(){
                     	//是否可枚举
                     	if($('#enumerated'+ids[0]).text() == '是'){
                     		$("#edit_enumerated").val('true');
-                    		$("#valueEM2id").val($('#emvalue'+ids[0]).text());
                     	}else{
                     		$("#edit_enumerated").val('false');
                     	}
+                    	$("#edit_emvalue").val($('#emvalue'+ids[0]).text());
                     	//枚举值
                     	
                     	//是否必填

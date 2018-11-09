@@ -44,6 +44,7 @@ function huoqu(){
    				str+='<th class="biaotouth">类型</th>';
    				str+='<th class="biaotouth">校验规则</th>';
    				str+='<th class="biaotouth">是否可枚举</th>';
+   				str+='<th class="biaotouth">枚举值</th>';
    				str+='<th class="biaotouth">是否必填</th>';
    				str+='<th class="biaotouth">状态</th>';
    				str+='<th class="biaotouth">字段描述信息</th>';
@@ -66,7 +67,7 @@ function huoqu(){
 					}else{
 						str+='<th class="biaoxiangth" id="enumerated'+sourceFields[i].csf_id+'">是</th>';
 					}
-					
+					str+='<th class="biaoxiangth" id="emvalue'+sourceFields[i].csf_id+'">'+sourceFields[i].emvalue+'</th>';
 					if(sourceFields[i].not_null == false){
 						str+='<th class="biaoxiangth" id="not_null'+sourceFields[i].csf_id+'">否</th>';
 					}else{

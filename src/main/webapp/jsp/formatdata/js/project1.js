@@ -1097,8 +1097,7 @@ function data_mine(){
 
     var opro_addul=document.querySelectorAll('.pro_addul')[0];
     if(opro_addul){
-    
-    opro_addul.style.right="0";
+    	opro_addul.style.right="0";
     }
 }
 
@@ -1253,33 +1252,56 @@ function data_create(){
 
     // 提交数据源按钮
     adddataBb.onclick=function(){
-    	var sourceFieldDatas = {};
-    	var cs_id = $("#source_Select").val();
-        aadddataMliTT=oadddataK.querySelectorAll('.adddataMliTT');
-        for(var i=0;i<aadddataMliTT.length;i++){
-            sourceFieldDatas[aadddataMliTT[i].id] = aadddataMliTT[i].value;
-        }
-        $.ajax({
-        	url:"/wankangyuan/sourceData/insertSourceData",
-        	type:"post",
-        	data:{
-        		cs_id:cs_id,
-        		sourceFieldDatas:JSON.stringify(sourceFieldDatas)
-        	},
-        	dataType:"json",
-        	success : function(data){
-        		if(data.result == true){
-        			alert(data.message);
-        			// 刷新页面
-        			window.location.href="/wankangyuan/sourceData/getSourceDatas?type=2&cs_id="+cs_id;       			                    
-        		}else{
-        			alert(data.message);
-        		}
-        	},
-        	error : function(){
-        		alert("联网失败");
-        	}
-        });
+    	var btpd=true;
+    	var aadddataMlit=oadddataK.querySelectorAll('.adddataMlit');
+    	var atr=oadddataK.querySelectorAll('tr'); 
+    	for(var i=0;i<atr.length;i++){
+    		var ospan=aadddataMlit[i].querySelectorAll('span')[0];
+    		if(ospan){
+    			var oadddataMliT=atr[i].querySelectorAll('.adddataMliT')[0];
+    			if(oadddataMliT.tagName=='SELECT'){
+    				if(oadddataMliT.value==0){
+    					btpd=false;
+    				}
+    			}else if(oadddataMliT.tagName=='INPUT'){
+    				if(oadddataMliT.value==''){
+        				btpd=false;
+        			}
+    			}
+    			
+    		}
+    	}
+    	if(btpd){
+	    	var sourceFieldDatas = {};
+	    	var cs_id = $("#source_Select").val();
+	        aadddataMliTT=oadddataK.querySelectorAll('.adddataMliTT');
+	        for(var i=0;i<aadddataMliTT.length;i++){
+	            sourceFieldDatas[aadddataMliTT[i].id] = aadddataMliTT[i].value;
+	        }
+	        $.ajax({
+	        	url:"/wankangyuan/sourceData/insertSourceData",
+	        	type:"post",
+	        	data:{
+	        		cs_id:cs_id,
+	        		sourceFieldDatas:JSON.stringify(sourceFieldDatas)
+	        	},
+	        	dataType:"json",
+	        	success : function(data){
+	        		if(data.result == true){
+	        			alert(data.message);
+	        			// 刷新页面
+	        			window.location.href="/wankangyuan/sourceData/getSourceDatas?type=2&cs_id="+cs_id;       			                    
+	        		}else{
+	        			alert(data.message);
+	        		}
+	        	},
+	        	error : function(){
+	        		alert("联网失败");
+	        	}
+	        });
+    	}else{
+    		alert('必填项不能为空');
+    	}
     }
     
     // 打开新添数据源弹出框
@@ -1387,7 +1409,7 @@ function data_create(){
         								counts=ss.length;
         								var id=sourceFields[index].csf_id;
         								 var i;
-        								html = '<option value="0">请选择</option>';
+        								html = '<option value=" ">请选择</option>';
         								 for (i=1;i <= counts; i++) {
         								 html += '<option value="'+ss[i-1]+'">'+ss[i-1]+'</option>';
         								 }
