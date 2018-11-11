@@ -5,14 +5,17 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
@@ -26,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.liutianjun.pojo.User;
 import com.xtkong.dao.hbase.HBaseFormatDataDao;
@@ -51,17 +55,17 @@ public class ImportController {
 	@Autowired
 	FormatFieldService formatFieldService;
 
-	@Value("${project.file.location}")
-	private String fileLocation;
+	@Value("${formatData.file.location}")
+	private String dataFileLocation;
 
 	private boolean ifFileExists(String uid,String fileName)
 	{
-		return new File(fileLocation+File.separatorChar+uid+File.separatorChar+fileName).exists();
+		return new File(dataFileLocation+File.separatorChar+uid+File.separatorChar+fileName).exists();
 	}
 
 	private boolean ifImgExists(String uid,String fileName)
 	{
-		return new File(fileLocation+File.separatorChar+uid+File.separatorChar+fileName).exists();
+		return new File(dataFileLocation+File.separatorChar+uid+File.separatorChar+fileName).exists();
 	}
 
 	private void validateData(String data,SourceField csf,String uid) throws Exception
@@ -86,6 +90,95 @@ public class ImportController {
 				throw new Exception("文件不存在: "+data);
 			}
 		}
+	}
+	
+	/**
+	    上传文件接口
+	    建议前端data为FormData()类型
+	 * @param request
+	 */
+	@SuppressWarnings({ "rawtypes" })
+	@RequestMapping("/uploadFiles")
+	@ResponseBody
+	public Map<String, Object> uploadFiles(
+			 HttpServletRequest request) {
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		User user = (User) request.getAttribute("user");
+		String  sucFiles = "";
+		String  failFiles = "";
+		int count = 0;
+		int fileCount = 0;
+		//除文件外所有参数
+		 Map param = request.getParameterMap();
+		 Iterator entries = param.entrySet().iterator(); 
+		 while (entries.hasNext()) { 
+		   Map.Entry entry = (Map.Entry) entries.next(); 
+		   String key = (String)entry.getKey(); 
+		   String[] value = (String[])entry.getValue(); 
+		   System.out.println("Key = " + key + ", Value = " + value[0]); 
+		 }
+		 //文件参数
+	   MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+       Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
+       fileCount = fileMap.size();
+       if(fileMap != null || fileMap.size() > 0){
+    	   Collection<MultipartFile> files = fileMap.values();
+           for(MultipartFile file:files){
+        	   String key = file.getName();
+               String req = file.getOriginalFilename();
+               if(StringUtils.isBlank(req)){
+                   continue;
+               }
+            //文件上传地址
+            //String contexPath= request.getSession().getServletContext().getRealPath("\\")+user.getUsername()+"\\";
+          	String path =this.dataFileLocation;
+           	File temp = new File(path);
+           	if(!temp.exists() && !temp.isDirectory()){
+           		temp.mkdir();
+            }
+          		
+       		String path1 =this.dataFileLocation+"\\"+user.getId()+"\\";
+       		File temp1 = new File(path1);
+       		if(!temp1.exists() && !temp1.isDirectory()){
+       			temp1.mkdir();
+       		}
+       		
+            String fileName = file.getOriginalFilename();
+       	    File dest = new File(path1 + "\\" + fileName);
+               if(!dest.getParentFile().exists()){//判断文件父目录是否存在
+                   dest.getParentFile().mkdir();
+               }
+               try {
+       			file.transferTo(dest); //保存文件
+       		    sucFiles = sucFiles + fileName + ",";
+       		    count = count++;
+       			System.out.println(dest.getAbsolutePath());
+		   		} catch (IllegalStateException e) {
+		   			failFiles = failFiles + fileName + ",";
+		   			e.printStackTrace();
+		   			map.put("result", false);
+		   	        map.put("message", "文件保存失败！"+"文件名称："+fileName);
+		   	        return map;
+		   		} catch (IOException e) {
+		   			failFiles = failFiles + fileName + ",";
+		   			e.printStackTrace();
+		   			map.put("result", false);
+		   	        map.put("message", "文件保存失败！"+"文件名称："+fileName);
+		   	        return map;
+		   		}
+           }
+       }
+       
+       if(count == fileCount) {
+    	   map.put("result", true);
+  	       map.put("message", "文件保存成功！共"+fileCount+"个。"+"文件名称："+sucFiles.substring(0, sucFiles.length()-1));
+       }else {
+    	   map.put("result", false);
+  	       map.put("message", "文件保存失败！"+"文件名称："+failFiles.substring(0, failFiles.length()-1));
+       }
+	   return map;
+               
 	}
 
 	@RequestMapping(value = "/sourceData")
