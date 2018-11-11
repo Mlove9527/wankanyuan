@@ -1005,7 +1005,8 @@ public class SourceDataController {
                }
                try {
        			file.transferTo(dest); //保存文件
-       			resultMap.put(key, user.getId()+"\\"+fileName);
+//       			resultMap.put(key, user.getId()+"\\"+fileName);
+       			resultMap.put(key, fileName);
        			System.out.println(dest.getAbsolutePath());
 		   		} catch (IllegalStateException e) {
 		   			e.printStackTrace();
