@@ -1,18 +1,33 @@
 package com.xtkong.controller.user;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import com.liutianjun.pojo.UserDataRelation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+
 import com.dzjin.model.ProjectCustomRole;
 import com.dzjin.service.ProjectCustomRoleService;
 import com.google.gson.Gson;
@@ -31,6 +46,13 @@ import com.xtkong.service.SourceFieldService;
 import com.xtkong.service.SourceService;
 import com.xtkong.service.UserDataService;
 import com.xtkong.util.ConstantsHBase;
+
+import org.apache.commons.fileupload.FileItemIterator;
+import org.apache.commons.fileupload.FileItemStream;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.fileupload.util.Streams;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 @Controller
@@ -104,6 +126,9 @@ public class SourceDataController {
 	@Autowired
 	ProjectDataService projectDataService;
 
+	@Value("${formatData.file.location}")
+	private String dataFileLocation;
+	
 	@RequestMapping("/firstIn")
 	public String firstIn(HttpServletRequest request, HttpSession httpSession, String type, Integer page,
 			Integer strip,Integer cs_id, String block) {
@@ -929,24 +954,85 @@ public class SourceDataController {
 	 * @param sourceFieldDatas
 	 *            采集源字段id、 数据值
 	 */
+	@SuppressWarnings({ "rawtypes", "null" })
 	@RequestMapping("/insertSourceData")
 	@ResponseBody
-	public Map<String, Object> insertSourceData(HttpServletRequest request, String cs_id, String sourceFieldDatas) {
-		User user = (User) request.getAttribute("user");
+	public Map<String, Object> insertSourceData(
+			String cs_id, HttpServletRequest request) {
+		
 		Map<String, Object> map = new HashMap<String, Object>();
-
-		if (HBaseSourceDataDao.insertSourceData(cs_id, String.valueOf(user.getId()),
-				new Gson().fromJson(sourceFieldDatas, new TypeToken<Map<String, String>>() {
-				}.getType()), user.getUsername()) != null) {
+		User user = (User) request.getAttribute("user");
+		Map<String,String> resultMap = new HashMap<String, String>();
+		
+		 Map param = request.getParameterMap();
+		 Iterator entries = param.entrySet().iterator(); 
+		 while (entries.hasNext()) { 
+		   Map.Entry entry = (Map.Entry) entries.next(); 
+		   String key = (String)entry.getKey(); 
+		   String[] value = (String[])entry.getValue(); 
+		   resultMap.put(key, value[0].equals("undefined")?"":value[0]);
+		   System.out.println("Key = " + key + ", Value = " + value[0]); 
+		 }
+	   MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+       Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
+       if(fileMap != null || fileMap.size() > 0){
+    	   Collection<MultipartFile> files = fileMap.values();
+           for(MultipartFile file:files){
+        	   String key = file.getName();
+               String req = file.getOriginalFilename();
+               if(StringUtils.isBlank(req)){
+            	   resultMap.put(key, "");
+                   continue;
+               }
+            //文件上传地址
+            //String contexPath= request.getSession().getServletContext().getRealPath("\\")+user.getUsername()+"\\";
+          	String path =this.dataFileLocation;
+           	File temp = new File(path);
+           	if(!temp.exists() && !temp.isDirectory()){
+           		temp.mkdir();
+            }
+          		
+       		String path1 =this.dataFileLocation+"\\"+user.getId()+"\\";
+       		File temp1 = new File(path1);
+       		if(!temp1.exists() && !temp1.isDirectory()){
+       			temp1.mkdir();
+       		}
+       		
+            String fileName = file.getOriginalFilename();
+       	    File dest = new File(path1 + "\\" + fileName);
+               if(!dest.getParentFile().exists()){//判断文件父目录是否存在
+                   dest.getParentFile().mkdir();
+               }
+               try {
+       			file.transferTo(dest); //保存文件
+       			resultMap.put(key, user.getId()+"\\"+fileName);
+       			System.out.println(dest.getAbsolutePath());
+		   		} catch (IllegalStateException e) {
+		   			e.printStackTrace();
+		   			map.put("result", false);
+		   	        map.put("message", "文件保存失败");
+		   	        return map;
+		   		} catch (IOException e) {
+		   			e.printStackTrace();
+		   			map.put("result", false);
+		   	        map.put("message", "文件保存失败");
+		   	        return map;
+		   		}
+           }
+       }
+       
+       if (HBaseSourceDataDao.insertSourceData(cs_id, String.valueOf(user.getId()),resultMap, user.getUsername()) != null) {
 			map.put("result", true);
 			map.put("message", "新增成功");
 		} else {
 			map.put("result", false);
 			map.put("message", "新增失败");
 		}
-		return map;
+	   return map;
+               
 	}
 
+ 
 	/**
 	 * 更新一条源数据
 	 * 

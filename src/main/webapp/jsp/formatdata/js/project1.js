@@ -1272,20 +1272,25 @@ function data_create(){
     		}
     	}
     	if(btpd){
-	    	var sourceFieldDatas = {};
+	        var form_data = new FormData();
 	    	var cs_id = $("#source_Select").val();
+	    	form_data.append("cs_id",cs_id);
 	        aadddataMliTT=oadddataK.querySelectorAll('.adddataMliTT');
 	        for(var i=0;i<aadddataMliTT.length;i++){
-	            sourceFieldDatas[aadddataMliTT[i].id] = aadddataMliTT[i].value;
+	        	if(aadddataMliTT[i].type=="file"){
+	        		//文件
+	        		var fileObj = aadddataMliTT[i].files[0]; // 获取文件对象
+	        		form_data.append(aadddataMliTT[i].id, fileObj);
+	        	}else{
+	        		form_data.append(aadddataMliTT[i].id, aadddataMliTT[i].value);
+	        	}
 	        }
 	        $.ajax({
 	        	url:"/wankangyuan/sourceData/insertSourceData",
 	        	type:"post",
-	        	data:{
-	        		cs_id:cs_id,
-	        		sourceFieldDatas:JSON.stringify(sourceFieldDatas)
-	        	},
-	        	dataType:"json",
+	        	data:form_data,
+	        	processData : false,  //必须false才会避开jQuery对 formdata 的默认处理   
+	            contentType : false,  //必须false才会自动加上正确的Content-Type 
 	        	success : function(data){
 	        		if(data.result == true){
 	        			alert(data.message);
@@ -1321,7 +1326,7 @@ function data_create(){
         				// 对表单进行填充
         				var adddataM = $("#adddataMtable");
         				adddataM.empty();
-        				
+        				//adddataM.append("<form id=\"adddataMtableForm\" enctype=\"multipart/form-data\" method=\"post\" action=\"/wankangyuan/sourceData/insertSourceData\">");
         				var sourceFields = data.source.sourceFields;
         				for(var index in sourceFields){
         					//先判断是否是必填
@@ -1345,7 +1350,7 @@ function data_create(){
         								
         								adddataM.append('<tr>'+
         										'<td><div class="adddataMlit">'+sourceFields[index].csf_name+'<span style="color:red">*</span>:</div></td>'+
-        										'<td><input type="text" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" /></td>'+
+        										'<td><input name="cs_id" type="text" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" /></td>'+
         								'</tr>');
         							}
             					}else if(sourceFields[index].type=="数值"){
@@ -1468,7 +1473,7 @@ function data_create(){
             					}else if(sourceFields[index].type=="图片"){
             						adddataM.append('<tr>'+
                                				'<td><div class="adddataMlit">'+sourceFields[index].csf_name+':</div></td>'+
-                                			'<td><input type="file" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" accept="image/*" /></td>'+
+                                			'<td><input name="file" type="file" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" accept="image/*" /></td>'+
                             			'</tr>');
             					}else if(sourceFields[index].type=="文件"){
             						adddataM.append('<tr>'+
@@ -1484,6 +1489,8 @@ function data_create(){
                                 			'</tr>');
 */
         				}
+        				//adddataM.append("<submit value=\"确认\" />");
+        				//adddataM.append("</form>");
         	            oadddataK.style.display="block";
         	            adddataPD=1;
         	            for(var i=0;i<aadddataMliTT.length;i++){
