@@ -866,18 +866,11 @@
             processData: false,
             success: function (data) {
                 console.log(data);
-                if(data.result == false){
-                    alert(data.message)
-                    endloading(false);
-                }else if(data.result == true){
-                    endloading(true);
-                }else{
-                    endloading(true);
-                }
+                alert(data.message);
             },
             error: function () {
                 alert("网络异常，请稍后重试！");
-                endloading(false);
+                //endloading(false);
             }
         });
         startloading();

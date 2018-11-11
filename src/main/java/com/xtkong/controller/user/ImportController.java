@@ -122,53 +122,59 @@ public class ImportController {
 	   MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
        Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
        fileCount = fileMap.size();
-       if(fileMap != null || fileMap.size() > 0){
-    	   Collection<MultipartFile> files = fileMap.values();
-           for(MultipartFile file:files){
-        	   String key = file.getName();
-               String req = file.getOriginalFilename();
-               if(StringUtils.isBlank(req)){
-                   continue;
-               }
-            //文件上传地址
-            //String contexPath= request.getSession().getServletContext().getRealPath("\\")+user.getUsername()+"\\";
-          	String path =this.dataFileLocation;
-           	File temp = new File(path);
-           	if(!temp.exists() && !temp.isDirectory()){
-           		temp.mkdir();
-            }
-          		
-       		String path1 =this.dataFileLocation+"\\"+user.getId()+"\\";
-       		File temp1 = new File(path1);
-       		if(!temp1.exists() && !temp1.isDirectory()){
-       			temp1.mkdir();
-       		}
-       		
-            String fileName = file.getOriginalFilename();
-       	    File dest = new File(path1 + "\\" + fileName);
-               if(!dest.getParentFile().exists()){//判断文件父目录是否存在
-                   dest.getParentFile().mkdir();
-               }
-               try {
-       			file.transferTo(dest); //保存文件
-       		    sucFiles = sucFiles + fileName + ",";
-       		    count = count++;
-       			System.out.println(dest.getAbsolutePath());
-		   		} catch (IllegalStateException e) {
-		   			failFiles = failFiles + fileName + ",";
-		   			e.printStackTrace();
-		   			map.put("result", false);
-		   	        map.put("message", "文件保存失败！"+"文件名称："+fileName);
-		   	        return map;
-		   		} catch (IOException e) {
-		   			failFiles = failFiles + fileName + ",";
-		   			e.printStackTrace();
-		   			map.put("result", false);
-		   	        map.put("message", "文件保存失败！"+"文件名称："+fileName);
-		   	        return map;
-		   		}
-           }
-       }
+		try {
+			if (fileMap != null || fileMap.size() > 0) {
+				Collection<MultipartFile> files = fileMap.values();
+				for (MultipartFile file : files) {
+					String key = file.getName();
+					String req = file.getOriginalFilename();
+					if (StringUtils.isBlank(req)) {
+						continue;
+					}
+					//文件上传地址
+					//String contexPath= request.getSession().getServletContext().getRealPath("\\")+user.getUsername()+"\\";
+					String path = this.dataFileLocation;
+					File temp = new File(path);
+					if (!temp.exists() && !temp.isDirectory()) {
+						temp.mkdir();
+					}
+
+					String path1 = this.dataFileLocation + "\\" + user.getId() + "\\";
+					File temp1 = new File(path1);
+					if (!temp1.exists() && !temp1.isDirectory()) {
+						temp1.mkdir();
+					}
+
+					String fileName = file.getOriginalFilename();
+					File dest = new File(path1 + "\\" + fileName);
+					if (!dest.getParentFile().exists()) {//判断文件父目录是否存在
+						dest.getParentFile().mkdir();
+					}
+					try {
+						file.transferTo(dest); //保存文件
+						sucFiles = sucFiles + fileName + ",";
+						count = count++;
+						System.out.println(dest.getAbsolutePath());
+					} catch (IllegalStateException e) {
+						failFiles = failFiles + fileName + ",";
+						e.printStackTrace();
+						map.put("result", false);
+						map.put("message", "文件保存失败！" + "文件名称：" + fileName);
+						return map;
+					} catch (IOException e) {
+						failFiles = failFiles + fileName + ",";
+						e.printStackTrace();
+						map.put("result", false);
+						map.put("message", "文件保存失败！" + "文件名称：" + fileName);
+						return map;
+					}
+				}
+			}
+		}
+		catch(Exception e)
+		{
+			logger.error(e);
+		}
        
        if(count == fileCount) {
     	   map.put("result", true);
