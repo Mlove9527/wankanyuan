@@ -13,12 +13,14 @@ import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,6 +41,7 @@ import com.xtkong.util.ConstantsHBase;
 @Controller
 @RequestMapping("/import")
 public class ImportController {
+	private static final Logger logger  =  Logger.getLogger(ImportController.class );
 	@Autowired
 	SourceService sourceService;
 	@Autowired
@@ -48,6 +51,43 @@ public class ImportController {
 	@Autowired
 	FormatFieldService formatFieldService;
 
+	@Value("${project.file.location}")
+	private String fileLocation;
+
+	private boolean ifFileExists(String uid,String fileName)
+	{
+		return new File(fileLocation+File.separatorChar+uid+File.separatorChar+fileName).exists();
+	}
+
+	private boolean ifImgExists(String uid,String fileName)
+	{
+		return new File(fileLocation+File.separatorChar+uid+File.separatorChar+fileName).exists();
+	}
+
+	private void validateData(String data,SourceField csf,String uid) throws Exception
+	{
+		if(csf.isNot_null() && (data==null || data.trim().isEmpty()))
+		{
+			throw new Exception("不能为空.");
+		}
+		if(csf.getType().equals("图片"))
+		{
+			if(!ifImgExists(uid,data))
+			{
+				logger.warn("uid: "+uid+", image file: "+data+" not exists.");
+				throw new Exception("图片文件不存在: "+data);
+			}
+		}
+		else if(csf.getType().equals("文件"))
+		{
+			if(!ifFileExists(uid,data))
+			{
+				logger.warn("uid: "+uid+", file: "+data+" not exists.");
+				throw new Exception("文件不存在: "+data);
+			}
+		}
+	}
+
 	@RequestMapping(value = "/sourceData")
 	@ResponseBody
 	public Map<String, Object> sourceData(@RequestParam(value = "file", required = false) MultipartFile file,
@@ -55,7 +95,7 @@ public class ImportController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (cs_id == null) {
 			map.put("result", false);
-			map.put("message", "请求异常！");
+			map.put("message", "请求异常,无法获取采集数据源ID！");
 			return map;
 		}
 		User user = (User) request.getAttribute("user");
@@ -76,12 +116,21 @@ public class ImportController {
 			HSSFCell cell = null;
 			HSSFRow row = null;
 
+			//key为列名,value为index
 			HashMap<String, Integer> index_nameMap = new HashMap<>();
 			row = sheetAt.getRow(sheetAt.getFirstRowNum());
 			for (int j = row.getFirstCellNum(); j < row.getLastCellNum(); j++) {
 				cell = row.getCell(j);
+				String colName=getStringCellValue(cell);
+				if(colName==null || colName.trim().equals(""))
+				{
+					map.put("result", false);
+					map.put("message", "请在第一行指定列名.");
+					return map;
+				}
+				colName=colName.trim();
 				try {
-					index_nameMap.put(getStringCellValue(cell), j);
+					index_nameMap.put(colName, j);
 				} catch (Exception e) {
 					e.printStackTrace();
 					continue;
@@ -90,11 +139,11 @@ public class ImportController {
 
 			List<SourceField> sourceFields = sourceFieldService.getSourceFields(Integer.valueOf(cs_id));
 			// 待导入文件中要导入的列的索引,对应的配置表中的字段id
-			HashMap<Integer, String> index_csfIdMap = new HashMap<>();
+			HashMap<Integer, SourceField> index_csfMap = new HashMap<>();
 			for (SourceField sourceField : sourceFields) {
 				if (index_nameMap.containsKey(sourceField.getCsf_name())) {
-					index_csfIdMap.put(index_nameMap.get(sourceField.getCsf_name()),
-							String.valueOf(sourceField.getCsf_id()));
+					index_csfMap.put(index_nameMap.get(sourceField.getCsf_name()),
+							sourceField);
 				}
 			}
 
@@ -116,16 +165,21 @@ public class ImportController {
 					continue;
 				}
 				Map<String, String> sourceFieldDatas = new HashMap<>();
-				for (Entry<Integer, String> index_csfId : index_csfIdMap.entrySet()) {
+				for (Entry<Integer, SourceField> index_csf : index_csfMap.entrySet()) {
 					try {
-						cell = row.getCell(index_csfId.getKey());						
+						cell = row.getCell(index_csf.getKey());
 						String cellValue=getStringCellValue(cell);
+
+						validateData(cellValue,index_csf.getValue(),String.valueOf(user.getId()));
+
 						if(!cellValue.trim().isEmpty()){
-							sourceFieldDatas.put(index_csfId.getValue(), cellValue);
+							sourceFieldDatas.put(String.valueOf(index_csf.getValue().getCsf_id()), cellValue);
 						}
+
 					} catch (Exception e) {
-						e.printStackTrace();
-						continue;
+						map.put("result", false);
+						map.put("message", "导入失败, 列 "+index_csf.getValue().getCsf_name()+", 第 "+i+" 行, 错误信息为: "+e.getMessage());
+						return map;
 					}
 				}
 				// for (int j = row.getFirstCellNum(); j < row.getLastCellNum();
@@ -141,7 +195,7 @@ public class ImportController {
 			hssfWorkbook.close();
 		} catch (IOException e1) {
 			map.put("result", false);
-			map.put("message", "文件上传失败");
+			map.put("message", "文件上传失败,错误信息为: "+ e1.getMessage());
 			return map;
 		}
 
