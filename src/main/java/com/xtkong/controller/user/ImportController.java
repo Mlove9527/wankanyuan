@@ -153,7 +153,7 @@ public class ImportController {
 					try {
 						file.transferTo(dest); //保存文件
 						sucFiles = sucFiles + fileName + ",";
-						count = count++;
+						count = count+1;
 						System.out.println(dest.getAbsolutePath());
 					} catch (IllegalStateException e) {
 						failFiles = failFiles + fileName + ",";
