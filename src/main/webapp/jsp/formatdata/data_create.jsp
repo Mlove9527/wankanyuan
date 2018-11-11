@@ -177,9 +177,12 @@
 					<div class="inportM">
 						<div class="inportMt">请把相关数据按照分类准确输入到EXCEL表格模板中，上传数据后，表格会自动配置相关内容。</div>
 						<a href="#" class="inportMz inportMd" id="downloadExcelMode">下载EXCEL模板</a>
-						<div class="inportMz inportMu" >上传数据</div> 
+						<div class="inportMz inportMu" >上传数据</div>
 						<input type="file" class="inportMf" id="inportMf"
 							onchange="upFile()"  style="display: none;"/>
+                        <div class="inportMz inportMu" >上传文件</div>
+                        <input type="file" class="inportMf" id="uploadFile"
+                               onchange="uploadFile()"  style="display: none;"/>
 					</div>
 				</div>
 
@@ -845,7 +848,41 @@
     		startloading();
     		/* alert("数据导入中，您可先进行其他操作！"); */
     	}
-    	
+
+    //文件上传
+    function uploadFile(){
+        var cs_id = $("#source_Select").val();
+        var file = document.getElementById("uploadFile").files[0];
+        var formdata = new FormData();
+        formdata.append('cs_id', cs_id);
+        formdata.append('file', file);
+        $.ajax({
+            url: '/wankangyuan/import/uploadFiles',
+            type: 'POST',
+            data: formdata,
+            async:true,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                console.log(data);
+                if(data.result == false){
+                    alert(data.message)
+                    endloading(false);
+                }else if(data.result == true){
+                    endloading(true);
+                }else{
+                    endloading(true);
+                }
+            },
+            error: function () {
+                alert("网络异常，请稍后重试！");
+                endloading(false);
+            }
+        });
+        startloading();
+        /* alert("数据导入中，您可先进行其他操作！"); */
+    }
     	
     	create_loading();
     	//批量导入loading

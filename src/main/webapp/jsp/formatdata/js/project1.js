@@ -1233,11 +1233,14 @@ function data_create(){
     }
 
 // 导入数据框上传文件
-    var oinportMu=document.querySelectorAll('.inportMu')[0];// 上传文件按钮
-    var oinportMf=document.querySelectorAll('.inportMf')[0];// 上传文件input
+    var oinportMu=document.querySelectorAll('.inportMu')[0];// 上传数据按钮
+    var oinportMf=document.querySelectorAll('.inportMf')[0];// 上传数据input
 
-    oinportMu.onclick=function(){
-        oinportMf.click();
+    var uploadFileMu=document.querySelectorAll('.inportMu')[1];// 上传文件按钮
+    var uploadFileMf=document.querySelectorAll('.inportMf')[1];// 上传文件input
+
+    uploadFileMu.onclick=function(){
+        uploadFileMf.click();
     }
 
 
