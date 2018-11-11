@@ -992,7 +992,7 @@ public class SourceDataController {
            		temp.mkdir();
             }
           		
-       		String path1 =this.dataFileLocation+"\\"+user.getUsername()+"\\";
+       		String path1 =this.dataFileLocation+"\\"+user.getId()+"\\";
        		File temp1 = new File(path1);
        		if(!temp1.exists() && !temp1.isDirectory()){
        			temp1.mkdir();
