@@ -1239,6 +1239,10 @@ function data_create(){
     var uploadFileMu=document.querySelectorAll('.inportMu')[1];// 上传文件按钮
     var uploadFileMf=document.querySelectorAll('.inportMf')[1];// 上传文件input
 
+    oinportMu.onclick=function(){
+        oinportMf.click();
+    }
+
     uploadFileMu.onclick=function(){
         uploadFileMf.click();
     }
