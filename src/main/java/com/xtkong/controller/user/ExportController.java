@@ -2,6 +2,7 @@ package com.xtkong.controller.user;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -216,6 +217,17 @@ public class ExportController {
 	@RequestMapping("/formatNode")
 	public void formatNode(HttpServletResponse response, String cs_id, String ft_ids, String formatNodeIds) {
 		response.setContentType("application/vnd.ms-excel");
+
+		Map<String, Object> map = new HashMap<String, Object>();
+
+		logger.info("formatNodeIds-----------------------"+formatNodeIds);
+		if(formatNodeIds==null || formatNodeIds.trim().equals("") ||ft_ids==null ||ft_ids.trim().equals(""))
+		{
+			logger.error("没有选择待导出的数据结点.");
+			map.put("result", false);
+			map.put("message", "请选择待导出数据的结点！");
+			return;
+		}
 
 		HSSFWorkbook workbook = new HSSFWorkbook();
 		HSSFCellStyle style = workbook.createCellStyle();
