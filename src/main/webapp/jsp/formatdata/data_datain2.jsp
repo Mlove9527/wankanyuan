@@ -148,7 +148,7 @@
 									<div class="prodainmRfilek">
 										<div class="prodainmRfile">${sourceData[status.index+1] }</div>
 										<input type="file" class="prodainmRip" style="display: none;">
-										<a class="prodainmRib2" href="<%=path%>/export/downloadFile?cs_id=${sourceFieldTemp.cs_id }&csf_id=${sourceFieldTemp.csf_id}">下载</a>
+										<a class="prodainmRib2" href="<%=path%>/export/downloadFile?sourceDataId=${sourceData[0]}&cs_id=${sourceFieldTemp.cs_id }&csf_id=${sourceFieldTemp.csf_id}">下载</a>
 										<div class="prodainmRib" id="">修改</div>
 									</div>
 								</c:when>
@@ -157,7 +157,7 @@
 										<img alt="" class="prodainmRi"
 											src="<%=path%>">
 										<input type="file" class="prodainmRip" style="display: none;">
-										<a class="prodainmRib2" href="<%=path%>/export/downloadFile?cs_id=${sourceFieldTemp.cs_id }&csf_id=${sourceFieldTemp.csf_id}">下载</a>
+										<a class="prodainmRib2" href="<%=path%>/export/downloadFile?sourceDataId=${sourceData[0]}&cs_id=${sourceFieldTemp.cs_id }&csf_id=${sourceFieldTemp.csf_id}">下载</a>
 										<div class="prodainmRib" id="">修改</div>
 									</div>
 								</c:when>

@@ -80,12 +80,14 @@ public class ExportController {
 		String pub=null;
 		try
 		{
-			uid=Integer.valueOf(sourceData.get(0));
-			fileName=sourceData.get(1);
-			pub=sourceData.get(2);
+			logger.info("cs_id: "+cs_id+", sourceDataId: "+sourceDataId+", csf_id: "+csf_id+"creator uid: "+sourceData.get(1)+", filename: "+sourceData.get(2)+", pub: "+sourceData.get(3)+", myUid: "+myUid);
+			uid=Integer.valueOf(sourceData.get(1));
+			fileName=sourceData.get(2);
+			pub=sourceData.get(3);
 		}
 		catch(Exception e)
 		{
+			e.printStackTrace();
 			throw new Exception("数据非法,无法获取文件名,创建者ID或公开状态.");
 		}
 
