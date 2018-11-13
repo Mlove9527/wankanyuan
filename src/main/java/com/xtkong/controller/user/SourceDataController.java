@@ -1059,6 +1059,99 @@ public class SourceDataController {
 		}
 		return map;
 	}
+	
+	/**
+	 * 更新一条源数据 带文件类型
+	 * 
+	 * @param cs_id
+	 *            采集源
+	 * @param sourceDataId
+	 * @param sourceFieldDatas
+	 *            采集源字段id、 数据值
+	 */
+	@SuppressWarnings({ "rawtypes", "null" })
+	@RequestMapping("/updateSourceAndFile")
+	@ResponseBody
+	public Map<String, Object> updateSourceAndFile(
+			String cs_id, String sourceDataId, HttpServletRequest request) {
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		User user = (User) request.getAttribute("user");
+		Map<String,String> resultMap = new HashMap<String, String>();
+		
+		 Map param = request.getParameterMap();
+		 Iterator entries = param.entrySet().iterator(); 
+		 while (entries.hasNext()) { 
+		   Map.Entry entry = (Map.Entry) entries.next(); 
+		   String key = (String)entry.getKey(); 
+		   String[] value = (String[])entry.getValue(); 
+		   //undefined和为空的不更新
+		   if(value[0].equals("undefined")||"".equals(value[0])) {
+			   continue; 
+		   }else {
+			   resultMap.put(key, value[0].equals("undefined")?"":value[0]);
+		   }
+		   System.out.println("Key = " + key + ", Value = " + value[0]); 
+		 }
+	   MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+       Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
+       if(fileMap != null || fileMap.size() > 0){
+    	   Collection<MultipartFile> files = fileMap.values();
+           for(MultipartFile file:files){
+        	   String key = file.getName();
+               String req = file.getOriginalFilename();
+               if(StringUtils.isBlank(req)){
+//            	   resultMap.put(key, "");
+                   continue;
+               }
+            //文件上传地址
+            //String contexPath= request.getSession().getServletContext().getRealPath("\\")+user.getUsername()+"\\";
+          	String path =this.dataFileLocation;
+           	File temp = new File(path);
+           	if(!temp.exists() && !temp.isDirectory()){
+           		temp.mkdir();
+            }
+          		
+       		String path1 =this.dataFileLocation+"\\"+user.getId()+"\\";
+       		File temp1 = new File(path1);
+       		if(!temp1.exists() && !temp1.isDirectory()){
+       			temp1.mkdir();
+       		}
+       		
+            String fileName = file.getOriginalFilename();
+       	    File dest = new File(path1 + "\\" + fileName);
+               if(!dest.getParentFile().exists()){//判断文件父目录是否存在
+                   dest.getParentFile().mkdir();
+               }
+               try {
+       			file.transferTo(dest); //保存文件
+//       			resultMap.put(key, user.getId()+"\\"+fileName);
+       			resultMap.put(key, fileName);
+       			System.out.println(dest.getAbsolutePath());
+		   		} catch (IllegalStateException e) {
+		   			e.printStackTrace();
+		   			map.put("result", false);
+		   	        map.put("message", "文件保存失败");
+		   	        return map;
+		   		} catch (IOException e) {
+		   			e.printStackTrace();
+		   			map.put("result", false);
+		   	        map.put("message", "文件保存失败");
+		   	        return map;
+		   		}
+           }
+       }
+       
+       if( HBaseSourceDataDao.updateSourceData(cs_id, sourceDataId ,resultMap)) {
+			map.put("result", true);
+			map.put("message", "更新成功");
+		} else {
+			map.put("result", false);
+			map.put("message", "更新失败");
+		}
+	   return map;
+               
+	}
 
 	/**
 	 * 通过sourceDataId获取一条源数据

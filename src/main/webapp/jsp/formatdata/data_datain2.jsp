@@ -147,7 +147,7 @@
 								<c:when test="${sourceFieldTemp.type=='文件' }">
 									<div class="prodainmRfilek">
 										<div class="prodainmRfile">${sourceData[status.index+1] }</div>
-										<input type="file" class="prodainmRip" style="display: none;">
+										<input type="file" class="prodainmRip" id=${sourceFieldTemp.csf_id } style="display: none;">
 										<a class="prodainmRib2" href="<%=path%>/export/downloadFile?sourceDataId=${sourceData[0]}&cs_id=${sourceFieldTemp.cs_id }&csf_id=${sourceFieldTemp.csf_id}">下载</a>
 										<div class="prodainmRib" id="">修改</div>
 									</div>
@@ -156,21 +156,21 @@
 									<div class="prodainmRik">
 										<img alt="" class="prodainmRi"
 											src="<%=path%>">
-										<input type="file" class="prodainmRip" style="display: none;">
+										<input type="file" class="prodainmRip" id=${sourceFieldTemp.csf_id } style="display: none;" >
 										<a class="prodainmRib2" href="<%=path%>/export/downloadFile?sourceDataId=${sourceData[0]}&cs_id=${sourceFieldTemp.cs_id }&csf_id=${sourceFieldTemp.csf_id}">下载</a>
 										<div class="prodainmRib" id="">修改</div>
 									</div>
 								</c:when>
 								<c:when test="${sourceFieldTemp.type=='字符'}">
-									<input class="prodainmRz1R" type="text"
+									<input class="prodainmRz1R" type="text" id=${sourceFieldTemp.csf_id }
 										value="${sourceData[status.index+1] }" />
 								</c:when>
 								<c:when test="${sourceFieldTemp.type=='数值'}">
-									<input class="prodainmRz1R" type="number"
+									<input class="prodainmRz1R" type="number" id=${sourceFieldTemp.csf_id }
 										value="${sourceData[status.index+1] }" />
 								</c:when>
 								<c:when test="${sourceFieldTemp.type=='日期'}">
-									<input class="prodainmRz1R" type="date"
+									<input class="prodainmRz1R" type="date" id=${sourceFieldTemp.csf_id }
 										value="${sourceData[status.index+1] }" />
 								</c:when>
 							</c:choose>
@@ -313,7 +313,57 @@
 			$(this).click(function() {
 				$('.prodainmRip')[index].click();
 			})
-		})
+		});
+		
+		//保存
+		$(".prodainmRb")
+		.click(function() {
+			var fileadd = document.querySelectorAll('.prodainmRip');
+			var otheradd = document.querySelectorAll('.prodainmRz1R');
+	        var form_data = new FormData();
+	        var cs_id = $('#cs_id').val();
+			var sourceDataId = $("#sourceDataId").val();
+	    	form_data.append("cs_id",cs_id);
+	    	form_data.append("sourceDataId",sourceDataId);
+	    	for(var i=0;i<fileadd.length;i++){
+	        	if(fileadd[i].type=="file"){
+	        		//文件
+	        		var fileObj = fileadd[i].files[0]; // 获取文件对象
+	        		form_data.append(fileadd[i].id, fileObj);
+	        	}else{
+	        		form_data.append(fileadd[i].id, otheradd[i].value);
+	        	}
+	        }
+	    	for(var i=0;i<otheradd.length;i++){
+	        	if(otheradd[i].type=="file"){
+	        		//文件
+	        		var fileObj = otheradd[i].files[0]; // 获取文件对象
+	        		form_data.append(otheradd[i].id, fileObj);
+	        	}else{
+	        		form_data.append(otheradd[i].id, otheradd[i].value);
+	        	}
+	        }
+	        $.ajax({
+	        	url:"/wankangyuan/sourceData/updateSourceAndFile",
+	        	type:"post",
+	        	data:form_data,
+	        	processData : false,  //必须false才会避开jQuery对 formdata 的默认处理   
+	            contentType : false,  //必须false才会自动加上正确的Content-Type 
+	        	success : function(data){
+	        		if(data.result == true){
+	        			alert(data.message);
+	        			// 刷新页面
+	        			//window.location.href="/wankangyuan/sourceData/getSourceDatas?type=2&cs_id="+cs_id;       			                    
+	        		}else{
+	        			alert(data.message);
+	        		}
+	        	},
+	        	error : function(){
+	        		alert("联网失败");
+	        	}
+	        });
+    		
+		});
 	</script>
 </body>
 </html>
