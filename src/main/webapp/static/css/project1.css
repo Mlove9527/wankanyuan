@@ -5825,6 +5825,7 @@ tr.PJli td{
 	display:inline-block;
 	vertical-align:middle;
 	cursor:pointer;
+	color:#000;
 }
 .prodainmRib2{
 	font-size:16px;
@@ -5834,6 +5835,7 @@ tr.PJli td{
 	display:inline-block;
 	vertical-align:middle;
 	cursor:pointer;
+	color:#000;
 }
 .prodainmRfilek{
 	margin:10px;
