@@ -343,6 +343,36 @@ public class HBaseSourceDataDao {
 		return sourceData;
 	}
 
+	/**
+	 * 通过sourceDataId获取一条源数据
+	 *
+	 * @param cs_id
+	 * @param sourceDataId
+	 * @param sourceFieldNames
+	 * @return
+	 */
+	public static List<String> getSourceDataByIdByFieldNames(String cs_id, String sourceDataId, List<String> sourceFieldNames) {
+		List<String> sourceData = new ArrayList<>();
+		try {
+			HBaseDB db = HBaseDB.getInstance();
+			Table table = db.getTable(ConstantsHBase.TABLE_PREFIX_SOURCE_ + cs_id);
+			Get get = new Get(Bytes.toBytes(sourceDataId));
+			Result result = table.get(get);
+			if (!result.isEmpty()) {
+				// 获取行键sourceDataId
+				sourceData.add(Bytes.toString(result.getRow()));
+				for (String sourceFieldName : sourceFieldNames) {
+					sourceData.add(Bytes.toString(result.getValue(Bytes.toBytes(ConstantsHBase.FAMILY_INFO),
+							Bytes.toBytes(sourceFieldName))));
+				}
+			}
+			table.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return sourceData;
+	}
+
 	public static List<List<String>> getSourceDatasByIds(String cs_id, String sourceDataIds,
 			List<SourceField> sourceFields) {
 		List<String> sourceDataIdList = new ArrayList<>();

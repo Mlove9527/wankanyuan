@@ -1,7 +1,7 @@
 package com.xtkong.controller.user;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +10,8 @@ import java.util.Map.Entry;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.xtkong.model.SourceField;
+import com.xtkong.service.*;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -18,6 +20,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -29,11 +32,6 @@ import com.xtkong.dao.hbase.HBaseSourceDataDao;
 import com.xtkong.model.FormatField;
 import com.xtkong.model.FormatType;
 import com.xtkong.model.Source;
-import com.xtkong.service.FormatFieldService;
-import com.xtkong.service.FormatTypeService;
-import com.xtkong.service.PhoenixClient;
-import com.xtkong.service.SourceFieldService;
-import com.xtkong.service.SourceService;
 import com.xtkong.util.ConstantsHBase;
 
 @Controller
@@ -50,6 +48,101 @@ public class ExportController {
 	FormatFieldService formatFieldService;
 	@Autowired
 	SourceDataController sourceDataController;
+	@Autowired
+	UserDataService userDataService;
+
+	@Value("${formatData.file.location}")
+	private String dataFileLocation;
+
+	/*
+	返回结果: key是文件名, value是文件路径
+	 */
+	private Entry<String,String> getFilePath(Integer cs_id,String sourceDataId,Integer csf_id,Integer myUid) throws Exception
+	{
+		List<String> fields=new ArrayList<>();
+		//第一个字段数据的创建者ID,找文件的时候要用
+		fields.add(ConstantsHBase.QUALIFIER_CREATE);
+		//文件名
+		fields.add(String.valueOf(csf_id));
+		//是否公开
+		fields.add(ConstantsHBase.QUALIFIER_PUBLIC);
+		List<String> sourceData = HBaseSourceDataDao.getSourceDataByIdByFieldNames(cs_id.toString(), sourceDataId, fields);
+		//任何一个为空都不行
+		for(String data : sourceData)
+		{
+			if(data==null || data.trim().equals(""))
+			{
+				throw new Exception("数据非法,无法获取文件名,创建者ID或公开状态.");
+			}
+		}
+		Integer uid=null;
+		String fileName=null;
+		String pub=null;
+		try
+		{
+			uid=Integer.valueOf(sourceData.get(0));
+			fileName=sourceData.get(1);
+			pub=sourceData.get(2);
+		}
+		catch(Exception e)
+		{
+			throw new Exception("数据非法,无法获取文件名,创建者ID或公开状态.");
+		}
+
+		if(!uid.equals(myUid) && !(pub.equals(ConstantsHBase.VALUE_PUBLIC_TRUE) && userDataService.selects(myUid,cs_id).contains(sourceDataId)))
+		{
+			throw new Exception("无权限操作.");
+		}
+
+		Map<String,String> result=new HashMap();
+
+		result.put(fileName,this.dataFileLocation+File.separatorChar+uid+File.separatorChar+fileName);
+
+		return (Entry<String,String>)result.entrySet().toArray()[0];
+	}
+
+	/**
+	 * 下载文件
+	 *
+	 * @param response
+	 * @param request
+	 * @param sourceDataId
+	 * @param cs_id
+	 * @param csf_id
+	 */
+	@RequestMapping("/downloadFile")
+	public void downloadFile(HttpServletResponse response,HttpServletRequest request,String sourceDataId,Integer cs_id,Integer csf_id)
+	{
+		User user = (User) request.getAttribute("user");
+		String filePath=null;
+		try
+		{
+			Integer myUid=user.getId();
+			Entry<String,String> result=getFilePath(cs_id,sourceDataId,csf_id,myUid);
+
+			filePath=result.getValue();
+
+			long fileLength = new File(filePath).length();
+			response.setContentType("application/x-msdownload;");
+			response.setHeader("Content-disposition", "attachment; filename=" + new String(result.getKey().getBytes("utf-8"), "ISO8859-1"));
+			response.setHeader("Content-Length", String.valueOf(fileLength));
+			BufferedInputStream bis = new BufferedInputStream(new FileInputStream(filePath));
+			BufferedOutputStream bos = new BufferedOutputStream(response.getOutputStream());
+			byte[] buff = new byte[20480];
+			int bytesRead;
+			while (-1 != (bytesRead = bis.read(buff, 0, buff.length))) {
+				bos.write(buff, 0, bytesRead);
+			}
+			bos.flush();
+			bos.close();
+		}
+		catch(Exception e)
+		{
+			logger.error(e);
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * 导出源数据上传格式
 	 * 
