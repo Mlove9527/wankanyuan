@@ -5,7 +5,6 @@
 * @Last Modified time: 2018-05-22 14:14:00
 */
 
-
 //  项目0
 function project0(){
 	var ologo=document.querySelectorAll('.logo')[0];
@@ -1350,13 +1349,13 @@ function data_create(){
         								 html += '<option value="'+ss[i-1]+'">'+ss[i-1]+'</option>';
         								 }
         								adddataM.append('<tr>'+
-        										'<td><div class="adddataMlit">'+sourceFields[index].csf_name+'<span style="color:red">*</span>:</div></td>'+
+        										'<td><div class="adddataMlit" title="'+sourceFields[index].description+'">'+sourceFields[index].csf_name+'<span style="color:red">*</span>:</div></td>'+
         										'<td><select id="'+sourceFields[index].csf_id +'" class="adddataMliTT adddataMliT">'+html +'</select></td>'+'' +
         								'</tr>');
         							}else{
         								
         								adddataM.append('<tr>'+
-        										'<td><div class="adddataMlit">'+sourceFields[index].csf_name+'<span style="color:red">*</span>:</div></td>'+
+        										'<td><div class="adddataMlit" title="'+sourceFields[index].description+'">'+sourceFields[index].csf_name+'<span style="color:red">*</span>:</div></td>'+
         										'<td><input name="cs_id" type="text" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" /></td>'+
         								'</tr>');
         							}
@@ -1372,12 +1371,12 @@ function data_create(){
         								 html += '<option value="'+ss[i-1]+'">'+ss[i-1]+'</option>';
         								 }
         								adddataM.append('<tr>'+
-        										'<td><div class="adddataMlit">'+sourceFields[index].csf_name+'<span style="color:red">*</span>:</div></td>'+
+        										'<td><div class="adddataMlit" title="'+sourceFields[index].description+'">'+sourceFields[index].csf_name+'<span style="color:red">*</span>:</div></td>'+
         										'<td><select id="'+sourceFields[index].csf_id +'" class="adddataMliTT adddataMliT">'+html +'</select></td>'+'' +
         								'</tr>');
         							}else{
             						adddataM.append('<tr>'+
-                               				'<td><div class="adddataMlit">'+sourceFields[index].csf_name+'<span style="color:red">*</span>:</div></td>'+
+                               				'<td><div class="adddataMlit" title="'+sourceFields[index].description+'">'+sourceFields[index].csf_name+'<span style="color:red">*</span>:</div></td>'+
                                 			'<td><input type="number" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" /></td>'+
                             			'</tr>');
         							}
@@ -1393,23 +1392,23 @@ function data_create(){
         								 html += '<option value="'+ss[i-1]+'">'+ss[i-1]+'</option>';
         								 }
         								adddataM.append('<tr>'+
-        										'<td><div class="adddataMlit">'+sourceFields[index].csf_name+'<span style="color:red">*</span>:</div></td>'+
+        										'<td><div class="adddataMlit" title="'+sourceFields[index].description+'">'+sourceFields[index].csf_name+'<span style="color:red">*</span>:</div></td>'+
         										'<td><select id="'+sourceFields[index].csf_id +'" class="adddataMliTT adddataMliT">'+html +'</select></td>'+'' +
         								'</tr>');
         							}else{
 	            						adddataM.append('<tr>'+
-	                               				'<td><div class="adddataMlit">'+sourceFields[index].csf_name+'<span style="color:red">*</span>:</div></td>'+
+	                               				'<td><div class="adddataMlit" title="'+sourceFields[index].description+'">'+sourceFields[index].csf_name+'<span style="color:red">*</span>:</div></td>'+
 	                                			'<td><input type="date" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" /></td>'+
 	                            			'</tr>');
         							}
             					}else if(sourceFields[index].type=="图片"){
             						adddataM.append('<tr>'+
-                               				'<td><div class="adddataMlit">'+sourceFields[index].csf_name+'<span style="color:red">*</span>:</div></td>'+
+                               				'<td><div class="adddataMlit" title="'+sourceFields[index].description+'">'+sourceFields[index].csf_name+'<span style="color:red">*</span>:</div></td>'+
                                 			'<td><input type="file" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" accept="image/*" /></td>'+
                             			'</tr>');
             					}else if(sourceFields[index].type=="文件"){
             						adddataM.append('<tr>'+
-                               				'<td><div class="adddataMlit">'+sourceFields[index].csf_name+'<span style="color:red">*</span>:</div></td>'+
+                               				'<td><div class="adddataMlit" title="'+sourceFields[index].description+'">'+sourceFields[index].csf_name+'<span style="color:red">*</span>:</div></td>'+
                                 			'<td><input type="file" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" /></td>'+
                             			'</tr>');
             					}
@@ -1426,12 +1425,12 @@ function data_create(){
         								 html += '<option value="'+ss[i-1]+'">'+ss[i-1]+'</option>';
         								 }
         								adddataM.append('<tr>'+
-        										'<td><div class="adddataMlit">'+sourceFields[index].csf_name+':</div></td>'+
+        										'<td><div class="adddataMlit" title="'+sourceFields[index].description+'">'+sourceFields[index].csf_name+':</div></td>'+
         										'<td><select id="'+sourceFields[index].csf_id +'" class="adddataMliTT adddataMliT">'+html +'</select></td>'+'' +
         								'</tr>');
         							}else{
         							adddataM.append('<tr>'+
-                               				'<td><div class="adddataMlit">'+sourceFields[index].csf_name+':</div></td>'+
+                               				'<td><div class="adddataMlit" title="'+sourceFields[index].description+'">'+sourceFields[index].csf_name+':</div></td>'+
                                 			'<td><input type="text" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" /></td>'+
                             			'</tr>');
         							}
@@ -1447,12 +1446,12 @@ function data_create(){
         								 html += '<option value="'+ss[i-1]+'">'+ss[i-1]+'</option>';
         								 }
         								adddataM.append('<tr>'+
-        										'<td><div class="adddataMlit">'+sourceFields[index].csf_name+':</div></td>'+
+        										'<td><div class="adddataMlit" title="'+sourceFields[index].description+'">'+sourceFields[index].csf_name+':</div></td>'+
         										'<td><select id="'+sourceFields[index].csf_id +'" class="adddataMliTT adddataMliT">'+html +'</select></td>'+'' +
         								'</tr>');
         							}else{
             						adddataM.append('<tr>'+
-                               				'<td><div class="adddataMlit">'+sourceFields[index].csf_name+':</div></td>'+
+                               				'<td><div class="adddataMlit" title="'+sourceFields[index].description+'">'+sourceFields[index].csf_name+':</div></td>'+
                                 			'<td><input type="number" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" /></td>'+
                             			'</tr>');
         							}
@@ -1468,23 +1467,23 @@ function data_create(){
         								 html += '<option value="'+ss[i-1]+'">'+ss[i-1]+'</option>';
         								 }
         								adddataM.append('<tr>'+
-        										'<td><div class="adddataMlit">'+sourceFields[index].csf_name+':</div></td>'+
+        										'<td><div class="adddataMlit" title="'+sourceFields[index].description+'">'+sourceFields[index].csf_name+':</div></td>'+
         										'<td><select id="'+sourceFields[index].csf_id +'" class="adddataMliTT adddataMliT">'+html +'</select></td>'+'' +
         								'</tr>');
         							}else{
             						adddataM.append('<tr>'+
-                               				'<td><div class="adddataMlit">'+sourceFields[index].csf_name+':</div></td>'+
+                               				'<td><div class="adddataMlit" title="'+sourceFields[index].description+'">'+sourceFields[index].csf_name+':</div></td>'+
                                 			'<td><input type="date" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" /></td>'+
                             			'</tr>');
         							}
             					}else if(sourceFields[index].type=="图片"){
             						adddataM.append('<tr>'+
-                               				'<td><div class="adddataMlit">'+sourceFields[index].csf_name+':</div></td>'+
+                               				'<td><div class="adddataMlit" title="'+sourceFields[index].description+'">'+sourceFields[index].csf_name+':</div></td>'+
                                 			'<td><input name="file" type="file" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" accept="image/*" /></td>'+
                             			'</tr>');
             					}else if(sourceFields[index].type=="文件"){
             						adddataM.append('<tr>'+
-                               				'<td><div class="adddataMlit">'+sourceFields[index].csf_name+':</div></td>'+
+                               				'<td><div class="adddataMlit" title="'+sourceFields[index].description+'">'+sourceFields[index].csf_name+':</div></td>'+
                                 			'<td><input type="file" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" /></td>'+
                             			'</tr>');
             					}

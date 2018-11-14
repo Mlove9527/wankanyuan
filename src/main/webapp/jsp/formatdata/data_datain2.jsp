@@ -140,7 +140,7 @@
 					<c:forEach items="${source.sourceFields}" var="sourceFieldTemp"
 						varStatus="status">
 						<div class="prodainmRz1">
-							<div class="prodainmRz1L">${sourceFieldTemp.csf_name}</div>
+							<div class="prodainmRz1L"  title="${sourceFieldTemp.description}">${sourceFieldTemp.csf_name}</div>
 							<%-- <c:if test="sourceFieldTemp.type=='文件'"></c:if> --%>
 							<c:choose>
 							
