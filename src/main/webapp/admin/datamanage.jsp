@@ -818,10 +818,10 @@
 	$(document).ready(function(){  
 		$('#enumerated1id').change(function(){  
 		var p1=$(this).children('option:selected').text();//这就是selected的值  
-		if(p1=="否"){
-			$("#valueEM1id").css('display','none');
-		}else{
+		if(p1=="是"){
 			$("#valueEM1id").css('display','block');
+		}else{
+			$("#valueEM1id").css('display','none');
 		}
 		});  
 		$('#edit_enumerated').change(function(){  

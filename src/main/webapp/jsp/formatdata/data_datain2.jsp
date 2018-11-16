@@ -141,6 +141,9 @@
 						varStatus="status">
 						<div class="prodainmRz1">
 							<div class="prodainmRz1L"  title="${sourceFieldTemp.description}">${sourceFieldTemp.csf_name}</div>
+							<c:if test="${sourceFieldTemp.not_null==true}"><span class="redspan" style="color:red;float:left;">*</span></c:if>
+							<div class="errname" style="display:none;">${sourceFieldTemp.csf_name}</div>
+							<div class="errmsg" style="display:none;">${sourceFieldTemp.error_msg}</div>
 							<%-- <c:if test="sourceFieldTemp.type=='文件'"></c:if> --%>
 							<c:choose>
 							
@@ -222,6 +225,13 @@
 		src="/wankangyuan/static/js/jquery.min.js"></script>
 
 	<script type="text/javascript">
+	//文件和图片上传input的accept设置
+	var aprodainmRip=document.querySelectorAll('prodainmRip');
+	for(var i=0;i<aprodainmRip.length;i++){
+		console.log(aprodainmRip[i]);
+		aprodainmRip[i].accept=varaccept;
+	}
+	
 		function dataNodeClick(formatNodeId, ft_id) {
 			var cs_id = $('#cs_id').val();
 			var sourceDataId = $("#sourceDataId").val();
@@ -315,7 +325,7 @@
 			})
 		});
 		
-		//保存
+		/* //保存
 		$(".prodainmRb")
 		.click(function() {
 			var fileadd = document.querySelectorAll('.prodainmRip');
@@ -363,7 +373,88 @@
 	        	}
 	        });
     		
-		});
+		}); */
+        //保存
+        $(".prodainmRb")
+        .click(function() {
+            var aerrname=document.querySelectorAll('.errname');
+            var aerrmsg=document.querySelectorAll('.errmsg');
+            //console.log(aerrname[0].innerHTML);
+            var btpd=true;
+            var btpd_id=[];
+            var aprodainmRz1=document.querySelectorAll('.prodainmRz1');
+            for(var i=0;i<aprodainmRz1.length;i++){
+                var ospan=aprodainmRz1[i].querySelectorAll('.redspan')[0];
+                if(ospan){
+                    var oprodainmRip=aprodainmRz1[i].querySelectorAll('.prodainmRip')[0];
+                    var oprodainmRz1R=aprodainmRz1[i].querySelectorAll('.prodainmRz1R')[0];
+                    if(oprodainmRip){
+                        if(oprodainmRip.value==''){
+                            btpd=false;
+                            btpd_id.push(i);
+                        }
+                    }else if(oprodainmRz1R){
+                        if(oprodainmRz1R.value==''){
+                            btpd=false;
+                            btpd_id.push(i);
+                        }
+                    }
+                    
+                }
+            }
+            if(btpd){
+                var fileadd = document.querySelectorAll('.prodainmRip');
+                var otheradd = document.querySelectorAll('.prodainmRz1R');
+                var form_data = new FormData();
+                var cs_id = $('#cs_id').val();
+                var sourceDataId = $("#sourceDataId").val();
+                form_data.append("cs_id",cs_id);
+                form_data.append("sourceDataId",sourceDataId);
+                for(var i=0;i<fileadd.length;i++){
+                    if(fileadd[i].type=="file"){
+                        //文件
+                        var fileObj = fileadd[i].files[0]; // 获取文件对象
+                        form_data.append(fileadd[i].id, fileObj);
+                    }else{
+                        form_data.append(fileadd[i].id, otheradd[i].value);
+                    }
+                }
+                for(var i=0;i<otheradd.length;i++){
+                    if(otheradd[i].type=="file"){
+                        //文件
+                        var fileObj = otheradd[i].files[0]; // 获取文件对象
+                        form_data.append(otheradd[i].id, fileObj);
+                    }else{
+                        form_data.append(otheradd[i].id, otheradd[i].value);
+                    }
+                }
+                $.ajax({
+                    url:"/wankangyuan/sourceData/updateSourceAndFile",
+                    type:"post",
+                    data:form_data,
+                    processData : false,  //必须false才会避开jQuery对 formdata 的默认处理   
+                    contentType : false,  //必须false才会自动加上正确的Content-Type 
+                    success : function(data){
+                        if(data.result == true){
+                            alert(data.message);
+                            // 刷新页面
+                            //window.location.href="/wankangyuan/sourceData/getSourceDatas?type=2&cs_id="+cs_id;                                    
+                        }else{
+                            alert(data.message);
+                        }
+                    },
+                    error : function(){
+                        alert("联网失败");
+                    }
+                });
+            }else{
+                console.log(btpd_id);
+                //for(var i=0;i<btpd_id.length;i++){
+                    var j=btpd_id[0];
+                    alert(aerrname[j].innerHTML+'项错误信息：'+aerrmsg[j].innerHTML);
+                //}
+            }
+        });
 	</script>
 </body>
 </html>
