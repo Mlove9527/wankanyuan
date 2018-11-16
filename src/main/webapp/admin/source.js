@@ -251,7 +251,7 @@ $("#insertSourceFieldSubmit").click(function (){
 
 //更新数据源基本信息字段提交按钮，OK
 $("#updateSourceFieldSubmit").click(function (){
-
+console.log(updateSourceFieldForm.valueEM.value);
 	$.ajax({
 		url:"/wankangyuan/sourceField/updateSourceField",
 		type:"post",
@@ -266,7 +266,7 @@ $("#updateSourceFieldSubmit").click(function (){
 			description:updateSourceFieldForm.edit_description.value,
 			error_msg:updateSourceFieldForm.edit_error_msg.value,
 			is_view:updateSourceFieldForm.csfield_edit_is_view.value,
-			emvalue:insertSourceFieldForm.valueEM.value,//将新增的枚举值放到调的接口中
+			emvalue:updateSourceFieldForm.valueEM.value,//将新增的枚举值放到调的接口中
 			uid:'1'
 		},
 		success : function(data){

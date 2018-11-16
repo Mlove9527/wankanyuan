@@ -89,12 +89,12 @@
 							width="20" alt="" class="backI" />
 						</a>${sourceData[1]} <input id="cs_id" value="${source.cs_id }"
 							style="display: none;" /> <input id="sourceDataId"
-							value="${sourceData[0]}" style="display: none;" />
+						style="display: none;"	value="${sourceData[0]}" />
 					</div>
 					<div class="app_expexport app_expexport_node"
-						style="display: none;">导出结点</div>
+						>导出结点</div>
 					<div class="app_expexport app_expexport_type"
-						style="display: none;">导出格式类型</div>
+						>导出格式类型</div>
 				</div>
 			</div>
 			<div class="prodainm">
@@ -229,7 +229,7 @@
 					+ cs_id
 					+ "&sourceDataId="
 					+ sourceDataId
-					+ "&type=1&ft_id="
+					+ "&type=2&ft_id="
 					+ ft_id
 					+ "&formatNodeId="
 					+ formatNodeId;

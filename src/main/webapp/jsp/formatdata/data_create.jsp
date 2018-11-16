@@ -137,7 +137,7 @@
 					<div class="pro_menu pro_inport">导入</div>
 					<div class="pro_menu pro_export">导出</div>
 					<div class="pro_menu pro_rem" id="deleteSourceDatas">移除</div>
-					<div class="pro_menu pro_upDatadata">修改</div>
+					<div class="pro_menu pro_upDatadata" style="display: none;">修改</div>
 					<div class="pro_menu pro_adddata">+添加源数据</div>
 					<select name="" id="source_Select" class="pro_menusel">
 						<c:forEach items="${sources}" var="source">
@@ -202,7 +202,7 @@
 				
 				
 				
-				<div class="upDatadataK">
+				<div class="upDatadataK" style="display: none;">
 					<div class="upDatadataT">
 						<div class="upDatadataTt">修改源数据</div>
 						<div class="upDatadataTx"></div>
