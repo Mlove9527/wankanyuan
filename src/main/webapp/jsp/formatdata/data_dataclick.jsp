@@ -323,6 +323,9 @@
 	
 	
 	$(function(){
+		console.log('1111111');
+		console.log(${type123});
+		console.log('1111111');
 		var oquanxuanK=document.querySelectorAll('.quanxuanK')[0];//获取页面中全选框的外部div
 		var oinput_check=oquanxuanK.querySelectorAll('.input_check')[0];//获取上方div内的全选按钮checkbox
 		var oisAll=document.querySelectorAll('#isAll2')[0];//获取隐藏域_存储是否全选的
