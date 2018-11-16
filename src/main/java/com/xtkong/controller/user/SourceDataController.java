@@ -19,6 +19,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import com.liutianjun.pojo.UserDataRelation;
+import com.xtkong.model.FormatFile;
+import com.xtkong.service.*;
+import com.xtkong.util.MyFileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -38,20 +41,7 @@ import com.xtkong.dao.hbase.HBaseSourceDataDao;
 import com.xtkong.model.FormatType;
 import com.xtkong.model.Source;
 import com.xtkong.model.SourceField;
-import com.xtkong.service.FormatFieldService;
-import com.xtkong.service.FormatTypeService;
-import com.xtkong.service.PhoenixClient;
-import com.xtkong.service.ProjectDataService;
-import com.xtkong.service.SourceFieldService;
-import com.xtkong.service.SourceService;
-import com.xtkong.service.UserDataService;
 import com.xtkong.util.ConstantsHBase;
-
-import org.apache.commons.fileupload.FileItemIterator;
-import org.apache.commons.fileupload.FileItemStream;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.fileupload.util.Streams;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -118,6 +108,8 @@ public class SourceDataController {
 	FormatTypeService formatTypeService;
 	@Autowired
 	FormatFieldService formatFieldService;
+	@Autowired
+	FormatFileService formatFileService;
 	@Autowired
 	ProjectCustomRoleService projectCustomRoleService;
 	@Autowired
@@ -344,7 +336,7 @@ public class SourceDataController {
 	 * @param desc_asc
 	 * @param searchWord
 	 * @param chooseDatas
-	 * @param oldCondition
+	 * @param oldCond8ition
 	 * @param p_id
 	 * @param searchFirstWord
 	 * @return sources 采集源列表 source 选中采集源的字段列表 sourceDatas
@@ -924,9 +916,7 @@ public class SourceDataController {
 
 	/**
 	 * 获取添加源数据表单
-	 * 
-	 * @param httpSession
-	 * @param type
+	 *
 	 * @param cs_id
 	 * @return
 	 */
@@ -951,8 +941,7 @@ public class SourceDataController {
 	 * 
 	 * @param cs_id
 	 *            采集源
-	 * @param sourceFieldDatas
-	 *            采集源字段id、 数据值
+	 * @param request
 	 */
 	@SuppressWarnings({ "rawtypes", "null" })
 	@RequestMapping("/insertSourceData")
@@ -991,38 +980,69 @@ public class SourceDataController {
            	if(!temp.exists() && !temp.isDirectory()){
            		temp.mkdir();
             }
-          		
-       		String path1 =this.dataFileLocation+"\\"+user.getId()+"\\";
-       		File temp1 = new File(path1);
-       		if(!temp1.exists() && !temp1.isDirectory()){
-       			temp1.mkdir();
-       		}
-       		
-            String fileName = file.getOriginalFilename();
-       	    File dest = new File(path1 + "\\" + fileName);
-               if(!dest.getParentFile().exists()){//判断文件父目录是否存在
-                   dest.getParentFile().mkdir();
-               }
+
+
+
                try {
-       			file.transferTo(dest); //保存文件
+				   String fileName = file.getOriginalFilename();
+				   String md5Code=MyFileUtil.FileMD5(file.getBytes());
+				   String relaPath=md5Code;
+
+					FormatFile formatFileExists=formatFileService.SelectFormatFileByMD5Code(md5Code);
+				   //如果没有这个文件的MD5,则新建并导入数据
+				   if(formatFileExists==null)
+				   {
+					   FormatFile formatFile=new FormatFile();
+					   //formatFile.setCs_id(Integer.valueOf(cs_id));
+					   formatFile.setFilename(fileName);
+					   formatFile.setMd5code(md5Code);
+					   formatFile.setUid(user.getId());
+					   formatFile.setPath(relaPath);
+					   //formatFile.setCsf_id(Integer.valueOf(key));
+					   try
+					   {
+						   formatFileService.insertFormatFile(formatFile);
+					   }
+					   catch(Exception e)
+					   {
+						   //如果异常不是因为文件已存在，则报错退出
+						   if(!e.getMessage().toLowerCase().contains("ak_md5code"))
+						   {
+							   logger.error(e);
+							   map.put("result", false);
+							   map.put("message", "操作数据库出错!");
+							   return map;
+						   }
+					   }
+
+					   String path1 =this.dataFileLocation+File.separator+relaPath;
+					   File temp1 = new File(path1);
+					   if(!temp1.exists() && !temp1.isDirectory()){
+						   temp1.mkdir();
+					   }
+
+					   File dest = new File(path1);
+					   if(!dest.getParentFile().exists()){//判断文件父目录是否存在
+						   dest.getParentFile().mkdir();
+					   }
+					   file.transferTo(dest); //保存文件
+					   System.out.println(dest.getAbsolutePath());
+				   }
+				   //如果有,则不新建，直接导入数据
+
 //       			resultMap.put(key, user.getId()+"\\"+fileName);
-       			resultMap.put(key, fileName);
-       			System.out.println(dest.getAbsolutePath());
-		   		} catch (IllegalStateException e) {
+       				resultMap.put(key, md5Code+"_"+fileName);
+
+		   		} catch (Exception e) {
 		   			e.printStackTrace();
 		   			map.put("result", false);
-		   	        map.put("message", "文件保存失败");
-		   	        return map;
-		   		} catch (IOException e) {
-		   			e.printStackTrace();
-		   			map.put("result", false);
-		   	        map.put("message", "文件保存失败");
+		   	        map.put("message", "文件保存失败: "+e.getMessage());
 		   	        return map;
 		   		}
            }
        }
-       
-       if (HBaseSourceDataDao.insertSourceData(cs_id, String.valueOf(user.getId()),resultMap, user.getUsername()) != null) {
+       String rowKey=HBaseSourceDataDao.insertSourceData(cs_id, String.valueOf(user.getId()),resultMap, user.getUsername());
+       if (rowKey != null) {
 			map.put("result", true);
 			map.put("message", "新增成功");
 		} else {
@@ -1040,7 +1060,7 @@ public class SourceDataController {
 	 * @param cs_id
 	 *            采集源
 	 * @param sourceDataId
-	 * @param sourceFieldDatas
+	 * @param soufieldDatas
 	 *            采集源字段id、 数据值
 	 */
 	@RequestMapping("/updateSourceData")
@@ -1066,7 +1086,7 @@ public class SourceDataController {
 	 * @param cs_id
 	 *            采集源
 	 * @param sourceDataId
-	 * @param sourceFieldDatas
+	 * @param request
 	 *            采集源字段id、 数据值
 	 */
 	@SuppressWarnings({ "rawtypes", "null" })
@@ -1074,7 +1094,7 @@ public class SourceDataController {
 	@ResponseBody
 	public Map<String, Object> updateSourceAndFile(
 			String cs_id, String sourceDataId, HttpServletRequest request) {
-		
+
 		Map<String, Object> map = new HashMap<String, Object>();
 		User user = (User) request.getAttribute("user");
 		Map<String,String> resultMap = new HashMap<String, String>();
@@ -1112,28 +1132,61 @@ public class SourceDataController {
            		temp.mkdir();
             }
           		
-       		String path1 =this.dataFileLocation+"\\"+user.getId()+"\\";
-       		File temp1 = new File(path1);
-       		if(!temp1.exists() && !temp1.isDirectory()){
-       			temp1.mkdir();
-       		}
-       		
-            String fileName = file.getOriginalFilename();
-       	    File dest = new File(path1 + "\\" + fileName);
-               if(!dest.getParentFile().exists()){//判断文件父目录是否存在
-                   dest.getParentFile().mkdir();
-               }
+
                try {
-       			file.transferTo(dest); //保存文件
+				   String md5Code= MyFileUtil.FileMD5(file.getBytes());
+				   String relaPath=md5Code;
+				   String fileName = file.getOriginalFilename();
+
+				   FormatFile formatFileExists=formatFileService.SelectFormatFileByMD5Code(md5Code);
+				   //如果没有这个文件的MD5,则新建并导入数据
+				   if(formatFileExists==null)
+				   {
+					   FormatFile formatFile=new FormatFile();
+					   //formatFile.setCs_id(Integer.valueOf(cs_id));
+					   formatFile.setFilename(fileName);
+					   formatFile.setMd5code(md5Code);
+					   formatFile.setUid(user.getId());
+					   formatFile.setPath(relaPath);
+					   //formatFile.setCsf_id(Integer.valueOf(key));
+					   try
+					   {
+						   formatFileService.insertFormatFile(formatFile);
+					   }
+					   catch(Exception e)
+					   {
+						   //如果异常不是因为文件已存在，则报错退出
+						   if(!e.getMessage().toLowerCase().contains("ak_md5code"))
+						   {
+							   logger.error(e);
+							   map.put("result", false);
+							   map.put("message", "操作数据库出错!");
+							   return map;
+						   }
+					   }
+
+					   String path1 =this.dataFileLocation+File.separator+relaPath;
+					   File temp1 = new File(path1);
+					   if(!temp1.exists() && !temp1.isDirectory()){
+						   temp1.mkdir();
+					   }
+
+					   File dest = new File(path1);
+					   if(!dest.getParentFile().exists()){//判断文件父目录是否存在
+						   dest.getParentFile().mkdir();
+					   }
+
+					   file.transferTo(dest); //保存文件
+					   System.out.println(dest.getAbsolutePath());
+				   }
+				   //如果有,则不新建，直接导入数据
+
 //       			resultMap.put(key, user.getId()+"\\"+fileName);
-       			resultMap.put(key, fileName);
-       			System.out.println(dest.getAbsolutePath());
-		   		} catch (IllegalStateException e) {
-		   			e.printStackTrace();
-		   			map.put("result", false);
-		   	        map.put("message", "文件保存失败");
-		   	        return map;
-		   		} catch (IOException e) {
+       			resultMap.put(key, md5Code+"_"+fileName);
+				   //String oldMD5Code=oldFileName.substring(0,oldFileName.indexOf("_"));
+				   //logger.info("oldMD5Code: "+oldMD5Code);
+
+		   		} catch (Exception e) {
 		   			e.printStackTrace();
 		   			map.put("result", false);
 		   	        map.put("message", "文件保存失败");
@@ -1210,9 +1263,18 @@ public class SourceDataController {
 
 	/**
 	 * 批量删除源数据
-	 * 
+	 * @param request
+	 * @param type
 	 * @param cs_id
-	 * @param sourceDataIds
+	 * @param ids
+	 * @param isAll
+	 * @param searchId
+	 * @param searchWord
+	 * @param desc_asc
+	 * @param oldCondition
+	 * @param searchFirstWord
+	 * @param chooseDatas
+	 * @param likeSearch
 	 * @return
 	 */
 	@RequestMapping("/deleteSourceDatas")
@@ -1290,9 +1352,10 @@ public class SourceDataController {
 
 	/**
 	 * 公开
-	 * 
+	 * @param request
 	 * @param cs_id
-	 * @param sourceDataIds
+	 * @param ids
+	 * @param isAll
 	 * @return
 	 */
 	@RequestMapping("/open")
@@ -1363,9 +1426,11 @@ public class SourceDataController {
 
 	/**
 	 * 取消公开
-	 * 
+	 *
+	 * @param request
 	 * @param cs_id
-	 * @param sourceDataIds
+	 * @param ids
+	 * @param isAll
 	 * @return
 	 */
 	@RequestMapping("/notOpen")
@@ -1593,7 +1658,7 @@ public class SourceDataController {
 	 * 
 	 * @param request
 	 * @param cs_id
-	 * @param sourceDataIds
+	 * @param ids
 	 * @return
 	 */
 	@RequestMapping("/removeSourceDatas")

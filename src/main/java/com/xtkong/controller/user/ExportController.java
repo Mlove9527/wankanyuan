@@ -98,7 +98,8 @@ public class ExportController {
 
 		Map<String,String> result=new HashMap();
 
-		result.put(fileName,this.dataFileLocation+File.separatorChar+uid+File.separatorChar+fileName);
+		//_号前面是MD5值, _号后边是真正的文件名
+		result.put(fileName.substring(fileName.indexOf("_")+1,fileName.length()),this.dataFileLocation+File.separatorChar+fileName.substring(0,fileName.indexOf("_")));
 
 		return (Entry<String,String>)result.entrySet().toArray()[0];
 	}
@@ -124,11 +125,17 @@ public class ExportController {
 
 			filePath=result.getValue();
 
-			long fileLength = new File(filePath).length();
+			File fileToBeDownload=new File(filePath);
+			if(!fileToBeDownload.exists())
+			{
+				logger.error("下载文件错误: "+filePath+" 文件不存在,应该是文件管理目录和数据库的信息不一致.");
+				return;
+			}
+			long fileLength = fileToBeDownload.length();
 			response.setContentType("application/x-msdownload;");
 			response.setHeader("Content-disposition", "attachment; filename=" + new String(result.getKey().getBytes("utf-8"), "ISO8859-1"));
 			response.setHeader("Content-Length", String.valueOf(fileLength));
-			BufferedInputStream bis = new BufferedInputStream(new FileInputStream(filePath));
+			BufferedInputStream bis = new BufferedInputStream(new FileInputStream(fileToBeDownload));
 			BufferedOutputStream bos = new BufferedOutputStream(response.getOutputStream());
 			byte[] buff = new byte[20480];
 			int bytesRead;
@@ -187,7 +194,7 @@ public class ExportController {
 	 * 
 	 * @param response
 	 * @param cs_id
-	 * @param sourceDataIds
+	 * @param ids
 	 */
 	@RequestMapping("/sourceData")
 	public void sourceData(HttpServletResponse response,HttpServletRequest request,String type,String cs_id, String ids, boolean isAll,
@@ -306,8 +313,8 @@ public class ExportController {
 	 * 
 	 * @param response
 	 * @param cs_id
-	 * @param ft_id
-	 * @param formatNodeId
+	 * @param ft_ids
+	 * @param formatNodeIds
 	 */
 	@RequestMapping("/formatNode")
 	public void formatNode(HttpServletResponse response, String cs_id, String ft_ids, String formatNodeIds) {
@@ -367,7 +374,7 @@ public class ExportController {
 	 * 导出格式数据上传格式
 	 * 
 	 * @param response
-	 * @param cs_id
+	 * @param ft_id
 	 */
 	@RequestMapping("/formatDataModel")
 	public void formatDataModel(HttpServletResponse response, String ft_id) {
@@ -399,7 +406,6 @@ public class ExportController {
 	 * @param cs_id
 	 * @param ft_id
 	 * @param formatDataIds
-	 * @param type
 	 *            1公共，0非公共
 	 */
 	@RequestMapping("/formatData")

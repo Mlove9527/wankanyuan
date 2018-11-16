@@ -5,16 +5,14 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.xtkong.model.FormatFile;
+import com.xtkong.service.*;
+import com.xtkong.util.MyFileUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -36,16 +34,12 @@ import com.xtkong.dao.hbase.HBaseFormatDataDao;
 import com.xtkong.dao.hbase.HBaseSourceDataDao;
 import com.xtkong.model.FormatField;
 import com.xtkong.model.SourceField;
-import com.xtkong.service.FormatFieldService;
-import com.xtkong.service.FormatTypeService;
-import com.xtkong.service.SourceFieldService;
-import com.xtkong.service.SourceService;
 import com.xtkong.util.ConstantsHBase;
 
 @Controller
 @RequestMapping("/import")
 public class ImportController {
-	private static final Logger logger  =  Logger.getLogger(ImportController.class );
+	private static final Logger logger =  Logger.getLogger(ImportController.class );
 	@Autowired
 	SourceService sourceService;
 	@Autowired
@@ -55,46 +49,83 @@ public class ImportController {
 	@Autowired
 	FormatFieldService formatFieldService;
 
+	@Autowired
+	FormatFileService formatFileService;
+
+	@Value("${formatData.file.tmp}")
+	private String dataFileTmpLocation;
 	@Value("${formatData.file.location}")
-	private String dataFileLocation;
+	private String dataFileFinalLocation;
 
-	private boolean ifFileExists(String uid,String fileName)
+	private boolean ifFileExists(String username,String fileName)
 	{
-		return new File(dataFileLocation+File.separatorChar+uid+File.separatorChar+fileName).exists();
+		return new File(dataFileTmpLocation+File.separatorChar+username+File.separatorChar+fileName).exists();
 	}
 
-	private boolean ifImgExists(String uid,String fileName)
+	private boolean ifImgExists(String username,String fileName)
 	{
-		return new File(dataFileLocation+File.separatorChar+uid+File.separatorChar+fileName).exists();
+		return new File(dataFileTmpLocation+File.separatorChar+username+File.separatorChar+fileName).exists();
 	}
 
-	private void validateData(String data,SourceField csf,String uid) throws Exception
+	private void validateData(String val,SourceField csf,String username) throws Exception
 	{
-		if(csf.isNot_null() && (data==null || data.trim().isEmpty()))
+		if(val==null || val.trim().isEmpty())
 		{
-			throw new Exception("不能为空.");
-		}
-		if(csf.getType().equals("图片"))
-		{
-			if(!ifImgExists(uid,data))
+			//如果字段为非空,但是值为空
+			if(csf.isNot_null())
 			{
-				logger.warn("uid: "+uid+", image file: "+data+" not exists.");
-				throw new Exception("图片文件不存在: "+data);
+				throw new Exception(csf.getError_msg());
 			}
 		}
-		else if(csf.getType().equals("文件"))
+		else
 		{
-			if(!ifFileExists(uid,data))
+			if(csf.getType().equals("图片"))
 			{
-				logger.warn("uid: "+uid+", file: "+data+" not exists.");
-				throw new Exception("文件不存在: "+data);
+				if(!ifImgExists(username,val.trim()))
+				{
+					logger.warn("username: "+username+", image file: "+val.trim()+" not exists.");
+					throw new Exception(csf.getError_msg());
+				}
+			}
+			else if(csf.getType().equals("文件"))
+			{
+				if(!ifFileExists(username,val.trim()))
+				{
+					logger.warn("username: "+username+", file: "+val.trim()+" not exists.");
+					throw new Exception(csf.getError_msg());
+				}
+			}
+			//是枚举值
+			else if(csf.isEnumerated())
+			{
+				String eVals=csf.getEmvalue();
+				if(eVals!=null && !eVals.trim().equals(""))
+				{
+					String eValArr[]=eVals.trim().split(",");
+					boolean ifHas=false;
+					for(String eVal : eValArr)
+					{
+						if(val.trim().equals(eVal.trim()))
+						{
+							ifHas=true;
+							break;
+						}
+					}
+					if(!ifHas)
+					{
+						throw new Exception(csf.getError_msg());
+					}
+				}
+
 			}
 		}
+
 	}
 	
 	/**
 	    上传文件接口
 	    建议前端data为FormData()类型
+	 文件将上传到临时目录,以用户名为独立目录
 	 * @param request
 	 */
 	@SuppressWarnings({ "rawtypes" })
@@ -133,20 +164,20 @@ public class ImportController {
 					}
 					//文件上传地址
 					//String contexPath= request.getSession().getServletContext().getRealPath("\\")+user.getUsername()+"\\";
-					String path = this.dataFileLocation;
+					String path = this.dataFileTmpLocation;
 					File temp = new File(path);
 					if (!temp.exists() && !temp.isDirectory()) {
 						temp.mkdir();
 					}
 
-					String path1 = this.dataFileLocation + "\\" + user.getId() + "\\";
+					String path1 = this.dataFileTmpLocation + File.separator + user.getUsername();
 					File temp1 = new File(path1);
 					if (!temp1.exists() && !temp1.isDirectory()) {
 						temp1.mkdir();
 					}
 
 					String fileName = file.getOriginalFilename();
-					File dest = new File(path1 + "\\" + fileName);
+					File dest = new File(path1 + File.separator + fileName);
 					if (!dest.getParentFile().exists()) {//判断文件父目录是否存在
 						dest.getParentFile().mkdir();
 					}
@@ -185,6 +216,60 @@ public class ImportController {
        }
 	   return map;
                
+	}
+
+	/*
+	key是最终的文件名,value是相对路径
+	 */
+	private Entry<String,String> importFile(String username,Integer uid,String fileName) throws Exception
+	{
+		File sourceFile=new File(dataFileTmpLocation+File.separatorChar+username+File.separatorChar+fileName);
+		if(!sourceFile.exists())
+		{
+			throw new Exception("文件不存在: "+sourceFile.getAbsolutePath());
+		}
+		String md5=MyFileUtil.FileMD5(sourceFile.getAbsolutePath());
+		if(md5==null)
+		{
+			throw new Exception("计算文件MD5值出错: "+sourceFile.getAbsolutePath());
+		}
+		String relaPath=md5;
+
+		FormatFile formatFileExists=formatFileService.SelectFormatFileByMD5Code(md5);
+		//如果没有这个文件的MD5,则新建并导入数据
+		if(formatFileExists==null)
+		{
+			FormatFile formatFile=new FormatFile();
+			//formatFile.setCs_id(Integer.valueOf(cs_id));
+			formatFile.setFilename(fileName);
+			formatFile.setMd5code(md5);
+			formatFile.setUid(uid);
+			formatFile.setPath(relaPath);
+			//formatFile.setCsf_id(Integer.valueOf(key));
+			try
+			{
+				formatFileService.insertFormatFile(formatFile);
+			}
+			catch(Exception e)
+			{
+				//如果异常不是因为文件已存在，则报错退出
+				if(!e.getMessage().toLowerCase().contains("ak_md5code"))
+				{
+					logger.error(e);
+					throw new Exception("操作数据库出错: "+e.getMessage());
+				}
+			}
+
+			String destPath=dataFileFinalLocation+File.separator+relaPath;
+
+			MyFileUtil.CopyTo(sourceFile,new File(destPath));
+
+		}
+		//如果有,则不新建，直接导入数据
+
+		Map<String,String> resultMap=new HashMap();
+		resultMap.put(md5+"_"+fileName,relaPath);
+		return (Entry<String,String>)resultMap.entrySet().toArray()[0];
 	}
 
 	@RequestMapping(value = "/sourceData")
@@ -264,15 +349,23 @@ public class ImportController {
 					continue;
 				}
 				Map<String, String> sourceFieldDatas = new HashMap<>();
+
 				for (Entry<Integer, SourceField> index_csf : index_csfMap.entrySet()) {
 					try {
 						cell = row.getCell(index_csf.getKey());
 						String cellValue=getStringCellValue(cell);
 
-						validateData(cellValue,index_csf.getValue(),String.valueOf(user.getId()));
+						validateData(cellValue,index_csf.getValue(),user.getUsername());
 
-						if(!cellValue.trim().isEmpty()){
-							sourceFieldDatas.put(String.valueOf(index_csf.getValue().getCsf_id()), cellValue);
+						//如果字段是文件或图片,则先导入文件,再把文件名(MD5+文件名)写入hbase
+						if(cellValue!=null && !cellValue.trim().isEmpty() && (index_csf.getValue().getType().equals("图片")||index_csf.getValue().getType().equals("文件"))){
+							//把文件导入到正式目录
+							Entry<String,String> result=importFile(user.getUsername(),user.getId(),cellValue.trim());
+							sourceFieldDatas.put(String.valueOf(index_csf.getValue().getCsf_id()), result.getKey());
+						}
+						else
+						{
+							sourceFieldDatas.put(String.valueOf(index_csf.getValue().getCsf_id()), cellValue!=null && !cellValue.trim().isEmpty()?cellValue:"");
 						}
 
 					} catch (Exception e) {
