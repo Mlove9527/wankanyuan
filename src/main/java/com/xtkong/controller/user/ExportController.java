@@ -1,12 +1,19 @@
 package com.xtkong.controller.user;
 
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.imageio.ImageIO;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -53,10 +60,17 @@ public class ExportController {
 
 	@Value("${formatData.file.location}")
 	private String dataFileLocation;
-
+	@Value("${formatData.file.thumbnailImage}")
+	private String thumbnailImageLocation;
+	 
+    //缩略图相关
+	private static String DEFAULT_PREVFIX = "thumb_";
+    private static Boolean DEFAULT_FORCE = false;//建议该值为false
+    
 	/*
 	返回结果: key是文件名, value是文件路径
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private Entry<String,String> getFilePath(Integer cs_id,String sourceDataId,Integer csf_id,Integer myUid) throws Exception
 	{
 		List<String> fields=new ArrayList<>();
@@ -113,6 +127,7 @@ public class ExportController {
 	 * @param cs_id
 	 * @param csf_id
 	 */
+	@SuppressWarnings("resource")
 	@RequestMapping("/downloadFile")
 	public void downloadFile(HttpServletResponse response,HttpServletRequest request,String sourceDataId,Integer cs_id,Integer csf_id)
 	{
@@ -151,7 +166,137 @@ public class ExportController {
 			e.printStackTrace();
 		}
 	}
+	
+	
+	/**
+     * <p>Title: thumbnailImage</p>
+     * <p>Description: 依据图片路径生成缩略图 </p>
+     * @param imagePath    原图片路径
+     * @param w            缩略图宽
+     * @param h            缩略图高
+     * @param prevfix    生成缩略图的前缀
+     * @param thumbImagePath    缩略图存放地址
+     * @param force        是否强制依照宽高生成缩略图(假设为false，则生成最佳比例缩略图)
+     */
+    public void thumbnailImage(String imagePath, int w, int h, String prevfix, boolean force, String thumbImagePath){
+        File imgFile = new File(imagePath);
+        if(imgFile.exists()){
+            try {
+                // ImageIO 支持的图片类型 : [BMP, bmp, jpg, JPG, wbmp, jpeg, png, PNG, JPEG, WBMP, GIF, gif]
+                String types = Arrays.toString(ImageIO.getReaderFormatNames());
+                String suffix = null;
+                // 获取图片后缀
+                if(imgFile.getName().indexOf(".") > -1) {
+                    suffix = imgFile.getName().substring(imgFile.getName().lastIndexOf(".") + 1);
+                }// 类型和图片后缀所有小写，然后推断后缀是否合法
+                if(suffix == null || types.toLowerCase().indexOf(suffix.toLowerCase()) < 0){
+                	logger.error("Sorry, the image suffix is illegal. the standard image suffix is {}." + types);
+                    return ;
+                }
+                logger.debug("target image's size, width:{}, height:{}."+w+":"+h);
+                Image img = ImageIO.read(imgFile);
+                if(!force){
+                    // 依据原图与要求的缩略图比例，找到最合适的缩略图比例
+                    int width = img.getWidth(null);
+                    int height = img.getHeight(null);
+                    if((width*1.0)/w < (height*1.0)/h){
+                        if(width > w){
+                            h = Integer.parseInt(new java.text.DecimalFormat("0").format(height * w/(width*1.0)));
+                            logger.debug("change image's height, width:{}, height:{}."+w+":"+h);
+                        }
+                    } else {
+                        if(height > h){
+                            w = Integer.parseInt(new java.text.DecimalFormat("0").format(width * h/(height*1.0)));
+                            logger.debug("change image's width, width:{}, height:{}."+w+":"+h);
+                        }
+                    }
+                }
+                BufferedImage bi = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+                Graphics g = bi.getGraphics();
+                g.drawImage(img, 0, 0, w, h, Color.LIGHT_GRAY, null);
+                g.dispose();
+                //String p = imgFile.getPath();// 将图片保存在原文件夹并加上前缀
+                ImageIO.write(bi, suffix, new File(thumbImagePath.substring(0,thumbImagePath.lastIndexOf(File.separator)) + File.separator + prevfix +imgFile.getName()));
+                logger.debug("缩略图在路径下生成成功");
+            } catch (IOException e) {
+            	logger.error("generate thumbnail image failed.",e);
+            }
+        }else{
+        	logger.warn("the image is not exist.");
+        }
+    }
 
+    /**
+	 * 获取缩略图
+	 *
+	 * @param response
+	 * @param request
+	 * @param sourceDataId
+	 * @param cs_id
+	 * @param csf_id
+	 * @return thumbnailImageUrl
+	 */
+	@SuppressWarnings("resource")
+	@RequestMapping("/getThumbnailImage")
+	public void getThumbnailImage(HttpServletResponse response,HttpServletRequest request,
+			String sourceDataId,Integer cs_id,Integer csf_id)throws ServletException, IOException 
+	{
+		User user = (User) request.getAttribute("user");
+		String filePath=null;
+		try
+		{
+			Integer myUid=user.getId();
+			Entry<String,String> result=getFilePath(cs_id,sourceDataId,csf_id,myUid);
+
+			filePath=result.getValue();
+
+			File fileToBeDownload=new File(filePath);
+			if(!fileToBeDownload.exists())
+			{
+				logger.error("下载文件错误: "+filePath+" 文件不存在,应该是文件管理目录和数据库的信息不一致.");
+				return;
+			}
+			//读取图片输入流
+			FileInputStream inputStream = new FileInputStream(fileToBeDownload);
+			int i = inputStream.available();
+			//byte数组用于存放图片字节数据
+			byte[] buff = new byte[i];
+			inputStream.read(buff);
+			//记得关闭输入流
+			inputStream.close();
+			//设置发送到客户端的响应内容类型
+			response.setContentType("image/*");
+			OutputStream out = response.getOutputStream();
+			out.write(buff);
+			//关闭响应输出流
+			out.close();
+		}
+		catch(Exception e)
+		{
+			logger.error(e);
+			e.printStackTrace();
+		}
+	}
+	
+	public void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		//读取本地图片输入流
+		FileInputStream inputStream = new FileInputStream("D:/image/123.jpg");
+		int i = inputStream.available();
+		//byte数组用于存放图片字节数据
+		byte[] buff = new byte[i];
+		inputStream.read(buff);
+		//记得关闭输入流
+		inputStream.close();
+		//设置发送到客户端的响应内容类型
+		response.setContentType("image/*");
+		OutputStream out = response.getOutputStream();
+		out.write(buff);
+		//关闭响应输出流
+		out.close();
+	}
+ 
+	
 	/**
 	 * 导出源数据上传格式
 	 * 

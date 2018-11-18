@@ -149,7 +149,7 @@
 							
 								<c:when test="${sourceFieldTemp.type=='文件' }">
 									<div class="prodainmRfilek">
-										<div class="prodainmRfile">${sourceData[status.index+1] }</div>
+										<div class="prodainmRfile">${sourceData[status.index+1]}</div>
 										<input type="file" class="prodainmRip" id=${sourceFieldTemp.csf_id } style="display: none;">
 										<a class="prodainmRib2" href="<%=path%>/export/downloadFile?sourceDataId=${sourceData[0]}&cs_id=${sourceFieldTemp.cs_id }&csf_id=${sourceFieldTemp.csf_id}">下载</a>
 										<div class="prodainmRib" id="">修改</div>
@@ -157,10 +157,10 @@
 								</c:when>
 								<c:when test="${sourceFieldTemp.type=='图片'}">
 									<div class="prodainmRik">
-										<img alt="" class="prodainmRi"
-											src="<%=path%>">
+										<img alt="" class="prodainmRi" id=${sourceFieldTemp.csf_id }
+											src="<%=path%>/export/getThumbnailImage?sourceDataId=${sourceData[0]}&cs_id=${sourceFieldTemp.cs_id}&csf_id=${sourceFieldTemp.csf_id}">
 										<input type="file" class="prodainmRip" id=${sourceFieldTemp.csf_id } style="display: none;" >
-										<a class="prodainmRib2" href="<%=path%>/export/downloadFile?sourceDataId=${sourceData[0]}&cs_id=${sourceFieldTemp.cs_id }&csf_id=${sourceFieldTemp.csf_id}">下载</a>
+										<a class="prodainmRib2" href="<%=path%>/export/downloadFile?sourceDataId=${sourceData[0]}&cs_id=${sourceFieldTemp.cs_id}&csf_id=${sourceFieldTemp.csf_id}">下载</a>
 										<div class="prodainmRib" id="">修改</div>
 									</div>
 								</c:when>
@@ -225,6 +225,9 @@
 		src="/wankangyuan/static/js/jquery.min.js"></script>
 
 	<script type="text/javascript">
+	$(function(){
+		});
+
 	//文件和图片上传input的accept设置
 	var aprodainmRip=document.querySelectorAll('prodainmRip');
 	for(var i=0;i<aprodainmRip.length;i++){
