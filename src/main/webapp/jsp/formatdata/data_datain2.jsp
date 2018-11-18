@@ -150,16 +150,16 @@
 								<c:when test="${sourceFieldTemp.type=='文件' }">
 									<div class="prodainmRfilek">
 										<div class="prodainmRfile">${sourceData[status.index+1]}</div>
-										<input type="file" class="prodainmRip" id=${sourceFieldTemp.csf_id } style="display: none;">
+										<input type="file" class="prodainmRip" id=${sourceFieldTemp.csf_id } value="${sourceData[status.index+1] }" style="display: none;">
 										<a class="prodainmRib2" href="<%=path%>/export/downloadFile?sourceDataId=${sourceData[0]}&cs_id=${sourceFieldTemp.cs_id }&csf_id=${sourceFieldTemp.csf_id}">下载</a>
 										<div class="prodainmRib" id="">修改</div>
 									</div>
 								</c:when>
 								<c:when test="${sourceFieldTemp.type=='图片'}">
 									<div class="prodainmRik">
-										<img alt="" class="prodainmRi" id=${sourceFieldTemp.csf_id }
+										<img alt="" class="prodainmRi" 
 											src="<%=path%>/export/getThumbnailImage?sourceDataId=${sourceData[0]}&cs_id=${sourceFieldTemp.cs_id}&csf_id=${sourceFieldTemp.csf_id}">
-										<input type="file" class="prodainmRip" id=${sourceFieldTemp.csf_id } style="display: none;" >
+										<input type="file" class="prodainmRip" id=${sourceFieldTemp.csf_id } value="${sourceData[status.index+1] }" style="display: none;" >
 										<a class="prodainmRib2" href="<%=path%>/export/downloadFile?sourceDataId=${sourceData[0]}&cs_id=${sourceFieldTemp.cs_id}&csf_id=${sourceFieldTemp.csf_id}">下载</a>
 										<div class="prodainmRib" id="">修改</div>
 									</div>
@@ -392,7 +392,7 @@
                     var oprodainmRip=aprodainmRz1[i].querySelectorAll('.prodainmRip')[0];
                     var oprodainmRz1R=aprodainmRz1[i].querySelectorAll('.prodainmRz1R')[0];
                     if(oprodainmRip){
-                        if(oprodainmRip.value==''){
+                        if(oprodainmRip.value==''&&oprodainmRip.defaultValue==''){
                             btpd=false;
                             btpd_id.push(i);
                         }
