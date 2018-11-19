@@ -479,8 +479,11 @@ public class SourceDataController {
 		switch (type) {
 		case "1":
 			List<String> authority_numbers = new ArrayList<>();
-			authority_numbers.add("30");
-			authority_numbers.add("31");
+//			authority_numbers.add("30");
+			/*
+			 * 添加格式数据，应该是32，而不是30和31
+			 */
+			authority_numbers.add("32");
 			List<ProjectCustomRole> projects = projectCustomRoleService.selectProjectCustomRolesByUID(user.getId(),
 					authority_numbers);
 			// projects =
