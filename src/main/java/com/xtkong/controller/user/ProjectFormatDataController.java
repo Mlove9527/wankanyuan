@@ -145,7 +145,9 @@ public class ProjectFormatDataController {
 
 	@RequestMapping("/remove")
 	@ResponseBody
-	public Map<String, Object> remove(HttpServletRequest request,HttpSession session, Integer p_id, String sourceDataIds, String cs_id) {
+	public Map<String, Object> remove(HttpServletRequest request,Integer p_id, String cs_id, String ids, boolean isAll,
+    		String searchId, String searchWord,String desc_asc,String oldCondition,
+            String searchFirstWord,String chooseDatas,String likeSearch) {
 
 		Map<String, Object> map = new HashMap<>();
 		
@@ -157,11 +159,54 @@ public class ProjectFormatDataController {
 		if (projects == null) {
 			map.put("result", false);
 			map.put("message", "权限不足");
-
 			return map;
 		}
-		
-		String[] source_data_id = sourceDataIds.split(",");
+		if (isAll == true) {
+			
+			String tableName = ConstantsHBase.TABLE_PREFIX_SOURCE_ + cs_id;
+
+			Integer csId = cs_id.equals("")?null:Integer.valueOf(cs_id);
+			Integer searchIdInt = searchId.equals("")?null:Integer.valueOf(searchId);
+			SourceDataSQLInfo sourceDataSQLInfo = sourceDataController.getSourceDataSQL(csId,user,"4",searchFirstWord,oldCondition,null,p_id,searchIdInt,chooseDatas,likeSearch,searchWord,true,ids);
+
+			Map<String, Map<String, Object>> result = PhoenixClient.select(sourceDataSQLInfo.getSql());
+
+			List<List<String>> sourceDatas = null;
+			String resultMsg;
+			for (int j = 0; j < 6; j++) {
+				resultMsg = String.valueOf((result.get("msg")).get("msg"));
+				if (resultMsg.equals("success")) {
+					sourceDatas = (List<List<String>>) result.get("records").get("data");
+					break;
+				} else {
+					PhoenixClient.undefined(resultMsg, tableName, sourceDataSQLInfo.getQualifiers(), sourceDataSQLInfo.getConditionEqual(), sourceDataSQLInfo.getConditionLike());
+					result = PhoenixClient.select(sourceDataSQLInfo.getSql());
+				}
+			}
+            
+			String idsStr = "";
+			if(sourceDatas!=null&&sourceDatas.size()>0)
+			{
+				for (List<String> record : sourceDatas)
+				{
+					String idTemp = record.get(0);
+					idsStr=idsStr+idTemp+",";
+					try {
+						projectDataService.remove(p_id, idTemp, Integer.valueOf(cs_id));
+					} catch (NumberFormatException e) {
+						continue;
+					}
+				}
+				idsStr = idsStr.substring(0, idsStr.length()-1);
+			}
+			HBaseSourceDataDao.deleteSourceDatas(cs_id, idsStr);
+			map.put("result", true);
+			map.put("message", "关系解绑定成功");
+		}else {
+			if (ids.startsWith(",")) {
+				ids = ids.substring(1, ids.length()).replaceAll("check", "");
+			}
+			String[] source_data_id = ids.split(",");
 		for (int i = 0; i < source_data_id.length; i++) {
 			try {
 				projectDataService.remove(p_id, source_data_id[i], Integer.valueOf(cs_id));
@@ -169,9 +214,11 @@ public class ProjectFormatDataController {
 				continue;
 			}
 		}
-		HBaseSourceDataDao.deleteSourceDatas(cs_id, sourceDataIds);
+		HBaseSourceDataDao.deleteSourceDatas(cs_id, ids);
 		map.put("result", true);
 		map.put("message", "关系解绑定成功！");
+		}
+		
 		return map;
 	}
 
