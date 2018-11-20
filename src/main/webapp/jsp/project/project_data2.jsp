@@ -281,7 +281,7 @@
 		var oquanxuanPD=oinput_check.checked;//定义一个变量，存储当前是否全选
 		var oids=document.querySelectorAll('#ids2')[0];//获取隐藏域_存储正选或者反选id的
 		
-		var afuxuanK2;
+		var afuxuanK2=[];
 		if(document.querySelectorAll('.fuxuanK2')[0]){
 			afuxuanK2=document.querySelectorAll('.fuxuanK2');//获取页面中复选框的外部div，注意获取的class，本页面是fuxuanK2，有的页面为fuxuanK3或其他
 			console.log(2);
@@ -567,7 +567,8 @@
         		
                  if(page!=${page}){ 
                 	window.location.href="/wankangyuan/sourceData/getSourceDatas1?type=4&cs_id="+cs_id+"&searchId="+searchId+
-    	    		"&desc_asc="+desc_asc+"&searchWord="+searchWord+"&oldCondition="+oldCondition+"&page="+page+"&strip=${rows}&ids="+ids+"&isAll="+is_all;
+    	    		"&desc_asc="+desc_asc+"&searchWord="+searchWord+"&oldCondition="+oldCondition+"&page="+page+"&strip=${rows}&ids="+$("#ids2").val()+"&isAll="+$("#isAll2").val();
+                	
                 } 
             }
         });  
