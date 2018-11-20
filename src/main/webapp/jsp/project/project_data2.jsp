@@ -555,7 +555,7 @@
             slideSpeed: 600, // 缓动速度。单位毫秒
             jump: true, //是否支持跳转
             callback: function(page) { // 回调函数
-                
+				var p_id = ${project.id};
             	var user_id=${user.id};
         		var cs_id = $("#source_Select").val();
         		//之前选中的id
@@ -566,7 +566,7 @@
         		var is_all = isAll;
         		
                  if(page!=${page}){ 
-                	window.location.href="/wankangyuan/sourceData/getSourceDatas1?type=4&cs_id="+cs_id+"&searchId="+searchId+
+                	window.location.href="/wankangyuan/sourceData/getSourceDatas1?type=4&cs_id="+cs_id+"&p_id="+p_id+"&searchId="+searchId+
     	    		"&desc_asc="+desc_asc+"&searchWord="+searchWord+"&oldCondition="+oldCondition+"&page="+page+"&strip=${rows}&ids="+$("#ids2").val()+"&isAll="+$("#isAll2").val();
                 	
                 } 
