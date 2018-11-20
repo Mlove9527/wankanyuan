@@ -121,6 +121,61 @@ public class ImportController {
 		}
 
 	}
+
+	private void validateData(String val,FormatField ff,String username) throws Exception
+	{
+		if(val==null || val.trim().isEmpty())
+		{
+			//如果字段为非空,但是值为空
+			if(ff.isNot_null())
+			{
+				throw new Exception(ff.getError_msg());
+			}
+		}
+		else
+		{
+			if(ff.getType().equals("图片"))
+			{
+				if(!ifImgExists(username,val.trim()))
+				{
+					logger.warn("username: "+username+", image file: "+val.trim()+" not exists.");
+					throw new Exception(ff.getError_msg());
+				}
+			}
+			else if(ff.getType().equals("文件"))
+			{
+				if(!ifFileExists(username,val.trim()))
+				{
+					logger.warn("username: "+username+", file: "+val.trim()+" not exists.");
+					throw new Exception(ff.getError_msg());
+				}
+			}
+			//是枚举值
+			else if(ff.isEnumerated())
+			{
+				String eVals=ff.getEmvalue();
+				if(eVals!=null && !eVals.trim().equals(""))
+				{
+					String eValArr[]=eVals.trim().split(",");
+					boolean ifHas=false;
+					for(String eVal : eValArr)
+					{
+						if(val.trim().equals(eVal.trim()))
+						{
+							ifHas=true;
+							break;
+						}
+					}
+					if(!ifHas)
+					{
+						throw new Exception(ff.getError_msg());
+					}
+				}
+
+			}
+		}
+
+	}
 	
 	/**
 	    上传文件接口
@@ -397,8 +452,11 @@ public class ImportController {
 	@RequestMapping(value = "/formatData")
 	@ResponseBody
 	public Map<String, Object> formatData(@RequestParam(value = "file", required = false) MultipartFile file,
-			String cs_id, String ft_id, String sourceDataId, String formatNodeId) {
+			String cs_id, String ft_id, String sourceDataId, String formatNodeId,HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<String, Object>();
+
+		User user = (User) request.getAttribute("user");
+
 		try {
 			if (file == null || file.getInputStream() == null) {
 				map.put("result", false);
@@ -430,11 +488,10 @@ public class ImportController {
 			List<FormatField> datas = formatFieldService.getFormatFieldsIs_meta(Integer.valueOf(ft_id),
 					ConstantsHBase.IS_meta_false);
 			// 待导入文件中要导入的列的索引,对应的配置表中的字段id
-			HashMap<Integer, String> index_ffIdMap = new HashMap<>();
+			HashMap<Integer, FormatField> index_ffMap = new HashMap<>();
 			for (FormatField formatField : datas) {
 				if (index_nameMap.containsKey(formatField.getFf_name())) {
-					index_ffIdMap.put(index_nameMap.get(formatField.getFf_name()),
-							String.valueOf(formatField.getFf_id()));
+					index_ffMap.put(index_nameMap.get(formatField.getFf_name()), formatField);
 				}
 			}
 			for (int i = sheetAt.getFirstRowNum() + 1; i <= sheetAt.getLastRowNum(); i++) {
@@ -443,16 +500,32 @@ public class ImportController {
 					continue;
 				}
 				Map<String, String> formatFieldDatas = new HashMap<>();
-				for (Entry<Integer, String> index_csfId : index_ffIdMap.entrySet()) {
+				for (Entry<Integer, FormatField> index_csf : index_ffMap.entrySet()) {
 					try {
-						cell = row.getCell(index_csfId.getKey());						
+						cell = row.getCell(index_csf.getKey());
 						String cellValue=getStringCellValue(cell);
+
+						validateData(cellValue,index_csf.getValue(),user.getUsername());
+
+						//如果字段是文件或图片,则先导入文件,再把文件名(MD5+文件名)写入hbase
+						if(cellValue!=null && !cellValue.trim().isEmpty() && (index_csf.getValue().getType().equals("图片")||index_csf.getValue().getType().equals("文件"))){
+							//把文件导入到正式目录
+							Entry<String,String> result=importFile(user.getUsername(),user.getId(),cellValue.trim());
+							formatFieldDatas.put(String.valueOf(index_csf.getValue().getFf_id()), result.getKey());
+						}
+						else
+						{
+							formatFieldDatas.put(String.valueOf(index_csf.getValue().getFf_id()), cellValue!=null && !cellValue.trim().isEmpty()?cellValue:"");
+						}
+
+
 						if(!cellValue.trim().isEmpty()){
-							formatFieldDatas.put(index_csfId.getValue(), cellValue);
+							formatFieldDatas.put(String.valueOf(index_csf.getValue().getFf_id()), cellValue);
 						}
 					} catch (Exception e) {
-						e.printStackTrace();
-						continue;
+						map.put("result", false);
+						map.put("message", "导入失败, 列 "+index_csf.getValue().getFf_name()+", 第 "+i+" 行, 错误信息为: "+e.getMessage());
+						return map;
 					}
 				}
 				if (!formatFieldDatas.isEmpty()) {
