@@ -556,145 +556,157 @@ public class SourceDataController {
 				oldCondition = null;
 			}
 
-			source = sourceService.getSourceByCs_id(cs_id);// 选取管理源
-			source.setSourceFields(sourceFieldService.getSourceFields(cs_id));
+			//source = sourceService.getSourceByCs_id(cs_id);// 选取管理源
+			//source.setSourceFields(sourceFieldService.getSourceFields(cs_id));
 
-			Map<String, Map<String, Object>> result = new HashMap<>();
+//			Map<String, Map<String, Object>> result = new HashMap<>();
+//			String tableName = ConstantsHBase.TABLE_PREFIX_SOURCE_ + cs_id;// 表名
+//			List<String> qualifiers = new ArrayList<>(); //
+//			Map<String, String> conditionEqual = new HashMap<>();
+//			Map<String, String> conditionLike = new HashMap<>();
+//			String condition = "";
+//
+//			SourceField creator = new SourceField();
+//			creator.setCs_id(cs_id); // 采集源cs_id>创建者
+//			creator.setCsf_id(Integer.valueOf(ConstantsHBase.QUALIFIER_CREATOR));// 简历采集源字段
+//			creator.setCsf_name("创建人");// 采集字段名>创建人
+//			source.getSourceFields().add(creator);//
+//			SourceField createDate = new SourceField();
+//			createDate.setCs_id(cs_id);
+//			createDate.setCsf_id(Integer.valueOf(ConstantsHBase.QUALIFIER_CREATE_DATETIME));
+//			createDate.setCsf_name("创建时间");
+//			source.getSourceFields().add(createDate);
+//			for (SourceField sourceField : source.getSourceFields()) {
+//				qualifiers.add(String.valueOf(sourceField.getCsf_id()));// 获取采集源字段的值添加到qualifiers数组，（获取表中的值）
+//			}
+//			// 源数据字段数据，注：每个列表第一个值sourceDataId不显示
+//			switch (type) {
+//			case "1":
+//				// conditionEqual.put(ConstantsHBase.QUALIFIER_CREATE,
+//				// String.valueOf(user.getId()));
+//				condition = "(" + PhoenixClient.getSQLFamilyColumn(ConstantsHBase.QUALIFIER_CREATE) + "='"
+//						+ String.valueOf(user.getId()) + "' ";
+//				List<String> sourceDataIds = userDataService.selects(user.getId(), cs_id);
+//				if (!sourceDataIds.isEmpty()) {
+//					condition += " OR (";
+//					for (String sourceDataId : sourceDataIds) {
+//						condition += "ID='" + sourceDataId + "' OR ";
+//					}
+//					if (condition.trim().endsWith("OR")) {
+//						condition = condition.substring(0, condition.lastIndexOf("OR")) + " ) ";
+//					}
+//				}
+//				condition += ")";
+//				break;
+//			case "2":
+//				SourceField publicStatus = new SourceField();
+//				publicStatus.setCs_id(cs_id);
+//				publicStatus.setCsf_name("公开状态");
+//				source.getSourceFields().add(publicStatus);
+//				qualifiers.add(ConstantsHBase.QUALIFIER_PUBLIC);
+//				conditionEqual.put(ConstantsHBase.QUALIFIER_CREATE, String.valueOf(user.getId()));
+//				break;
+//			case "3":
+//				conditionEqual.put(ConstantsHBase.QUALIFIER_PUBLIC, String.valueOf(ConstantsHBase.VALUE_PUBLIC_TRUE));
+//				break;
+//			case "4":
+//				conditionEqual.put(ConstantsHBase.QUALIFIER_PROJECT, String.valueOf(p_id));
+//				break;
+//			case "5":
+//				conditionEqual.put(ConstantsHBase.QUALIFIER_PROJECT, String.valueOf(p_id));
+//				break;
+//			}
+//			// 头筛选
+//			if (searchFirstWord != null && !searchFirstWord.trim().isEmpty()) {
+//				if (oldCondition == null) {
+//					oldCondition = " ";
+//				} else if (oldCondition.trim().isEmpty()) {
+//					oldCondition = " ";
+//				} else {
+//					oldCondition += " AND ";
+//				}
+//				if (fieldIds != null && !fieldIds.trim().isEmpty()) {
+//					Map<String, String> like = new HashMap<>();
+//					for (String fieldId : fieldIds.split(",")) {
+//						if (qualifiers.contains(fieldId)) {
+//							like.put(fieldId, searchFirstWord);
+//						}
+//					}
+//					oldCondition += PhoenixClient.getSQLConditionLikes(tableName, like, "OR");
+//				} else if (!source.getSourceFields().isEmpty()) {
+//					Map<String, String> like = new HashMap<>();
+//					for (String qualifier : qualifiers) {
+//						like.put(qualifier, searchFirstWord);
+//					}
+//					oldCondition += PhoenixClient.getSQLConditionLikes(tableName, like, "OR");
+//				}
+//			}
+//			// 筛选
+//			// oldCondition = (String) httpSession.getAttribute("oldCondition");
+//			if (searchId != null) {
+//				if (oldCondition == null) {
+//					oldCondition = " ";
+//				} else if (oldCondition.trim().isEmpty()) {
+//					oldCondition = " ";
+//				} else {
+//					oldCondition += " AND ";
+//				}
+//				if (chooseDatas != null && !chooseDatas.trim().isEmpty()) {
+//					oldCondition += "( ";
+//					for (String csfChooseData : chooseDatas.split(",")) {
+//						if (csfChooseData.equals("空值")) {
+//							oldCondition += "\"" + ConstantsHBase.FAMILY_INFO + "\".\"" + String.valueOf(searchId)
+//									+ "\" IS NULL OR ";
+//						} else {
+//							oldCondition += "\"" + ConstantsHBase.FAMILY_INFO + "\".\"" + String.valueOf(searchId)
+//									+ "\"='" + csfChooseData + "' OR ";
+//						}
+//					}
+//					if (oldCondition.trim().endsWith("OR")) {
+//						oldCondition = oldCondition.substring(0, oldCondition.lastIndexOf("OR")) + " ) ";
+//					}
+//				} else if (likeSearch != null && likeSearch.equals("1") && searchWord != null) {
+//					if (searchWord.startsWith("_")) {
+//						searchWord = "\\" + searchWord;
+//						oldCondition += "(\"" + ConstantsHBase.FAMILY_INFO + "\".\"" + String.valueOf(searchId)
+//								+ "\" LIKE '%" + searchWord + "%') ";
+//					} else if (searchWord.startsWith("&")) {
+//						String search = searchWord.replaceAll("%", "%%");
+//						oldCondition += "(\"" + ConstantsHBase.FAMILY_INFO + "\".\"" + String.valueOf(searchId)
+//								+ "\" LIKE '%" + search + "%') ";
+//					} else {
+//						oldCondition += "(\"" + ConstantsHBase.FAMILY_INFO + "\".\"" + String.valueOf(searchId)
+//								+ "\" LIKE '%" + searchWord + "%') ";
+//					}
+//
+//				}
+//				if (oldCondition.trim().endsWith("AND")) {
+//					oldCondition = oldCondition.substring(0, oldCondition.lastIndexOf("AND"));
+//				}
+//			}
+//
+//			if (oldCondition != null && !oldCondition.trim().isEmpty()) {
+//				if (type.equals("1")) {
+//					condition = condition + " AND " + oldCondition;
+//				} else {
+//					condition = oldCondition;
+//				}
+//			}
+//
+//			String phoenixSQL = PhoenixClient.getPhoenixSQL(tableName, qualifiers, conditionEqual, conditionLike,
+//					condition, null, null);
+
 			String tableName = ConstantsHBase.TABLE_PREFIX_SOURCE_ + cs_id;// 表名
-			List<String> qualifiers = new ArrayList<>(); //
-			Map<String, String> conditionEqual = new HashMap<>();
-			Map<String, String> conditionLike = new HashMap<>();
-			String condition = "";
+			Map<String, Map<String, Object>> result = new HashMap<>();
 
-			SourceField creator = new SourceField();
-			creator.setCs_id(cs_id); // 采集源cs_id>创建者
-			creator.setCsf_id(Integer.valueOf(ConstantsHBase.QUALIFIER_CREATOR));// 简历采集源字段
-			creator.setCsf_name("创建人");// 采集字段名>创建人
-			source.getSourceFields().add(creator);//
-			SourceField createDate = new SourceField();
-			createDate.setCs_id(cs_id);
-			createDate.setCsf_id(Integer.valueOf(ConstantsHBase.QUALIFIER_CREATE_DATETIME));
-			createDate.setCsf_name("创建时间");
-			source.getSourceFields().add(createDate);
-			for (SourceField sourceField : source.getSourceFields()) {
-				qualifiers.add(String.valueOf(sourceField.getCsf_id()));// 获取采集源字段的值添加到qualifiers数组，（获取表中的值）
-			}
-			// 源数据字段数据，注：每个列表第一个值sourceDataId不显示
-			switch (type) {
-			case "1":
-				// conditionEqual.put(ConstantsHBase.QUALIFIER_CREATE,
-				// String.valueOf(user.getId()));
-				condition = "(" + PhoenixClient.getSQLFamilyColumn(ConstantsHBase.QUALIFIER_CREATE) + "='"
-						+ String.valueOf(user.getId()) + "' ";
-				List<String> sourceDataIds = userDataService.selects(user.getId(), cs_id);
-				if (!sourceDataIds.isEmpty()) {
-					condition += " OR (";
-					for (String sourceDataId : sourceDataIds) {
-						condition += "ID='" + sourceDataId + "' OR ";
-					}
-					if (condition.trim().endsWith("OR")) {
-						condition = condition.substring(0, condition.lastIndexOf("OR")) + " ) ";
-					}
-				}
-				condition += ")";
-				break;
-			case "2":
-				SourceField publicStatus = new SourceField();
-				publicStatus.setCs_id(cs_id);
-				publicStatus.setCsf_name("公开状态");
-				source.getSourceFields().add(publicStatus);
-				qualifiers.add(ConstantsHBase.QUALIFIER_PUBLIC);
-				conditionEqual.put(ConstantsHBase.QUALIFIER_CREATE, String.valueOf(user.getId()));
-				break;
-			case "3":
-				conditionEqual.put(ConstantsHBase.QUALIFIER_PUBLIC, String.valueOf(ConstantsHBase.VALUE_PUBLIC_TRUE));
-				break;
-			case "4":
-				conditionEqual.put(ConstantsHBase.QUALIFIER_PROJECT, String.valueOf(p_id));
-				break;
-			case "5":
-				conditionEqual.put(ConstantsHBase.QUALIFIER_PROJECT, String.valueOf(p_id));
-				break;
-			}
-			// 头筛选
-			if (searchFirstWord != null && !searchFirstWord.trim().isEmpty()) {
-				if (oldCondition == null) {
-					oldCondition = " ";
-				} else if (oldCondition.trim().isEmpty()) {
-					oldCondition = " ";
-				} else {
-					oldCondition += " AND ";
-				}
-				if (fieldIds != null && !fieldIds.trim().isEmpty()) {
-					Map<String, String> like = new HashMap<>();
-					for (String fieldId : fieldIds.split(",")) {
-						if (qualifiers.contains(fieldId)) {
-							like.put(fieldId, searchFirstWord);
-						}
-					}
-					oldCondition += PhoenixClient.getSQLConditionLikes(tableName, like, "OR");
-				} else if (!source.getSourceFields().isEmpty()) {
-					Map<String, String> like = new HashMap<>();
-					for (String qualifier : qualifiers) {
-						like.put(qualifier, searchFirstWord);
-					}
-					oldCondition += PhoenixClient.getSQLConditionLikes(tableName, like, "OR");
-				}
-			}
-			// 筛选
-			// oldCondition = (String) httpSession.getAttribute("oldCondition");
-			if (searchId != null) {
-				if (oldCondition == null) {
-					oldCondition = " ";
-				} else if (oldCondition.trim().isEmpty()) {
-					oldCondition = " ";
-				} else {
-					oldCondition += " AND ";
-				}
-				if (chooseDatas != null && !chooseDatas.trim().isEmpty()) {
-					oldCondition += "( ";
-					for (String csfChooseData : chooseDatas.split(",")) {
-						if (csfChooseData.equals("空值")) {
-							oldCondition += "\"" + ConstantsHBase.FAMILY_INFO + "\".\"" + String.valueOf(searchId)
-									+ "\" IS NULL OR ";
-						} else {
-							oldCondition += "\"" + ConstantsHBase.FAMILY_INFO + "\".\"" + String.valueOf(searchId)
-									+ "\"='" + csfChooseData + "' OR ";
-						}
-					}
-					if (oldCondition.trim().endsWith("OR")) {
-						oldCondition = oldCondition.substring(0, oldCondition.lastIndexOf("OR")) + " ) ";
-					}
-				} else if (likeSearch != null && likeSearch.equals("1") && searchWord != null) {
-					if (searchWord.startsWith("_")) {
-						searchWord = "\\" + searchWord;
-						oldCondition += "(\"" + ConstantsHBase.FAMILY_INFO + "\".\"" + String.valueOf(searchId)
-								+ "\" LIKE '%" + searchWord + "%') ";
-					} else if (searchWord.startsWith("&")) {
-						String search = searchWord.replaceAll("%", "%%");
-						oldCondition += "(\"" + ConstantsHBase.FAMILY_INFO + "\".\"" + String.valueOf(searchId)
-								+ "\" LIKE '%" + search + "%') ";
-					} else {
-						oldCondition += "(\"" + ConstantsHBase.FAMILY_INFO + "\".\"" + String.valueOf(searchId)
-								+ "\" LIKE '%" + searchWord + "%') ";
-					}
+			SourceDataSQLInfo sourceDataSQLInfo=getSourceDataSQL(cs_id,user,type,searchFirstWord,oldCondition,fieldIds,p_id,searchId,chooseDatas,likeSearch,searchWord,false,null);
+			source=sourceDataSQLInfo.getSource();
 
-				}
-				if (oldCondition.trim().endsWith("AND")) {
-					oldCondition = oldCondition.substring(0, oldCondition.lastIndexOf("AND"));
-				}
-			}
+			String phoenixSQL=sourceDataSQLInfo.getSql();
 
-			if (oldCondition != null && !oldCondition.trim().isEmpty()) {
-				if (type.equals("1")) {
-					condition = condition + " AND " + oldCondition;
-				} else {
-					condition = oldCondition;
-				}
-			}
+			// 排序
+			String condition = null;
 
-			String phoenixSQL = PhoenixClient.getPhoenixSQL(tableName, qualifiers, conditionEqual, conditionLike,
-					condition, null, null);
 			total = PhoenixClient.count(phoenixSQL);
 
 			// 排序
@@ -728,7 +740,7 @@ public class SourceDataController {
 						+ " ";
 			} else {
 				Integer id = (Integer) httpSession.getAttribute("searchId");
-				if (qualifiers.contains(String.valueOf(id))) {
+				if (sourceDataSQLInfo.getQualifiers().contains(String.valueOf(id))) {
 					condition = " ORDER BY " + PhoenixClient.getSQLFamilyColumn(String.valueOf(id)) + " " + desc_asc
 							+ " ";
 				}
@@ -745,7 +757,7 @@ public class SourceDataController {
 
 					break;
 				} else {
-					PhoenixClient.undefined(resultMsg, tableName, qualifiers, conditionEqual, conditionLike);
+					PhoenixClient.undefined(resultMsg, tableName, sourceDataSQLInfo.getQualifiers(), sourceDataSQLInfo.getConditionEqual(), sourceDataSQLInfo.getConditionLike());
 					result = PhoenixClient.select(phoenixSQL);
 				}
 			}
