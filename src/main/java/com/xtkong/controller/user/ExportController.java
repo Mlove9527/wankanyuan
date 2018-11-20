@@ -529,6 +529,9 @@ public class ExportController {
 		 */
 		HSSFWorkbook workbook = new HSSFWorkbook();
 		HSSFCellStyle style = workbook.createCellStyle();
+		HSSFSheet sheet1 = workbook.createSheet("字段描述");
+		sheet1=sheetFormatFieldForm1(sheet1, style, ft_id, ConstantsHBase.IS_meta_false);
+		
 		style.setAlignment(HorizontalAlignment.CENTER);
 		HSSFSheet sheet = workbook.createSheet("格式数据");
 		sheet = sheetFormatFieldForm(sheet, style, ft_id, ConstantsHBase.IS_meta_false);
@@ -686,16 +689,82 @@ public class ExportController {
 		}
 		return sheet;
 	}
-
 	private HSSFSheet sheetFormatFieldForm(HSSFSheet sheet, HSSFCellStyle style, String ft_id, Integer isMeta) {
 		HSSFRow row = sheet.createRow((short) 0);
-		// 设置表头
 		List<FormatField> formatFields = formatFieldService.getFormatFieldsIs_meta(Integer.valueOf(ft_id), isMeta);
 		HSSFCell cell = row.createCell(0);
 		for (int i = 0; i < formatFields.size(); i++) {
 			cell = row.createCell((i));
 			cell.setCellValue(formatFields.get(i).getFf_name());
 			cell.setCellStyle(style);
+		}
+		return sheet;
+	}
+	private HSSFSheet sheetFormatFieldForm1(HSSFSheet sheet, HSSFCellStyle style, String ft_id, Integer isMeta) {
+//		HSSFRow row = sheet.createRow((short) 0);
+		// 设置表头
+		List<FormatField> formatFields = formatFieldService.getFormatFieldsIs_meta(Integer.valueOf(ft_id), isMeta);
+//		HSSFCell cell = row.createCell(0);
+//		for (int i = 0; i < formatFields.size(); i++) {
+//			cell = row.createCell((i));
+//			cell.setCellValue(formatFields.get(i).getFf_name());
+//			cell.setCellStyle(style);
+//		}
+		for(int a=0;a<=formatFields.size();a++) {
+			// 4.在sheet中添加表头第0行，老版本poi对excel行数列数有限制short
+			HSSFRow row = sheet.createRow((short)a);
+			
+//			HSSFCell createCell = row.createCell(0);
+//			createCell.setCellValue(source.getSourceFields().get(a).getCsf_name());
+//			HSSFCell createCell = row.createCell(1);
+			
+			for (int i = 0; i < 6; i++) {
+				// 设置表头
+				HSSFCell cell = row.createCell(i);
+				if(i==0) {
+					if(a==0) {
+						cell.setCellValue("字段名");
+					}else {
+						cell.setCellValue(formatFields.get(a-1).getFf_name());
+					}
+				}else if(i==1) {
+					if(a==0) {
+						cell.setCellValue("描述信息");
+					}else {
+						
+						cell.setCellValue(formatFields.get(a-1).getDescription());
+					}
+				}else if(i==2){
+					if(a==0) {
+						cell.setCellValue("类型");
+					}else {
+						
+						cell.setCellValue(formatFields.get(a-1).getType());
+					}
+				}else if(i==3) {
+					if(a==0) {
+						cell.setCellValue("校验规则");
+					}else {
+						
+						cell.setCellValue(formatFields.get(a-1).getCheck_rule());
+					}
+				}else if(i==4) {
+					if(a==0) {
+						cell.setCellValue("是否枚举");
+					}else {
+						
+						cell.setCellValue(formatFields.get(a-1).isEnumerated());
+					}
+				}else if(i==5) {
+					if(a==0) {
+						cell.setCellValue("枚举值");
+					}else {
+						
+						cell.setCellValue(formatFields.get(a-1).getEmvalue());
+					}
+				}
+				cell.setCellStyle(style);
+			}
 		}
 		return sheet;
 	}
