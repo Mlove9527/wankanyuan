@@ -177,11 +177,13 @@
 							<c:forEach items="${metaDatas}" var="metaDataListTemp"><!-- 判断是否是必填，接着判断是否枚举 -->
 								<c:if test="${metaDataListTemp.not_null==true }">
 									<div class="prodaclmRzBz">
-										<div class="prodaclmRzBzt prodaclmRzTtmz" title="${metaDataListTemp.description }">${metaDataListTemp.ff_name }<span style="color: red;">*</span></div>
+										<div class="prodaclmRzBzt prodaclmRzTtmz" title="${metaDataListTemp.description }">${metaDataListTemp.ff_name }<span class="redstar" style="color: red;">*</span></div>
 										<div class="prodaclmRzBzt prodaclmRzTtmz">
+											<div class="ff_name" style="display:none;">${metaDataListTemp.ff_name}</div>
+											<div class="error_msg" style="display:none;">${metaDataListTemp.error_msg}</div>
 											<c:if test="${metaDataListTemp.enumerated==true }">
 												<c:if test="${metaDataListTemp.emvalue !=null}">
-													<select class="meta_input">
+													<select class="meta_input" id="${metaDataListTemp.ff_id }">
 														<c:forEach items="${metaDataListTemp.emvalue }" var="emvalue">
 														<option  value="${emvalue}">${emvalue}</option>
 														</c:forEach>
@@ -204,9 +206,10 @@
 									<div class="prodaclmRzBz">
 										<div class="prodaclmRzBzt prodaclmRzTtmz" title="${metaDataListTemp.description }">${metaDataListTemp.ff_name }</div>
 										<div class="prodaclmRzBzt prodaclmRzTtmz">
+											<div class="error_msg" style="display:none;">${metaDataListTemp.error_msg}</div>
 											<c:if test="${metaDataListTemp.enumerated==true }">
 												<c:if test="${metaDataListTemp.emvalue !=null}">
-													<select class="meta_input">
+													<select class="meta_input" id="${metaDataListTemp.ff_id }">
 														<c:forEach items="${metaDataListTemp.emvalue }" var="emvalue">
 														<option  value="${emvalue}">${emvalue}</option>
 														</c:forEach>
@@ -405,9 +408,11 @@
 								<c:if test="${dataTemp.not_null==true }"><!-- 是否是必填 -->
 									<c:if test="${dataTemp.enumerated==true }"><!-- 是否枚举 -->
 										<div class="clmReditMz">
-											<div class="clmReditMzt" title="${dataTemp.description}">${dataTemp.ff_name }<span style="color: red;">*</span></div>
+											<div class="ff_name" style="display:none;">${dataTemp.ff_name}</div>
+											<div class="error_msg" style="display:none;">${dataTemp.error_msg}</div>
+											<div class="clmReditMzt" title="${dataTemp.description}">${dataTemp.ff_name }<span class="redstar" style="color: red;">*</span></div>
 											<c:if test="${dataTemp.emvalue !=null}">
-												<select class="clmReditMzp">
+												<select class="clmReditMzp" id="${dataTemp.ff_id}">
 													<c:forEach items="${dataTemp.emvalue }" var="emvaluess">
 														<option value="${emvaluess }">${emvaluess }</option>
 													</c:forEach>
@@ -421,7 +426,9 @@
 									</c:if>
 									<c:if test="${dataTemp.enumerated==false }">
 										<div class="clmReditMz">
-											<div class="clmReditMzt" title="${dataTemp.description}">${dataTemp.ff_name }<span style="color: red;">*</span></div>
+											<div class="ff_name" style="display:none;">${dataTemp.ff_name}</div>
+											<div class="error_msg" style="display:none;">${dataTemp.error_msg}</div>
+											<div class="clmReditMzt" title="${dataTemp.description}">${dataTemp.ff_name }<span class="redstar" style="color: red;">*</span></div>
 											<input type="text" class="clmReditMzp" id="${dataTemp.ff_id }" />
 										</div>
 									</c:if>
@@ -429,9 +436,11 @@
 								<c:if test="${dataTemp.not_null==false }"><!-- 是否是必填 -->
 									<c:if test="${dataTemp.enumerated==true }"><!-- 是否枚举 -->
 										<div class="clmReditMz">
+											<div class="ff_name" style="display:none;">${dataTemp.ff_name}</div>
+											<div class="error_msg" style="display:none;">${dataTemp.error_msg}</div>
 											<div class="clmReditMzt" title="${dataTemp.description}">${dataTemp.ff_name }</div>
 											<c:if test="${dataTemp.emvalue !=null}">
-												<select  class="clmReditMzp">
+												<select  class="clmReditMzp" id="${dataTemp.ff_id}">
 													<c:forEach items="${dataTemp.emvalue }" var="emvaluess">
 														<option value="${emvaluess }">${emvaluess }</option>
 													</c:forEach>
@@ -445,6 +454,8 @@
 									</c:if>
 									<c:if test="${dataTemp.enumerated==false }">
 										<div class="clmReditMz">
+											<div class="ff_name" style="display:none;">${dataTemp.ff_name}</div>
+											<div class="error_msg" style="display:none;">${dataTemp.error_msg}</div>
 											<div class="clmReditMzt" title="${dataTemp.description}">${dataTemp.ff_name }</div>
 											<input type="text" class="clmReditMzp" id="${dataTemp.ff_id }" />
 										</div>
@@ -868,101 +879,128 @@
 		});
     	//新增数据
     	$("#addFormatDataSubmit").click(function (){
-    		var type = $("#type").val();
-    		if(type == "add"){
-        		var formatDatas = document.querySelectorAll(".clmReditMzp");
-        		var cs_id = $("#cs_id").val();
-        		var ft_id = $("#ft_id").val();
-        		var formatNodeId = $("#formatNodeId").val();
-        		var sourceDataId = $("#sourceDataId").val();
-        		var formatFieldDatas = {};
-        		for(var i = 0 ; i < formatDatas.length ; i++){
-        			formatFieldDatas[formatDatas[i].id] = formatDatas[i].value;
-        		}
-    			$.ajax({
-            	url:"/wankangyuan/formatData/insertFormatData",
-            	type:"post",
-            	data:{
-            		cs_id:cs_id,
-            		ft_id:ft_id,
-            		sourceDataId:sourceDataId,
-            		formatNodeId:formatNodeId,
-            		formatFieldDatas:JSON.stringify(formatFieldDatas)
-            	},
-            	dataType:"json",
-            	success : function(data){
-            		if(data.result == true){
-            			alert(data.message);
-            			//刷新页面
-            			window.location.href="/wankangyuan/formatNode/getFormatNodeById?cs_id="
-            				+cs_id+"&sourceDataId="+sourceDataId+"&type=2&ft_id="+ft_id+"&formatNodeId="+formatNodeId
-            				+"&page="+page+"&strip=${rows}"
-            				+"&searchId="+searchId+"&desc_asc="+desc_asc+"&searchWord="+searchWord+"&oldCondition="+oldCondition;
-            		}else{
-            			alert(data.message);
+    		var oclmReditM=document.querySelectorAll('.clmReditM')[0];
+    		console.log(oclmReditM);
+    		var aclmReditMz=oclmReditM.querySelectorAll('.clmReditMz');
+    		console.log(aclmReditMz);
+    		var aff_name=oclmReditM.querySelectorAll('.ff_name');
+			var aerror_msg=oclmReditM.querySelectorAll('.error_msg');
+    		var err_arr=[];
+    		var err_pd=true;
+    		
+    		for(var i=0;i<aclmReditMz.length;i++){
+    			if(aclmReditMz[i].querySelectorAll('.redstar')[0]){
+    				console.log(i);
+    				if(aclmReditMz[i].querySelectorAll('.clmReditMzp')[0].value.replace(/\s+/g,"")==''){
+    					err_pd=false;
+    					err_arr.push(i);
+    				}
+    			}
+    		}
+    		
+    		if(err_pd){
+    			var type = $("#type").val();
+        		if(type == "add"){
+            		var formatDatas = document.querySelectorAll(".clmReditMzp");
+            		var cs_id = $("#cs_id").val();
+            		var ft_id = $("#ft_id").val();
+            		var formatNodeId = $("#formatNodeId").val();
+            		var sourceDataId = $("#sourceDataId").val();
+            		var formatFieldDatas = {};
+            		for(var i = 0 ; i < formatDatas.length ; i++){
+            			formatFieldDatas[formatDatas[i].id] = formatDatas[i].value;
             		}
-            	},
-            	error : function(){
-            		alert("网络异常，请稍后重试！");
-            	}
-            });
-    		}else if(type == "edit"){ 
-	            var afuxuanK=document.querySelectorAll('.fx4');
-	            var afuxuan=[];
-	            for(var i=0;i<afuxuanK.length;i++){
-	                afuxuan.push(afuxuanK[i].querySelectorAll('.input_check')[0]);
-	            }
-	            var formatDataIds = [];
-	            for(var i=0;i<afuxuanK.length;i++){
-	            	if(afuxuan[i].checked){
-	            		formatDataIds.push(afuxuan[i].name);
-	            	}
-	            }
-	            if(formatDataIds == ""){
-	            	alert("请勾选待修改的结点！");
-	            	return;
-	            }else if(formatDataIds.length > 1){
-	            	alert("最多选择一个结点！")
-	            }else{
-	    	        var formatDatas = document.querySelectorAll(".clmReditMzp");
-	    			var cs_id = $("#cs_id").val();
-	    			var ft_id = $("#ft_id").val();
-	    			var formatNodeId = $("#formatNodeId").val();
-	    			var sourceDataId = $("#sourceDataId").val();
-	    			var formatFieldDatas = {};
-	    			for(var i = 0 ; i < formatDatas.length ; i++){
-	    				formatFieldDatas[formatDatas[i].id] = formatDatas[i].value;
-	    			}
-	    			$.ajax({
-	    	        	url:"/wankangyuan/formatData/updateFormatData",
-	    	        	type:"post",
-	    	        	data:{
-	    	        		cs_id:cs_id,
-	    	        		ft_id:ft_id,
-	    	        		sourceDataId:sourceDataId,
-	    	        		formatNodeId:formatNodeId,
-	    	        		formatDataId:formatDataIds.join(","),
-	    	        		formatFieldDatas:JSON.stringify(formatFieldDatas)
-	    	        	},
-	    	        	dataType:"json",
-	    	        	success : function(data){
-	    	        		if(data.result == true){
-	    	        			alert(data.message);
-	    	        			// 刷新页面
-	    	        			window.location.href="/wankangyuan/formatNode/getFormatNodeById?cs_id="
-	    	        				+cs_id+"&sourceDataId="+sourceDataId+"&type=2&ft_id="+ft_id+"&formatNodeId="+formatNodeId
-	    	        				+"&page="+page+"&strip=${rows}"
-	    	        				+"&searchId="+searchId+"&desc_asc="+desc_asc+"&searchWord="+searchWord+"&oldCondition="+oldCondition;
-	    	        		}else{
-	    	        			alert(data.message);
-	    	        		}
-	    	        	},
-	    	        	error : function(){
-	    	        		alert("网络异常，请稍后重试！");
-	    	        	}
-	    	        });  
-	            }
-	       }
+        			$.ajax({
+                	url:"/wankangyuan/formatData/insertFormatData",
+                	type:"post",
+                	data:{
+                		cs_id:cs_id,
+                		ft_id:ft_id,
+                		sourceDataId:sourceDataId,
+                		formatNodeId:formatNodeId,
+                		formatFieldDatas:JSON.stringify(formatFieldDatas)
+                	},
+                	dataType:"json",
+                	success : function(data){
+                		if(data.result == true){
+                			alert(data.message);
+                			//刷新页面
+                			window.location.href="/wankangyuan/formatNode/getFormatNodeById?cs_id="
+                				+cs_id+"&sourceDataId="+sourceDataId+"&type=2&ft_id="+ft_id+"&formatNodeId="+formatNodeId
+                				+"&page="+page+"&strip=${rows}"
+                				+"&searchId="+searchId+"&desc_asc="+desc_asc+"&searchWord="+searchWord+"&oldCondition="+oldCondition;
+                		}else{
+                			alert(data.message);
+                		}
+                	},
+                	error : function(){
+                		alert("网络异常，请稍后重试！");
+                	}
+                });
+        		}else if(type == "edit"){ 
+    	            var afuxuanK=document.querySelectorAll('.fx4');
+    	            var afuxuan=[];
+    	            for(var i=0;i<afuxuanK.length;i++){
+    	                afuxuan.push(afuxuanK[i].querySelectorAll('.input_check')[0]);
+    	            }
+    	            var formatDataIds = [];
+    	            for(var i=0;i<afuxuanK.length;i++){
+    	            	if(afuxuan[i].checked){
+    	            		formatDataIds.push(afuxuan[i].name);
+    	            	}
+    	            }
+    	            if(formatDataIds == ""){
+    	            	alert("请勾选待修改的结点！");
+    	            	return;
+    	            }else if(formatDataIds.length > 1){
+    	            	alert("最多选择一个结点！")
+    	            }else{
+    	    	        var formatDatas = document.querySelectorAll(".clmReditMzp");
+    	    			var cs_id = $("#cs_id").val();
+    	    			var ft_id = $("#ft_id").val();
+    	    			var formatNodeId = $("#formatNodeId").val();
+    	    			var sourceDataId = $("#sourceDataId").val();
+    	    			var formatFieldDatas = {};
+    	    			for(var i = 0 ; i < formatDatas.length ; i++){
+    	    				formatFieldDatas[formatDatas[i].id] = formatDatas[i].value;
+    	    			}
+    	    			$.ajax({
+    	    	        	url:"/wankangyuan/formatData/updateFormatData",
+    	    	        	type:"post",
+    	    	        	data:{
+    	    	        		cs_id:cs_id,
+    	    	        		ft_id:ft_id,
+    	    	        		sourceDataId:sourceDataId,
+    	    	        		formatNodeId:formatNodeId,
+    	    	        		formatDataId:formatDataIds.join(","),
+    	    	        		formatFieldDatas:JSON.stringify(formatFieldDatas)
+    	    	        	},
+    	    	        	dataType:"json",
+    	    	        	success : function(data){
+    	    	        		if(data.result == true){
+    	    	        			alert(data.message);
+    	    	        			// 刷新页面
+    	    	        			window.location.href="/wankangyuan/formatNode/getFormatNodeById?cs_id="
+    	    	        				+cs_id+"&sourceDataId="+sourceDataId+"&type=2&ft_id="+ft_id+"&formatNodeId="+formatNodeId
+    	    	        				+"&page="+page+"&strip=${rows}"
+    	    	        				+"&searchId="+searchId+"&desc_asc="+desc_asc+"&searchWord="+searchWord+"&oldCondition="+oldCondition;
+    	    	        		}else{
+    	    	        			alert(data.message);
+    	    	        		}
+    	    	        	},
+    	    	        	error : function(){
+    	    	        		alert("网络异常，请稍后重试！");
+    	    	        	}
+    	    	        });  
+    	            }
+    	       }
+    		}else{
+    			var j=err_arr[0];
+    			alert(aff_name[j].innerHTML+'项错误信息：'+aerror_msg[j].innerHTML);
+    		}
+    		
+    		
+    		
     	    		
     		
     	});
@@ -1082,41 +1120,92 @@
     	}
     	//meta数据修改
     	function meta_input_submit(formatDataId){
+    		console.log(formatDataId);
+    		var odata=document.getElementById(formatDataId);
+    		console.log(odata);
+    		var odata_fa2=odata.parentNode.parentNode;
+    		//console.log(odata_fa2);
+    		//console.log(odata_fa2.querySelectorAll('.redstar')[0]);
+    		var ff_name=odata_fa2.querySelectorAll('.ff_name')[0];
+    		var oerror_msg=odata_fa2.querySelectorAll('.error_msg')[0];
+    		if(odata_fa2.querySelectorAll('.redstar')[0]){
+    			//console.log(odata.value.replace(/\s+/g,""));
+    			if(odata.value.replace(/\s+/g,"")==''){
+    				alert(ff_name.innerHTML+"项错误信息："+oerror_msg.innerHTML);
+    			}else{
+    				var cs_id = $("#cs_id").val();
+    	    		var ft_id = $("#ft_id").val();
+    	    		var formatNodeId = $("#formatNodeId").val();
+    	    		var sourceDataId = $("#sourceDataId").val();
+    	    		var formatFieldDatas = {};
+    	    		formatFieldDatas[formatDataId] = $("#"+formatDataId).val();
+    	    		
+    	    		$.ajax({
+    	            	url:"/wankangyuan/formatData/updateFormatData",
+    	            	type:"post",
+    	            	data:{
+    	            		cs_id:cs_id,
+    	            		ft_id:ft_id,
+    	            		formatNodeId:formatNodeId,
+    	            		formatFieldDatas:JSON.stringify(formatFieldDatas)
+    	            	},
+    	            	dataType:"json",
+    	            	success : function(data){
+    	            		if(data.result == true){
+    	            			alert(data.message);
+    	            			//刷新页面
+    	            			window.location.href="/wankangyuan/formatNode/getFormatNodeById?cs_id="
+    	            				+cs_id+"&sourceDataId="+sourceDataId+"&type=2&ft_id="+ft_id+"&formatNodeId="+formatNodeId
+    	            				+"&page="+page+"&strip=${rows}"
+    	            				+"&searchId="+searchId+
+    	            	    		"&desc_asc="+desc_asc+"&searchWord="+searchWord+"&oldCondition="+oldCondition;
+    	            		}else{
+    	            			alert(data.message);
+    	            		}
+    	            	},
+    	            	error : function(){
+    	            		alert("网络异常，请稍后重试！");
+    	            	}
+    	            });
+    			}
+    		}else{
+    			var cs_id = $("#cs_id").val();
+        		var ft_id = $("#ft_id").val();
+        		var formatNodeId = $("#formatNodeId").val();
+        		var sourceDataId = $("#sourceDataId").val();
+        		var formatFieldDatas = {};
+        		formatFieldDatas[formatDataId] = $("#"+formatDataId).val();
+        		
+        		$.ajax({
+                	url:"/wankangyuan/formatData/updateFormatData",
+                	type:"post",
+                	data:{
+                		cs_id:cs_id,
+                		ft_id:ft_id,
+                		formatNodeId:formatNodeId,
+                		formatFieldDatas:JSON.stringify(formatFieldDatas)
+                	},
+                	dataType:"json",
+                	success : function(data){
+                		if(data.result == true){
+                			alert(data.message);
+                			//刷新页面
+                			window.location.href="/wankangyuan/formatNode/getFormatNodeById?cs_id="
+                				+cs_id+"&sourceDataId="+sourceDataId+"&type=2&ft_id="+ft_id+"&formatNodeId="+formatNodeId
+                				+"&page="+page+"&strip=${rows}"
+                				+"&searchId="+searchId+
+                	    		"&desc_asc="+desc_asc+"&searchWord="+searchWord+"&oldCondition="+oldCondition;
+                		}else{
+                			alert(data.message);
+                		}
+                	},
+                	error : function(){
+                		alert("网络异常，请稍后重试！");
+                	}
+                });
+			}
     		
-    		var cs_id = $("#cs_id").val();
-    		var ft_id = $("#ft_id").val();
-    		var formatNodeId = $("#formatNodeId").val();
-    		var sourceDataId = $("#sourceDataId").val();
-    		var formatFieldDatas = {};
-    		formatFieldDatas[formatDataId] = $("#"+formatDataId).val();
     		
-    		$.ajax({
-            	url:"/wankangyuan/formatData/updateFormatData",
-            	type:"post",
-            	data:{
-            		cs_id:cs_id,
-            		ft_id:ft_id,
-            		formatNodeId:formatNodeId,
-            		formatFieldDatas:JSON.stringify(formatFieldDatas)
-            	},
-            	dataType:"json",
-            	success : function(data){
-            		if(data.result == true){
-            			alert(data.message);
-            			//刷新页面
-            			window.location.href="/wankangyuan/formatNode/getFormatNodeById?cs_id="
-            				+cs_id+"&sourceDataId="+sourceDataId+"&type=2&ft_id="+ft_id+"&formatNodeId="+formatNodeId
-            				+"&page="+page+"&strip=${rows}"
-            				+"&searchId="+searchId+
-            	    		"&desc_asc="+desc_asc+"&searchWord="+searchWord+"&oldCondition="+oldCondition;
-            		}else{
-            			alert(data.message);
-            		}
-            	},
-            	error : function(){
-            		alert("网络异常，请稍后重试！");
-            	}
-            });
     	}
     	//导出数据
     	$(".app_expexport_data").click(function (){
