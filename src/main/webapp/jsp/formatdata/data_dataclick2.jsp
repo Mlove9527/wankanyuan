@@ -175,33 +175,66 @@
 						</div>
 						<div class="prodaclmRzB">
 							<c:forEach items="${metaDatas}" var="metaDataListTemp"><!-- 判断是否是必填，接着判断是否枚举 -->
-								<c:if test="${metaDataListTemp[7]=='是' }">
+								<c:if test="${metaDataListTemp.not_null==true }">
+									<div class="prodaclmRzBz">
+										<div class="prodaclmRzBzt prodaclmRzTtmz" title="${metaDataListTemp.description }">${metaDataListTemp.ff_name }<span style="color: red;">*</span></div>
+										<div class="prodaclmRzBzt prodaclmRzTtmz">
+											<c:if test="${metaDataListTemp.enumerated==true }">
+												<c:if test="${metaDataListTemp.emvalue !=null}">
+													<select class="meta_input">
+														<c:forEach items="${metaDataListTemp.emvalue }" var="emvalue">
+														<option  value="${emvalue}">${emvalue}</option>
+														</c:forEach>
+													</select>
+												</c:if>
+												<c:if test="${metaDataListTemp.emvalue ==null}">
+													<input class="meta_input" id="${metaDataListTemp.ff_id }" value="${metaDataListTemp.mete }" />
+												</c:if>
+											</c:if>
+											<c:if test="${metaDataListTemp.enumerated==false }">
+												<input class="meta_input" id="${metaDataListTemp.ff_id }" value="${metaDataListTemp.mete }" />
+											</c:if>
+											<div class="pdclmRz_li pdclmRz_edit"
+											onclick="meta_input_submit('${metaDataListTemp.ff_id }')">保存</div>
+										</div>
+									</div>
+								
+								</c:if>
+								<c:if test="${metaDataListTemp.not_null==false }">
+									<div class="prodaclmRzBz">
+										<div class="prodaclmRzBzt prodaclmRzTtmz" title="${metaDataListTemp.description }">${metaDataListTemp.ff_name }</div>
+										<div class="prodaclmRzBzt prodaclmRzTtmz">
+											<c:if test="${metaDataListTemp.enumerated==true }">
+												<c:if test="${metaDataListTemp.emvalue !=null}">
+													<select class="meta_input">
+														<c:forEach items="${metaDataListTemp.emvalue }" var="emvalue">
+														<option  value="${emvalue}">${emvalue}</option>
+														</c:forEach>
+													</select>
+												</c:if>
+												<c:if test="${metaDataListTemp.emvalue ==null}">
+													<input class="meta_input" id="${metaDataListTemp.ff_id }" value="${metaDataListTemp.mete }" />
+												</c:if>
+											</c:if>
+											<c:if test="${metaDataListTemp.enumerated==false }">
+												<input class="meta_input" id="${metaDataListTemp.ff_id }" value="${metaDataListTemp.mete }" />
+											</c:if>
+											<div class="pdclmRz_li pdclmRz_edit"
+											onclick="meta_input_submit('${metaDataListTemp.ff_id }')">保存</div>
+										</div>
+									</div>
+								</c:if>
+								<%-- <c:if test="${metaDataListTemp[7]=='是' }">
 									<div class="prodaclmRzBz">
 										<div class="prodaclmRzBzt prodaclmRzTtmz" title="${metaDataListTemp[3] }">${metaDataListTemp[1] }<span style="color: red;">*</span></div>
 										<div class="prodaclmRzBzt prodaclmRzTtmz">
 										<c:if test="${metaDataListTemp[6] =='是'}"><!-- 判断是否枚举，是的话则将枚举值放到option里 -->
-										<input type="hidden" class="meta_input" id="meta_input+${metaDataListTemp[0] +2}"
+										<input type="hidden" class="meta_input" id="meta${metaDataListTemp[0] +2}"
 												value="${metaDataListTemp[4] }" />
-												<select onclick="strToarr('#'+meta_input+${metaDataListTemp[0] +2},this)">
+												<select onclick="strToarr('#'meta${metaDataListTemp[0] +2})">
 													<option>请选择</option>
 												</select>
-										<script type="text/javascript">
-											function strToarr(id,this){
-												console.log(id);
-												console.log('1111111111111');
-												var str=$(id).val();
-												console.log(str);
-												var strarr=str.split(",");
-												var html="";
-												for(int =0;i<strarr.length;i++){
-													html+="<option>"+strarr[i]+"</option>";
-												}
-												var opt = document.getElementById(sel);
-												this.innerHTML = html;
-												
-											}
 										
-										</script>
 											
 										</c:if>
 										<c:if test="${metaDataListTemp[6] =='否'}">
@@ -235,7 +268,7 @@
 											onclick="meta_input_submit('${metaDataListTemp[0] }')">保存</div>
 	
 									</div>
-								</c:if>
+								</c:if> --%>
 							</c:forEach>
 						</div>
 					</div>
@@ -373,7 +406,16 @@
 									<c:if test="${dataTemp.enumerated==true }"><!-- 是否枚举 -->
 										<div class="clmReditMz">
 											<div class="clmReditMzt" title="${dataTemp.description}">${dataTemp.ff_name }<span style="color: red;">*</span></div>
-											<input type="text" class="clmReditMzp" id="${dataTemp.ff_id }" />
+											<c:if test="${dataTemp.emvalue !=null}">
+												<select class="clmReditMzp">
+													<c:forEach items="${dataTemp.emvalue }" var="emvaluess">
+														<option value="${emvaluess }">${emvaluess }</option>
+													</c:forEach>
+												</select>
+											</c:if>
+											<c:if test="${dataTemp.emvalue ==null}">
+												<input type="text" class="clmReditMzp" id="${dataTemp.ff_id }" />
+											</c:if>
 										</div>
 										<input type="hidden" value="${ dataTemp.emvalue}"><!-- 枚举值的保存地方 -->
 									</c:if>
@@ -388,7 +430,16 @@
 									<c:if test="${dataTemp.enumerated==true }"><!-- 是否枚举 -->
 										<div class="clmReditMz">
 											<div class="clmReditMzt" title="${dataTemp.description}">${dataTemp.ff_name }</div>
-											<input type="text" class="clmReditMzp" id="${dataTemp.ff_id }" />
+											<c:if test="${dataTemp.emvalue !=null}">
+												<select  class="clmReditMzp">
+													<c:forEach items="${dataTemp.emvalue }" var="emvaluess">
+														<option value="${emvaluess }">${emvaluess }</option>
+													</c:forEach>
+												</select>
+											</c:if>
+											<c:if test="${dataTemp.emvalue ==null}">
+												<input type="text" class="clmReditMzp" id="${dataTemp.ff_id }" />
+											</c:if>
 										</div>
 										<input type="hidden" value="${ dataTemp.emvalue}"><!-- 枚举值的保存地方 -->
 									</c:if>

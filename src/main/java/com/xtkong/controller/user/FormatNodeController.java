@@ -19,6 +19,7 @@ import com.dzjin.service.ProjectService;
 import com.liutianjun.pojo.User;
 import com.xtkong.dao.hbase.HBaseFormatNodeDao;
 import com.xtkong.model.FormatField;
+import com.xtkong.model.FormatField1;
 import com.xtkong.model.FormatType;
 import com.xtkong.model.Source;
 import com.xtkong.model.SourceField;
@@ -101,8 +102,10 @@ public class FormatNodeController {
 		}
 		User user = (User) request.getAttribute("user");
 		List<FormatType> formatTypeFolders = new ArrayList<>();
-		List<List<String>> metaDataListTemp = new ArrayList<>();
+//		List<List<FormatField1>> metaDataListTemp = new ArrayList<>();
+		List<FormatField1> metaDataListTemp = new ArrayList<FormatField1>();
 		List<FormatField> data = new ArrayList<>();
+		List<FormatField1> data1 = new ArrayList<>();
 		List<List<String>> dataDataLists = new ArrayList<>();
 		Integer dataCount = 0;
 		String oldCondition = null;
@@ -147,34 +150,68 @@ public class FormatNodeController {
 					}
 				}
 				int i = 0;
+				
 				for (FormatField formatField : meta) {
-					List<String> formatData = new ArrayList<>();
+					FormatField1 f=new FormatField1();
+					f.setFf_id(formatField.getFf_id());
+					f.setFf_name(formatField.getFf_name());
 					
-					formatData.add(String.valueOf(formatField.getFf_id()));//获取ff_id 0
-					formatData.add(formatField.getFf_name());//获取名称,差描述信息和错误提醒   1
+//					formatData.add(String.valueOf(formatField.getFf_id()));//获取ff_id 0
+//					formatData.add(formatField.getFf_name());//获取名称,差描述信息和错误提醒   1
 					try { 
-						formatData.add(metaDataList.get(0).get(++i));   			  //2
+						f.setMete(metaDataList.get(0).get(++i));
+//						formatData.add(metaDataList.get(0).get(++i));   			  //2
 					} catch (Exception e) {
-						formatData.add("");
+						f.setMete("");
+//						formatData.add("");
 					}
-					formatData.add(formatField.getDescription());						//3 描述信息
-					formatData.add(formatField.getEmvalue());						//4  枚举值
-					formatData.add(formatField.getError_msg());						//5 错误提醒
-					if(formatField.isEnumerated()) {
+					f.setDescription(formatField.getDescription());
+					if(formatField.getEmvalue()!=null && formatField.getEmvalue()!="") {
 						
-						formatData.add("是");						//6是否枚举
+						f.setEmvalue(formatField.getEmvalue().split(","));
 					}else {
-						formatData.add("否");
+						f.setEmvalue(null);
 					}
-					if(formatField.isNot_null()) {        			//7是否必填
-						formatData.add("是");	
-					}else {
-						formatData.add("否");
-					}
-					metaDataListTemp.add(formatData);
+//					f.setEmvalue(formatField.getError_msg());
+					f.setError_msg(formatField.getError_msg());
+//					formatData.add(formatField.getDescription());						//3 描述信息
+//					formatData.add(formatField.getEmvalue());						//4  枚举值
+//					formatData.add(formatField.getError_msg());						//5 错误提醒
+//					if(formatField.isEnumerated()) {
+//						
+////						formatData.add("是");						//6是否枚举
+//					}else {
+////						formatData.add("否");
+//					}
+					f.setEnumerated(formatField.isEnumerated());
+					f.setNot_null(formatField.isNot_null());
+//					if(formatField.isNot_null()) {        			//7是否必填
+//						formatData.add("是");	
+//					}else {
+//						formatData.add("否");
+//					}
+					metaDataListTemp.add(f);
 				}
 			}
 			if (!data.isEmpty()) {
+				for (FormatField formatField : data) {
+					FormatField1 f=new FormatField1();
+					f.setFf_id(formatField.getFf_id());
+					f.setFf_name(formatField.getFf_name());
+					f.setFt_id(formatField.getFt_id());
+					f.setIs_meta(formatField.isIs_meta());
+					f.setType(formatField.getType());
+					if(formatField.getEmvalue()!=null && formatField.getEmvalue()!="") {
+						
+						f.setEmvalue(formatField.getEmvalue().split(","));
+					}else {
+						f.setEmvalue(null);
+					}
+					f.setNot_null(formatField.isNot_null());
+					f.setDescription(formatField.getDescription());
+					f.setError_msg(formatField.getError_msg());
+					data1.add(f);
+				}
 				condition = null;
 
 				List<String> dataQualifiers = new ArrayList<>();
@@ -311,7 +348,7 @@ public class FormatNodeController {
 		httpSession.setAttribute("formatTypeFolders", formatTypeFolders);
 		httpSession.setAttribute("formatNodeId", formatNodeId);
 		httpSession.setAttribute("metaDatas", metaDataListTemp);
-		httpSession.setAttribute("data", data);
+		httpSession.setAttribute("data", data1);
 		httpSession.setAttribute("dataDatas", dataDataLists);
 		httpSession.setAttribute("sourceDataId", sourceDataId);
 		httpSession.setAttribute("total", dataCount);
