@@ -158,9 +158,9 @@ $(document).ready(function(){
                     for(var j=0;j<aaddbiaoxlik.length;j++){
                         aaddbiaoxlik[j].value="";
                     }
-                    for(var j=0;j<aselect.length;j++){
+                    /*for(var j=0;j<aselect.length;j++){
                         aselect[j].options[0].selected = true;
-                    }
+                    }*/
                 }
             }
         })(i)
@@ -772,7 +772,7 @@ $(document).ready(function(){
         	}else{
         		$("#edit_ff_enumerated").val('false');
         	}
-        	
+        	$("#edit_ff_emvalue").val($("#ff_emvalue"+ids[0]).text());
         	if($("#ff_not_null"+ids[0]).text() == '是'){
         		$("#edit_ff_not_null").val('true');
         	}else{

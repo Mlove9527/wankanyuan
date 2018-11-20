@@ -602,7 +602,55 @@
             	return isAll; */
             }
             
-         
+            $(".pro_rem").click(function (){
+        		
+    			var p_id = ${project.id};
+        		var cs_id = $("#source_Select").val();
+        		var afuxuanK=document.querySelectorAll('.fuxuanK2');
+        		
+                var afuxuan=[];
+                for(var i=0;i<afuxuanK.length;i++){
+                    afuxuan.push(afuxuanK[i].querySelectorAll('.input_check')[0]);
+                }
+                
+                var sourceDataIds = [];
+                for(var i=0;i<afuxuanK.length;i++){
+                	if(afuxuan[i].checked){
+                		sourceDataIds.push(afuxuan[i].name);
+                	}
+                }
+                
+                if(sourceDataIds == ""){
+                	alert("请勾选源数据！");
+                	return;
+                }
+                
+                $.ajax({
+                	url:"/wankangyuan/projectFormatData/remove",
+                	type:"post",
+                	data:{
+                		p_id:p_id,
+                		cs_id:cs_id,
+                		sourceDataIds:sourceDataIds.join(",")
+                	},
+                	dataType:"json",
+                	success : function(data){
+                		if(data.result == true){
+                			alert(data.message);
+                    		var p_id = ${project.id};
+                    		var cs_id = $("#source_Select").val();
+                    		window.location.href="/wankangyuan/sourceData/getSourceDatas?type=4&p_id="+p_id+"&cs_id="+cs_id
+                    				+"&searchId="+searchId+"&desc_asc="+desc_asc+"&searchWord="+searchWord
+                    				+"&oldCondition="+oldCondition;
+                		}else{
+                			alert(data.message);
+                		}
+                	},
+                	error : function(){
+                		alert("联网失败");
+                	}
+                });
+        	});
 	</script>
 
 

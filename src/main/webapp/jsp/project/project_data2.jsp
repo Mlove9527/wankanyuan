@@ -128,8 +128,8 @@
 				<div class="search">
 					<div class="searchC">
 						<img src="/wankangyuan/static/img/search.png" alt=""
-							class="searchCi"  onclick="searchFirst()"/> <input type="text" class="searchCt"
-							placeholder="搜索数据" value="${searchFirstWord}" />
+							class="searchCi" onclick="searchFirst()" /> <input type="text"
+							class="searchCt" placeholder="搜索数据" value="${searchFirstWord}" />
 					</div>
 				</div>
 			</div>
@@ -145,12 +145,13 @@
 								src="/wankangyuan/static/img/listZT1.png" alt=""
 								class="listZT1i" />
 						</div>
-					   <a href="<%=request.getContextPath()%>/jsp/project/project_data.jsp">
-						<div class="listZTli listZT2 active">
-							<div class="listZT2d"></div>
-							<div class="listZT2d"></div>
-							<div class="listZT2d"></div>
-						</div>
+						<a
+							href="<%=request.getContextPath()%>/jsp/project/project_data.jsp">
+							<div class="listZTli listZT2 active">
+								<div class="listZT2d"></div>
+								<div class="listZT2d"></div>
+								<div class="listZT2d"></div>
+							</div>
 						</a>
 					</div>
 					<div class="jiangeline"></div>
@@ -164,13 +165,13 @@
 					</div>
 
 					<div class="jiangeline"></div>
-                    <div class="allK">
-                        <div class="quanxuanK">
-                            <input type="checkbox" class="input_check" id="check0">
-                            <label for="check0"></label>
-                        </div>
-                        <div class="allT">全选</div>
-                    </div>
+					<div class="allK">
+						<div class="quanxuanK">
+							<input type="checkbox" class="input_check" id="check0"> <label
+								for="check0"></label>
+						</div>
+						<div class="allT">全选</div>
+					</div>
 
 					<c:if test="${authoritys['30'] == true }">
 						<div class="pro_menu pro_rem">移除</div>
@@ -201,52 +202,58 @@
 					</div>
 				</div>
 			</div>
-            <div class="PJK2">
-            
-            	<input type="hidden" id="ids" value="${ids}" />
-				<input type="hidden" id="isAll" value="${isAll}" />
-            <c:forEach items="${sourceDatas}" var="sourceData">
-				
-                <div class="PJ2list">
-                    <div class="PJK2li">
-                    <div>
-                    
-                    <c:forEach items="${sourceData}" var="sourceDataField" varStatus="status">
+			<div class="PJK2">
+
+				<input type="hidden" id="ids" value="${ids}" /> <input
+					type="hidden" id="isAll" value="${isAll}" /> <input type="hidden"
+					id="ids2" value="${allids}" /> <input type="hidden" id="isAll2"
+					value="${isAll1 }" />
+				<c:forEach items="${sourceDatas}" var="sourceData">
+
+					<div class="PJ2list">
+						<div class="PJK2li">
+							<div>
+
+								<c:forEach items="${sourceData}" var="sourceDataField"
+									varStatus="status">
 
 
 
-                    <div class="fuxuanK6">
+									<!-- <div class="fuxuanK2"> -->
 
 
-                    <c:if test="${status.index==0}">
-                           <td>
-                                <div class="fuxuanK3">
-                                    <input type="checkbox" class="input_check" name="${sourceDataField}"   value="${sourceDataField}" id="check${sourceDataField}">
-                                    <label for="check${sourceDataField}"></label>
-                                </div>
-                            </td>
-                     </c:if>
-                      </div>
-                     <c:if test="${status.index!=0}">
-                                <div onclick="datainHref('${sourceData[0]}')" style="cursor:pointer;">
-	                        <div class="PJK2litop">
-	                            <a href="#">
-	                                <div class="PJK2litopT PJliCli_1">${sourceDataField}</div>
-	                            </a>
-	                        </div>
-                        </div>
-                       </c:if>
+										<c:if test="${status.index==0}">
+											<td>
+												<div class="fuxuanK3">
+													<input type="checkbox" class="input_check"
+														name="${sourceDataField}" value="${sourceDataField}"
+														id="check${sourceDataField}"> <label
+														for="check${sourceDataField}"></label>
+												</div>
+											</td>
+										</c:if>
+									<!-- </div> -->
+									<c:if test="${status.index!=0}">
+										<div onclick="datainHref('${sourceData[0]}')"
+											style="cursor: pointer;">
+											<div class="PJK2litop">
+												<a href="#">
+													<div class="PJK2litopT PJliCli_1">${sourceDataField}</div>
+												</a>
+											</div>
+										</div>
+									</c:if>
 
-	                        </c:forEach>
-                        </div>
-                         </div>
-                   </div>
-                        </c:forEach>
-                    </div>
-                
-            
-		
-		
+								</c:forEach>
+							</div>
+						</div>
+					</div>
+				</c:forEach>
+			</div>
+
+
+
+
 			<div class="pageK" id="box"></div>
 
 			<div class="bottom">
@@ -260,44 +267,154 @@
 				<div class="botT">Copyright @2018天津万康源科技有限公司</div>
 			</div>
 			<div id="oldCondition" style="display: none;">${oldCondition}</div>
-			 </div>
 		</div>
-		
-		<script type="text/javascript"
+	</div>
+
+	<script type="text/javascript"
 		src="/wankangyuan/static/js/jquery.min.js"></script>
 	<script type="text/javascript" src="/wankangyuan/static/js/paging.js"></script>
 	<script type="text/javascript">
-	
 	$(function(){
-		var ids=$("#ids").val();
-		var idsarr=ids.split(",")
-		var isAll=$("#isAll").val();
-		if(isAll=="true"){
-			var num=0;
-			var afuxuanK=document.querySelectorAll('.input_check');
-        	for(var i = 0; i < afuxuanK.length; i++){
-        		if(idsarr.indexOf(afuxuanK[i].value)>-1){
-        			var checkeds = $("[name='"+afuxuanK[i].value+"']");
-					checkeds.attr("checked","checked")
-        			num++
-        		}
-        	}
-        	console.log(num)
-        	if(num==0){
-				$(".input_check").attr("checked",true);
-        	}
-			
-		}else{
-			//$(".input_check").attr("checked",false);
-			if(idsarr.length>0){
-				for(var i=0;i<idsarr.length;i++){
-					var checkeds = $("[name='"+idsarr[i]+"']");
-					checkeds.attr("checked","checked")
-				} 
-			}
-		} 
+		var oquanxuanK=document.querySelectorAll('.quanxuanK')[0];//获取页面中全选框的外部div
+		var oinput_check=oquanxuanK.querySelectorAll('.input_check')[0];//获取上方div内的全选按钮checkbox
+		var oisAll=document.querySelectorAll('#isAll2')[0];//获取隐藏域_存储是否全选的
+		var oquanxuanPD=oinput_check.checked;//定义一个变量，存储当前是否全选
+		var oids=document.querySelectorAll('#ids2')[0];//获取隐藏域_存储正选或者反选id的
 		
+		var afuxuanK2;
+		if(document.querySelectorAll('.fuxuanK2')[0]){
+			afuxuanK2=document.querySelectorAll('.fuxuanK2');//获取页面中复选框的外部div，注意获取的class，本页面是fuxuanK2，有的页面为fuxuanK3或其他
+			console.log(2);
+		}else if(document.querySelectorAll('.fuxuanK3')[0]){
+			afuxuanK2=document.querySelectorAll('.fuxuanK3');
+			console.log(3);
+		}
+		console.log(afuxuanK2);
+		var ainput_check=[];//定义一个数组用来存储页面中的复选框
+		for(var i=0;i<afuxuanK2.length;i++){
+			var oinput=afuxuanK2[i].querySelectorAll('.input_check')[0];
+			ainput_check.push(oinput);//获取页面中的复选框填充到刚才的数组中
+		}
+		console.log(ainput_check);
+		console.log(oisAll.value);
+		console.log(oids.value);
+		var timer=null;
+		if(oisAll.value=='true'){
+			console.log(111);
+			oinput_check.checked="checked";
+			timer=setTimeout(function(){
+				oinput_check.checked="checked";
+			},100);
+			for(var i=0;i<afuxuanK2.length;i++){
+				var oinput=afuxuanK2[i].querySelectorAll('.input_check')[0];
+				oinput.checked='checked';
+			}
+			var oidsarr1=oids.value.split(',');
+			for (var i=0;i<oidsarr1.length;i++){
+				for(var j=0;j<afuxuanK2.length;j++){
+					var oinputy=afuxuanK2[j].querySelectorAll('.input_check')[0];
+					if(oinputy.id==oidsarr1[i]){
+						oinput_check.checked="";
+						oinputy.checked="";
+					}
+				}
+			}
+		}else{
+			console.log(222);
+			oinput_check.checked="";
+			timer=setTimeout(function(){
+				oinput_check.checked="";
+			},100);
+			for(var i=0;i<afuxuanK2.length;i++){
+				var oinput=afuxuanK2[i].querySelectorAll('.input_check')[0];
+				oinput.checked='';
+			}
+			var oidsarr1=oids.value.split(',');
+			for (var i=0;i<oidsarr1.length;i++){
+				for(var j=0;j<afuxuanK2.length;j++){
+					var oinputy=afuxuanK2[j].querySelectorAll('.input_check')[0];
+					if(oinputy.id==oidsarr1[i]){
+						oinput_check.checked="";
+						oinputy.checked="checked";
+					}
+				}
+			}
+		}
+		$(oinput_check).change(function(){//页面中全选按钮状态变换的时候
+			/* console.log(oinput_check.checked); */
+			oisAll.value=oinput_check.checked;//全选隐藏域状态跟随变换
+			oids.value="";//id隐藏域清空
+			oquanxuanPD=oinput_check.checked;//存储全选的变量的值跟随变换
+			console.log(oisAll.value);
+		})
+		for(var i=0;i<ainput_check.length;i++){
+			(function(index){
+				$(ainput_check[index]).change(function(){//页面中复选框的变换
+					if(oisAll.value=='true'){//判断刚才存储的是否全选的变量，以此判断，点击复选框的时候记录的是选中还是反选，如果全选框是true，则复选框的点击是记录反选
+						if(!this.checked){//因为是记录反选，所以判断如果点的这个复选框在点击后是非选中状态，说明这个id需要记录
+							var oidsarr=oids.value.split(',');
+							oidsarr.push(this.id);
+							oids.value=oidsarr.join(',');
+						}else{//因为是记录反选，所以判断如果点的这个复选框在点击后是选中状态，说明这个id需要从id隐藏域中删除
+							var oidsarr=oids.value.split(',');
+							for(var j=0;j<oidsarr.length;j++){
+								if(this.id==oidsarr[j]){
+									oidsarr.splice(j,1);
+								}
+							}
+							oids.value=oidsarr.join(',');
+						}
+						console.log(oids.value);
+					}else{//如果全选框是false，则复选框的点击是记录正选
+						if(this.checked){//因为是记录正选，所以判断如果点的这个复选框在点击后是选中状态，说明这个id需要记录
+							var oidsarr=oids.value.split(',');
+							oidsarr.push(this.id);
+							oids.value=oidsarr.join(',');
+						}else{//因为是记录正选，所以判断如果点的这个复选框在点击后是选中状态，说明这个id需要从id隐藏域中删除
+							var oidsarr=oids.value.split(',');
+							for(var j=0;j<oidsarr.length;j++){
+								if(this.id==oidsarr[j]){
+									oidsarr.splice(j,1);
+								}
+							}
+							oids.value=oidsarr.join(',');
+						}
+						console.log(oids.value);
+					}
+					console.log(oisAll.value);
+				})
+			})(i)
+		}
 	})
+	
+	var ids=$("#ids2").val();
+	var idsarr=ids.split(",")
+	var isAll=$("#isAll2").val();
+	if(isAll=="true"){
+		var num=0;
+		var afuxuanK=document.querySelectorAll('.input_check');
+       	for(var i = 0; i < afuxuanK.length; i++){
+       		if(idsarr.indexOf(afuxuanK[i].value)>-1){
+       			var checkeds = $("[name='"+afuxuanK[i].value+"']");
+				checkeds.attr("checked","checked")
+       			num++
+       		}
+       	}
+       	console.log(num)
+       	if(num==0){
+			$(".input_check").attr("checked",true);
+       	}
+		
+	}else{
+		//$(".input_check").attr("checked",false);
+		if(idsarr.length>0){
+			for(var i=0;i<idsarr.length;i++){
+				var checkeds = $("[name='"+idsarr[i]+"']");
+				checkeds.attr("checked","checked")
+			} 
+		}
+	} 
+			
 	
     
 	var cs_id=$('#source_Select').val();//采集源id
@@ -446,7 +563,7 @@
         		//之前选中的id+当页选中的id
         		var ids=getids()+","+ids_str;
         		//是否全选
-        		var is_all = isAll();
+        		var is_all = isAll;
         		
                  if(page!=${page}){ 
                 	window.location.href="/wankangyuan/sourceData/getSourceDatas1?type=4&cs_id="+cs_id+"&searchId="+searchId+
@@ -560,6 +677,6 @@
 
 
 
-		
+
 </body>
 </html>

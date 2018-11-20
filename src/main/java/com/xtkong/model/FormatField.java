@@ -20,10 +20,19 @@ public class FormatField {
 	private int create_uid; // 创建人
 	private String update_datetime; // 更新时间
 	private int update_uid; // 更新人
+	private String emvalue;
 
 	private String updater="";// 更新人
 	private String creator="";// 创建人
 	
+	public String getEmvalue() {
+		return emvalue;
+	}
+
+	public void setEmvalue(String emvalue) {
+		this.emvalue = emvalue;
+	}
+
 	public void setUpdater(String updater) {
 		this.updater = updater;
 	}

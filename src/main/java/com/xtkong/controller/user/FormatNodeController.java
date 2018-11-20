@@ -149,12 +149,27 @@ public class FormatNodeController {
 				int i = 0;
 				for (FormatField formatField : meta) {
 					List<String> formatData = new ArrayList<>();
-					formatData.add(String.valueOf(formatField.getFf_id()));
-					formatData.add(formatField.getFf_name());
-					try {
-						formatData.add(metaDataList.get(0).get(++i));
+					
+					formatData.add(String.valueOf(formatField.getFf_id()));//获取ff_id 0
+					formatData.add(formatField.getFf_name());//获取名称,差描述信息和错误提醒   1
+					try { 
+						formatData.add(metaDataList.get(0).get(++i));   			  //2
 					} catch (Exception e) {
 						formatData.add("");
+					}
+					formatData.add(formatField.getDescription());						//3 描述信息
+					formatData.add(formatField.getEmvalue());						//4  枚举值
+					formatData.add(formatField.getError_msg());						//5 错误提醒
+					if(formatField.isEnumerated()) {
+						
+						formatData.add("是");						//6是否枚举
+					}else {
+						formatData.add("否");
+					}
+					if(formatField.isNot_null()) {        			//7是否必填
+						formatData.add("是");	
+					}else {
+						formatData.add("否");
 					}
 					metaDataListTemp.add(formatData);
 				}
@@ -314,8 +329,8 @@ public class FormatNodeController {
 		switch (type) {
 		case "1":
 			List<String> authority_numbers=new ArrayList<>();
-			authority_numbers.add("30");
-			authority_numbers.add("31");
+//			authority_numbers.add("30");
+			authority_numbers.add("32");
 			List<ProjectCustomRole> projects =projectCustomRoleService.selectProjectCustomRolesByUID(user.getId(),authority_numbers);
 //			projects = projectCustomRoleService.selectMyProject(user.getId());
 			httpSession.setAttribute("projects", projects);// 项目列表

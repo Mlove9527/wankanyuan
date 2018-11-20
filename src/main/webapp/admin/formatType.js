@@ -128,6 +128,7 @@ function enter(id){
 				str += '<th class="biaotouth">类型</th>';
 				str += '<th class="biaotouth">校验规则</th>';
 				str += '<th class="biaotouth">可枚举</th>';
+				str += '<th class="biaotouth">枚举值</th>';
 				str += '<th class="biaotouth">必填</th>';
 				str += '<th class="biaotouth">显示</th>';
 				str += '<th class="biaotouth">字段描述</th>';
@@ -159,7 +160,7 @@ function enter(id){
 					}else{
 						str+='<th class="biaoxiangth" id="ff_enumerated'+formatFields[i].ff_id+'">是</th>';
 					}
-					
+					str += '<th class="biaoxiangth" id="ff_emvalue'+formatFields[i].ff_id+'">'+formatFields[i].emvalue+'</th>';
 					if(formatFields[i].not_null == false){
 						str+='<th class="biaoxiangth" id="ff_not_null'+formatFields[i].ff_id+'">否</th>';
 					}else{

@@ -87,7 +87,7 @@
 					class="icon-bar"></span>
 				</a>
 				<!-- <a class="brand" href="index.html"><span>JANUX</span></a> -->
-				<a class="brand" href="usermanage.html"><img
+				<a class="brand" href="/wankangyuan/admin/viewUserManage"><img
 					src="img/newlogo2.png" height="70" width="218" alt="" /></a>
 
 				<!-- start: Header Menu -->
@@ -145,12 +145,9 @@
 								<!-- <i class="icon-bar-chart"></i> --> <span
 								class="hidden-tablet"> 项目内角色管理</span>
 						</a></li>
-						<li>
-	                        <a href="/wankangyuan/organization/viewOrgList">
-	                            <!-- <i class="icon-bar-chart"></i> -->
-	                            <span class="hidden-tablet"> 组织机构审批</span>
-	                        </a>
-	                    </li>
+						<li><a href="/wankangyuan/organization/viewOrgList"> <!-- <i class="icon-bar-chart"></i> -->
+								<span class="hidden-tablet"> 组织机构审批</span>
+						</a></li>
 					</ul>
 				</div>
 			</div>
@@ -325,7 +322,7 @@
 											<option value="true" checked="checked">是</option>
 											<option value="false">否</option>
 										</select>
-									</div>									
+									</div>
 									<div class="addbiaoxli">
 										<div class="addbiaoxlit">状态：</div>
 										<select name="csfield_add_is_view" id="csfield_add_is_view">
@@ -389,7 +386,8 @@
 									</div>
 									<div class="addbiaoxli">
 										<div class="addbiaoxlit">配置枚举值,以逗号隔开：</div>
-										<input type="text" class="addbiaoxlik" name="valueEM" id="edit_emvalue"/>
+										<input type="text" class="addbiaoxlik" name="valueEM"
+											id="edit_emvalue" />
 									</div>
 									<div class="addbiaoxli">
 										<div class="addbiaoxlit">是否必填：</div>
@@ -397,7 +395,7 @@
 											<option value="true" checked="checked">是</option>
 											<option value="false">否</option>
 										</select>
-									</div>									
+									</div>
 									<div class="addbiaoxli">
 										<div class="addbiaoxlit">状态：</div>
 										<select name="csfield_edit_is_view" id="csfield_edit_is_view">
@@ -588,6 +586,10 @@
 													</select>
 												</div>
 												<div class="encoMz">
+													<div class="encoMzt">配置枚举值,以逗号隔开：</div>
+													<input type="text" class="encoMzp" id="add_ff_emvalue" />
+												</div>
+												<div class="encoMz">
 													<div class="encoMzt">必填:</div>
 													<select class="encoMzp" id="add_ff_not_null">
 														<option value="true">是</option>
@@ -659,6 +661,10 @@
 														<option value="true">是</option>
 														<option value="false">否</option>
 													</select>
+												</div>
+												<div class="encoMz">
+													<div class="encoMzt">配置枚举值,以逗号隔开：</div>
+													<input type="text" class="encoMzp" id="edit_ff_emvalue" />
 												</div>
 												<div class="encoMz">
 													<div class="encoMzt">必填:</div>
@@ -813,33 +819,33 @@
 
 	<script type="text/javascript" src="formatField.js"></script>
 	<!-- end: JavaScript -->
-<script type="text/javascript">
-	//选择配置枚举值，选中是，则显示这个框，否的话 则不显示这个框
-	$(document).ready(function(){  
-		$('#enumerated1id').change(function(){  
-		var p1=$(this).children('option:selected').text();//这就是selected的值  
-		if(p1=="是"){
-			$("#valueEM1id").css('display','block');
-		}else{
-			$("#valueEM1id").css('display','none');
-		}
-		});  
-		$('#edit_enumerated').change(function(){  
-			var p1=$(this).children('option:selected').text();//这就是selected的值  
-			if(p1=="否"){
-				$("#valueEM2id").css('display','none');
-			}else{
-				$("#valueEM2id").css('display','block');
-			}
+	<script type="text/javascript">
+		//选择配置枚举值，选中是，则显示这个框，否的话 则不显示这个框
+		$(document).ready(function() {
+			$('#enumerated1id').change(function() {
+				var p1 = $(this).children('option:selected').text();//这就是selected的值  
+				if (p1 == "是") {
+					$("#valueEM1id").css('display', 'block');
+				} else {
+					$("#valueEM1id").css('display', 'none');
+				}
 			});
-		var s=$('#edit_enumerated').children('option:selected').text();
-		if(s=="否"){
-			$("#valueEM2id").css('display','none');
-		}else{
-			$("#valueEM2id").css('display','block');
-		}
-		})  
-</script>
+			$('#edit_enumerated').change(function() {
+				var p1 = $(this).children('option:selected').text();//这就是selected的值  
+				if (p1 == "否") {
+					$("#valueEM2id").css('display', 'none');
+				} else {
+					$("#valueEM2id").css('display', 'block');
+				}
+			});
+			var s = $('#edit_enumerated').children('option:selected').text();
+			if (s == "否") {
+				$("#valueEM2id").css('display', 'none');
+			} else {
+				$("#valueEM2id").css('display', 'block');
+			}
+		})
+	</script>
 </body>
 
 </html>

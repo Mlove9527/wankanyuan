@@ -12,6 +12,7 @@ $("#addFormatFieldSubmit").click(function() {
 	var is_view = $("#add_ff_is_view").val();
 	var description = $("#add_ff_description").val();
 	var error_msg = $("#add_ff_error_msg").val();
+	var emvalue= $("#add_ff_emvalue").val();
 
 	$.ajax({
 		url : "/wankangyuan/formatField/insertFormatField",
@@ -27,6 +28,7 @@ $("#addFormatFieldSubmit").click(function() {
 			is_view : is_view,
 			description : description,
 			error_msg : error_msg,
+			emvalue : emvalue,
 			cs_id : $("input[name='cs_id']").val()
 		},
 		dataType : "json",
@@ -38,6 +40,7 @@ $("#addFormatFieldSubmit").click(function() {
 				$("#add_ff_check_rule").val("");
 				$("#add_ff_description").val("");
 				$("#add_ff_error_msg").val("");
+				$("#add_ff_emvalue").val("");
 				enter(ft_id);
 			} else {
 				alert(data.message);
@@ -63,6 +66,7 @@ $("#editFormatFieldSubmit").click(function() {
 	var is_view = $("#edit_ff_is_view").val();
 	var description = $("#edit_ff_description").val();
 	var error_msg = $("#edit_ff_error_msg").val();
+	var emvalue= $("#edit_ff_emvalue").val();
 
 	$.ajax({
 		url : "/wankangyuan/formatField/updateFormatField",
@@ -78,6 +82,7 @@ $("#editFormatFieldSubmit").click(function() {
 			is_view : is_view,
 			description : description,
 			error_msg : error_msg,
+			emvalue : emvalue,
 			uid : '1'
 		},
 		dataType : "json",

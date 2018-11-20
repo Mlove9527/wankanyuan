@@ -11,12 +11,12 @@ import org.apache.ibatis.annotations.Update;
 import com.xtkong.model.FormatField;
 
 public interface FormatFieldDao {
-	@Insert("insert into format_field(ff_name,ft_id,is_meta,type,check_rule,enumerated,not_null,is_view,description,error_msg,create_datetime,create_uid) "
-			+ "values(#{ff_name},#{ft_id},#{is_meta},#{type},#{check_rule},#{enumerated},#{not_null},#{is_view},#{description},#{error_msg},#{create_datetime},#{create_uid})")
+	@Insert("insert into format_field(ff_name,ft_id,is_meta,type,check_rule,enumerated,not_null,is_view,description,error_msg,create_datetime,create_uid,emvalue) "
+			+ "values(#{ff_name},#{ft_id},#{is_meta},#{type},#{check_rule},#{enumerated},#{not_null},#{is_view},#{description},#{error_msg},#{create_datetime},#{create_uid},#{emvalue})")
 	public int insertFormatField(FormatField formatField);
 
 	@Update("update format_field "
-			+ "set ff_name=#{ff_name},is_meta=#{is_meta},type=#{type},check_rule=#{check_rule},enumerated=#{enumerated},not_null=#{not_null},is_view=#{is_view},description=#{description},error_msg=#{error_msg},update_datetime=#{update_datetime},update_uid=#{update_uid} "
+			+ "set ff_name=#{ff_name},is_meta=#{is_meta},type=#{type},check_rule=#{check_rule},enumerated=#{enumerated},not_null=#{not_null},is_view=#{is_view},description=#{description},error_msg=#{error_msg},update_datetime=#{update_datetime},update_uid=#{update_uid},emvalue=#{emvalue} "
 			+ "where ff_id=#{ff_id}")
 	public int updateFormatField(FormatField formatField);
 
