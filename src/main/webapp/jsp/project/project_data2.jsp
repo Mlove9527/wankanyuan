@@ -626,26 +626,27 @@
     	
     	$(".pro_rem").click(function (){
     		
+    		//删除
 			var p_id = ${project.id};
-    		var cs_id = $("#source_Select").val();
     		var afuxuanK=document.querySelectorAll('.fuxuanK2');
-    		
-            var afuxuan=[];
-            for(var i=0;i<afuxuanK.length;i++){
-                afuxuan.push(afuxuanK[i].querySelectorAll('.input_check')[0]);
-            }
+    		var idQuanXuan= $(" #isAll2").val();
+            var ids3=$(" #ids2").val();
             
-            var sourceDataIds = [];
-            for(var i=0;i<afuxuanK.length;i++){
-            	if(afuxuan[i].checked){
-            		sourceDataIds.push(afuxuan[i].name);
-            	}
+            if(idQuanXuan =="false"){
+            	 if(ids3 == ""){
+            		alert("请勾选待公开的选项！");
+                 	return;
+                 }
             }
-            
-            if(sourceDataIds == ""){
-            	alert("请勾选源数据！");
-            	return;
-            }
+          
+           	var cs_id=$('#source_Select').val();//采集源id
+         	var searchId="${searchId}";//操作字段id
+         	var searchWord=$(".BTSXcliGLK").val();//过滤条件
+         	var desc_asc="${desc_asc}";//排序
+         	var oldCondition=$("#oldCondition").html();//累加筛选条件
+         	var searchFirstWord = $(".searchCt").val();
+         	var chooseDatas = "${chooseDatas}";
+         	var likeSearch = "${likeSearch}";
             
             $.ajax({
             	url:"/wankangyuan/projectFormatData/remove",
@@ -653,7 +654,15 @@
             	data:{
             		p_id:p_id,
             		cs_id:cs_id,
-            		sourceDataIds:sourceDataIds.join(",")
+            		ids:ids3,
+            		isAll:idQuanXuan,
+            		searchId:searchId,
+            		searchWord:searchWord,
+            		desc_asc:desc_asc,
+            		oldCondition:oldCondition,
+            		searchFirstWord:searchFirstWord,
+            		chooseDatas:chooseDatas,
+            		likeSearch:likeSearch
             	},
             	dataType:"json",
             	success : function(data){
