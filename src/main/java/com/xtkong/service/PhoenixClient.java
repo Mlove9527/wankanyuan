@@ -22,6 +22,7 @@ import java.util.concurrent.TimeoutException;
 
 import com.google.gson.Gson;
 import com.xtkong.util.ConstantsHBase;
+import com.xtkong.util.HBaseDB;
 
 /**
  * 利用Phoenix访问Hbase
@@ -499,6 +500,9 @@ public class PhoenixClient {
 			Map<String, String> conditionEqual, Map<String, String> conditionLike) {
 		
 		if (msg.contains("Table undefined")) {
+			//得先创建hbase底层表,再创建映射视图
+			String cf[]=new String[]{ConstantsHBase.FAMILY_INFO};
+			HBaseDB.getInstance().createTable(tableName,cf,1);
 			PhoenixClient.createView(tableName, qualifiers);
 		}
 		if (msg.contains("Undefined column")) {
