@@ -137,7 +137,7 @@
 					</div>
 				</div>
 				<div class="prodainmR">
-					<c:forEach items="${source.sourceFields}" var="sourceFieldTemp"
+					<c:forEach items="${source.sourceFields1}" var="sourceFieldTemp"
 						varStatus="status">
 						<div class="prodainmRz1">
 							<div class="prodainmRz1L"  title="${sourceFieldTemp.description}">${sourceFieldTemp.csf_name}</div>
@@ -145,7 +145,99 @@
 							<div class="errname" style="display:none;">${sourceFieldTemp.csf_name}</div>
 							<div class="errmsg" style="display:none;">${sourceFieldTemp.error_msg}</div>
 							<%-- <c:if test="sourceFieldTemp.type=='文件'"></c:if> --%>
-							<c:choose>
+							<c:if test="${sourceFieldTemp.type=='文件' }">
+								<div class="prodainmRfilek">
+										<div class="prodainmRfile">${sourceData[status.index+1]}</div>
+										<input type="file" class="prodainmRip" id=${sourceFieldTemp.csf_id } value="${sourceData[status.index+1] }" style="display: none;">
+										<a class="prodainmRib2" href="<%=path%>/export/downloadFile?sourceDataId=${sourceData[0]}&cs_id=${sourceFieldTemp.cs_id }&csf_id=${sourceFieldTemp.csf_id}">下载</a>
+										<div class="prodainmRib" id="">修改</div>
+									</div>
+							</c:if>
+							<c:if test="${sourceFieldTemp.type=='图片'}">
+								<div class="prodainmRik">
+											<img alt="" class="prodainmRi" 
+												src="<%=path%>/export/getThumbnailImage?sourceDataId=${sourceData[0]}&cs_id=${sourceFieldTemp.cs_id}&csf_id=${sourceFieldTemp.csf_id}">
+											<input type="file" class="prodainmRip" id=${sourceFieldTemp.csf_id } value="${sourceData[status.index+1] }" style="display: none;" >
+											<a class="prodainmRib2" href="<%=path%>/export/downloadFile?sourceDataId=${sourceData[0]}&cs_id=${sourceFieldTemp.cs_id}&csf_id=${sourceFieldTemp.csf_id}">下载</a>
+											<div class="prodainmRib" id="">修改</div>
+										</div>
+							</c:if>
+							<c:if test="${sourceFieldTemp.type=='字符'}">
+								<c:if test="${sourceFieldTemp.enumerated==true }">
+										<c:if test="${sourceFieldTemp.emvalue!=null }">
+											<%-- <select>
+												<c:forEach items="${sourceFieldTemp.emvalue}" var="emvalue">
+													<option value="${emvalue}">${emvalue}</option>
+												</c:forEach>
+											</select> --%>
+											<input class="prodainmRz1R" type="text" id=${sourceFieldTemp.csf_id }
+													value="${sourceData[status.index+1] }" />
+										</c:if>
+										<c:if test="${sourceFieldTemp.emvalue==null }">
+												<input class="prodainmRz1R" type="text" id=${sourceFieldTemp.csf_id }
+													value="${sourceData[status.index+1] }" />
+										
+										</c:if>
+									</c:if>
+									<c:if test="${sourceFieldTemp.enumerated==false }">
+										<c:if test="${sourceFieldTemp.emvalue==null }">
+												<input class="prodainmRz1R" type="text" id=${sourceFieldTemp.csf_id }
+													value="${sourceData[status.index+1] }" />
+										
+										</c:if>
+									</c:if>
+							</c:if>
+							<c:if test="${sourceFieldTemp.type=='数值'}">
+								<c:if test="${sourceFieldTemp.enumerated==true }">
+											<c:if test="${sourceFieldTemp.emvalue!=null }">
+												<%-- <select>
+													<c:forEach items="${sourceFieldTemp.emvalue}" var="emvalue">
+														<option value="${emvalue}">${emvalue}</option>
+													</c:forEach>
+												</select> --%>
+												<input class="prodainmRz1R" type="number" id=${sourceFieldTemp.csf_id }
+														value="${sourceData[status.index+1] }" />
+											</c:if>
+											<c:if test="${sourceFieldTemp.emvalue==null }">
+													<input class="prodainmRz1R" type="number" id=${sourceFieldTemp.csf_id }
+														value="${sourceData[status.index+1] }" />
+											
+											</c:if>
+										</c:if>
+										<c:if test="${sourceFieldTemp.enumerated==false }">
+										<c:if test="${sourceFieldTemp.emvalue==null }">
+												<input class="prodainmRz1R" type="number" id=${sourceFieldTemp.csf_id }
+													value="${sourceData[status.index+1] }" />
+										
+										</c:if>
+									</c:if>
+							</c:if>
+							<c:if test="${sourceFieldTemp.type=='日期'}">
+								<c:if test="${sourceFieldTemp.enumerated==true }">
+											<c:if test="${sourceFieldTemp.emvalue!=null }">
+												<%-- <select>
+													<c:forEach items="${sourceFieldTemp.emvalue}" var="emvalue">
+														<option value="${emvalue}">${emvalue}</option>
+													</c:forEach>
+												</select> --%>
+												<input class="prodainmRz1R" type="date" id=${sourceFieldTemp.csf_id }
+														value="${sourceData[status.index+1] }" />
+											</c:if>
+											<c:if test="${sourceFieldTemp.emvalue==null }">
+													<input class="prodainmRz1R" type="date" id=${sourceFieldTemp.csf_id }
+														value="${sourceData[status.index+1] }" />
+											
+											</c:if>
+										</c:if>
+										<c:if test="${sourceFieldTemp.enumerated==false }">
+										<c:if test="${sourceFieldTemp.emvalue==null }">
+												<input class="prodainmRz1R" type="date" id=${sourceFieldTemp.csf_id }
+													value="${sourceData[status.index+1] }" />
+										
+										</c:if>
+									</c:if>
+							</c:if>
+							<%-- <c:choose>
 							
 								<c:when test="${sourceFieldTemp.type=='文件' }">
 									<div class="prodainmRfilek">
@@ -165,45 +257,82 @@
 									</div>
 								</c:when>
 								<c:when test="${sourceFieldTemp.type=='字符'}">
-									<input class="prodainmRz1R" type="text" id=${sourceFieldTemp.csf_id }
-										value="${sourceData[status.index+1] }" />
+									<c:if test="${sourceFieldTemp.enumerated==true }">
+										<c:if test="${sourceFieldTemp.emvalue!=null }">
+											<select>
+												<c:forEach items="${sourceFieldTemp.emvalue}" var="emvalue">
+													<option value="${emvalue}">${emvalue}</option>
+												</c:forEach>
+											</select>
+										</c:if>
+										<c:if test="${sourceFieldTemp.emvalue==null }">
+												<input class="prodainmRz1R" type="text" id=${sourceFieldTemp.csf_id }
+													value="${sourceData[status.index+1] }" />
+										
+										</c:if>
+									</c:if>
+									<c:if test="${sourceFieldTemp.enumerated==false }">
+										<c:if test="${sourceFieldTemp.emvalue==null }">
+												<input class="prodainmRz1R" type="text" id=${sourceFieldTemp.csf_id }
+													value="${sourceData[status.index+1] }" />
+										
+										</c:if>
+									</c:if>
 								</c:when>
 								<c:when test="${sourceFieldTemp.type=='数值'}">
+									<c:if test="${sourceFieldTemp.enumerated==true }">
+											<c:if test="${sourceFieldTemp.emvalue!=null }">
+												<select>
+													<c:forEach items="${sourceFieldTemp.emvalue}" var="emvalue">
+														<option value="${emvalue}">${emvalue}</option>
+													</c:forEach>
+												</select>
+											</c:if>
+											<c:if test="${sourceFieldTemp.emvalue==null }">
+													<input class="prodainmRz1R" type="number" id=${sourceFieldTemp.csf_id }
+														value="${sourceData[status.index+1] }" />
+											
+											</c:if>
+										</c:if>
+										<c:if test="${sourceFieldTemp.enumerated==false }">
+										<c:if test="${sourceFieldTemp.emvalue==null }">
+												<input class="prodainmRz1R" type="number" id=${sourceFieldTemp.csf_id }
+													value="${sourceData[status.index+1] }" />
+										
+										</c:if>
+									</c:if>
 									<input class="prodainmRz1R" type="number" id=${sourceFieldTemp.csf_id }
 										value="${sourceData[status.index+1] }" />
 								</c:when>
 								<c:when test="${sourceFieldTemp.type=='日期'}">
+									<c:if test="${sourceFieldTemp.enumerated==true }">
+											<c:if test="${sourceFieldTemp.emvalue!=null }">
+												<select>
+													<c:forEach items="${sourceFieldTemp.emvalue}" var="emvalue">
+														<option value="${emvalue}">${emvalue}</option>
+													</c:forEach>
+												</select>
+											</c:if>
+											<c:if test="${sourceFieldTemp.emvalue==null }">
+													<input class="prodainmRz1R" type="date" id=${sourceFieldTemp.csf_id }
+														value="${sourceData[status.index+1] }" />
+											
+											</c:if>
+										</c:if>
+										<c:if test="${sourceFieldTemp.enumerated==false }">
+										<c:if test="${sourceFieldTemp.emvalue==null }">
+												<input class="prodainmRz1R" type="date" id=${sourceFieldTemp.csf_id }
+													value="${sourceData[status.index+1] }" />
+										
+										</c:if>
+									</c:if>
 									<input class="prodainmRz1R" type="date" id=${sourceFieldTemp.csf_id }
 										value="${sourceData[status.index+1] }" />
 								</c:when>
-							</c:choose>
-							<%-- <input class="prodainmRz1R" type="text"
-								value="${sourceData[status.index+1] }" /> --%>
-							<%-- <div class="prodainmRz1R">${sourceData[status.index+1] }</div> --%>
+							</c:choose> --%>
 						</div>
 					</c:forEach>
-					<!-- <div class="prodainmRz1L">ddd</div>
-					<div class="prodainmRik">
-						<img alt="" class="prodainmRi"
-							src="http://localhost:8080/wankangyuan/static/img/userI.png">
-						<input type="file" class="prodainmRip" style="display: none;">
-						<div class="prodainmRib2" id="">下载</div>
-						<div class="prodainmRib" id="">修改</div>
-					</div>
-					<div class="prodainmRz1L">eee</div>
-					<div class="prodainmRik">
-						<img alt="" class="prodainmRi"
-							src="http://localhost:8080/wankangyuan/static/img/userI.png">
-						<input type="file" class="prodainmRip" style="display: none;">
-						<div class="prodainmRib2" id="">下载</div>
-						<div class="prodainmRib" id="">修改</div>
-					</div>
-					<div class="prodainmRz1L">ccc</div>
-					<div class="prodainmRfilek">
-						<div class="prodainmRfile">文件1</div>
-						<div class="prodainmRib2" id="">下载</div>
-						<div class="prodainmRib" id="">修改</div>
-					</div> -->
+					
 					<div class="prodainmRb">保存</div>
 				</div>
 			</div>

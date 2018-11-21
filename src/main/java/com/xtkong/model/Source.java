@@ -12,6 +12,15 @@ public class Source {
 	private boolean is_view;// 是否显示到前端 0不显示；1显示
 
 	private List<SourceField> sourceFields;
+	private List<SourceField1> sourceFields1;
+
+	public List<SourceField1> getSourceFields1() {
+		return sourceFields1;
+	}
+
+	public void setSourceFields1(List<SourceField1> sourceFields1) {
+		this.sourceFields1 = sourceFields1;
+	}
 
 	private List<FormatType> formatTypes;
 

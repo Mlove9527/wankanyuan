@@ -1,32 +1,22 @@
 package com.xtkong.controller.user;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import com.liutianjun.pojo.UserDataRelation;
-import com.xtkong.model.FormatFile;
-import com.xtkong.service.*;
-import com.xtkong.util.MyFileUtil;
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -36,14 +26,24 @@ import com.dzjin.service.ProjectCustomRoleService;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.liutianjun.pojo.User;
+import com.liutianjun.pojo.UserDataRelation;
 import com.xtkong.dao.hbase.HBaseFormatNodeDao;
 import com.xtkong.dao.hbase.HBaseSourceDataDao;
+import com.xtkong.model.FormatFile;
 import com.xtkong.model.FormatType;
 import com.xtkong.model.Source;
 import com.xtkong.model.SourceField;
+import com.xtkong.model.SourceField1;
+import com.xtkong.service.FormatFieldService;
+import com.xtkong.service.FormatFileService;
+import com.xtkong.service.FormatTypeService;
+import com.xtkong.service.PhoenixClient;
+import com.xtkong.service.ProjectDataService;
+import com.xtkong.service.SourceFieldService;
+import com.xtkong.service.SourceService;
+import com.xtkong.service.UserDataService;
 import com.xtkong.util.ConstantsHBase;
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import com.xtkong.util.MyFileUtil;
 
 @Controller
 @RequestMapping("/sourceData")
@@ -1031,20 +1031,14 @@ public class SourceDataController {
 					   }
 
 					   String path1 =this.dataFileLocation+File.separator+relaPath;
-					   logger.info("path1-------------"+path1);
-					   //File temp1 = new File(path1);
-//					   if(!temp1.exists() && !temp1.isDirectory()){
-//						   temp1.mkdir();
-//					   }
+					   File temp1 = new File(path1);
+					   if(!temp1.exists() && !temp1.isDirectory()){
+						   temp1.mkdir();
+					   }
 
 					   File dest = new File(path1);
 					   if(!dest.getParentFile().exists()){//判断文件父目录是否存在
-						   if(!dest.getParentFile().mkdir() || !dest.createNewFile())
-						   {
-							   map.put("result", false);
-							   map.put("message", "无法创建文件: "+path1);
-							   return map;
-						   }
+						   dest.getParentFile().mkdir();
 					   }
 					   file.transferTo(dest); //保存文件
 					   System.out.println(dest.getAbsolutePath());
@@ -1240,6 +1234,27 @@ public class SourceDataController {
 			String sourceDataId, String type) {
 		User user = (User) request.getAttribute("user");
 		Source source = sourceService.getSourceByCs_id(Integer.valueOf(cs_id));
+		List<SourceField> sourceFields = sourceFieldService.getSourceFields(Integer.valueOf(cs_id));
+		List<SourceField1> sourceFields1=new ArrayList<>();
+		for (SourceField sourceField : sourceFields) {
+			SourceField1 s=new SourceField1();
+			s.setCsf_id(sourceField.getCsf_id());
+			s.setCsf_name(sourceField.getCsf_name());
+			s.setCs_id(sourceField.getCs_id());
+			s.setType(type);
+			s.setCheck_rule(sourceField.getCheck_rule());
+			s.setEnumerated(sourceField.isEnumerated());
+			s.setNot_null(sourceField.isNot_null());
+			s.setDescription(sourceField.getDescription());
+			s.setError_msg(sourceField.getError_msg());
+			if(sourceField.getEmvalue()!=null && sourceField.getEmvalue()!="") {
+				s.setEmvalue(sourceField.getEmvalue().split(","));
+			}else {
+				s.setEmvalue(null);
+			}
+			sourceFields1.add(s);
+		}
+		source.setSourceFields1(sourceFields1);
 		source.setSourceFields(sourceFieldService.getSourceFields(Integer.valueOf(cs_id)));
 
 		httpSession.setAttribute("source", source);// 采集源字段列表
