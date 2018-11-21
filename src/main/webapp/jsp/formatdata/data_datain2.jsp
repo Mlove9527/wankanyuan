@@ -1,4 +1,3 @@
-
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -383,7 +382,6 @@
 	<script type="text/javascript">
 	$(function(){
 		});
-
 	//文件和图片上传input的accept设置
 	var aprodainmRip=document.querySelectorAll('prodainmRip');
 	for(var i=0;i<aprodainmRip.length;i++){
@@ -403,7 +401,6 @@
 					+ "&formatNodeId="
 					+ formatNodeId;
 		}
-
 		$(".app_expexport_node")
 				.click(
 						function() {
@@ -438,13 +435,10 @@
 									+ "&ft_id="
 									+ ft_id
 									+ "&formatNodeId=" + formatNodeId;
-
 						});
-
 		$(".app_expexport_type")
 				.click(
 						function() {
-
 							var afuxuanK = document
 									.querySelectorAll('.fuxuanK41');
 							var afuxuan = [];
@@ -474,9 +468,7 @@
 									+ "&sourceDataId="
 									+ sourceDataId
 									+ "&ft_id=" + ft_id;
-
 						});
-
 		//图片修改
 		$('.prodainmRib').each(function(index) {
 			$(this).click(function() {

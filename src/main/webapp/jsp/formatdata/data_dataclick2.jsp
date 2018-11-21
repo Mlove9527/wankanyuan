@@ -796,7 +796,6 @@
 		//新增节点
 		$("#addDataNodeSubmit").click(function (){
 			var cs_id = $('#cs_id').val();
-			console.log(cs_id);
 			var ft_id = $('#ft_id').val();
 			var nodeName = $("#dataNodeTextArea").val();
 			var sourceDataId = $("#sourceDataId").val();
