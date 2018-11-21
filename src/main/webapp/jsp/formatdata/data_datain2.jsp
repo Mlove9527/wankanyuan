@@ -165,13 +165,13 @@
 							<c:if test="${sourceFieldTemp.type=='字符'}">
 								<c:if test="${sourceFieldTemp.enumerated==true }">
 										<c:if test="${sourceFieldTemp.emvalue!=null }">
-											<%-- <select>
+											<select value="${sourceData[status.index+1] }">
 												<c:forEach items="${sourceFieldTemp.emvalue}" var="emvalue">
 													<option value="${emvalue}">${emvalue}</option>
 												</c:forEach>
-											</select> --%>
-											<input class="prodainmRz1R" type="text" id=${sourceFieldTemp.csf_id }
-													value="${sourceData[status.index+1] }" />
+											</select>
+											<%-- <input class="prodainmRz1R" type="text" id=${sourceFieldTemp.csf_id }
+													value="${sourceData[status.index+1] }" /> --%>
 										</c:if>
 										<c:if test="${sourceFieldTemp.emvalue==null }">
 												<input class="prodainmRz1R" type="text" id=${sourceFieldTemp.csf_id }
@@ -190,13 +190,13 @@
 							<c:if test="${sourceFieldTemp.type=='数值'}">
 								<c:if test="${sourceFieldTemp.enumerated==true }">
 											<c:if test="${sourceFieldTemp.emvalue!=null }">
-												<%-- <select>
+												<select value="${sourceData[status.index+1] }">
 													<c:forEach items="${sourceFieldTemp.emvalue}" var="emvalue">
 														<option value="${emvalue}">${emvalue}</option>
 													</c:forEach>
-												</select> --%>
-												<input class="prodainmRz1R" type="number" id=${sourceFieldTemp.csf_id }
-														value="${sourceData[status.index+1] }" />
+												</select>
+												<%-- <input class="prodainmRz1R" type="number" id=${sourceFieldTemp.csf_id }
+														value="${sourceData[status.index+1] }" /> --%>
 											</c:if>
 											<c:if test="${sourceFieldTemp.emvalue==null }">
 													<input class="prodainmRz1R" type="number" id=${sourceFieldTemp.csf_id }
@@ -215,13 +215,13 @@
 							<c:if test="${sourceFieldTemp.type=='日期'}">
 								<c:if test="${sourceFieldTemp.enumerated==true }">
 											<c:if test="${sourceFieldTemp.emvalue!=null }">
-												<%-- <select>
+												<select value="${sourceData[status.index+1] }">
 													<c:forEach items="${sourceFieldTemp.emvalue}" var="emvalue">
 														<option value="${emvalue}">${emvalue}</option>
 													</c:forEach>
-												</select> --%>
-												<input class="prodainmRz1R" type="date" id=${sourceFieldTemp.csf_id }
-														value="${sourceData[status.index+1] }" />
+												</select>
+												<%-- <input class="prodainmRz1R" type="date" id=${sourceFieldTemp.csf_id }
+														value="${sourceData[status.index+1] }" /> --%>
 											</c:if>
 											<c:if test="${sourceFieldTemp.emvalue==null }">
 													<input class="prodainmRz1R" type="date" id=${sourceFieldTemp.csf_id }
