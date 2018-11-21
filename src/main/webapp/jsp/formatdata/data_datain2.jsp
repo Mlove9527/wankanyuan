@@ -26,6 +26,10 @@
 		// pro_mine();
 		// pro_dataLB();
 		pro_data();
+		pro_dataclick();
+        data_dataclick2();
+        //data_click_guanxi();
+        data_dataclick();
 	}
 </script>
 <body>
@@ -84,21 +88,43 @@
 				<div class="top2C">
 					<div class="top2Ctl active">
 						<a
-							href="/wankangyuan/sourceData/firstIn?type=${type123}&cs_id=${source.cs_id}">
+							href="/wankangyuan/sourceData/firstIn?type=2&cs_id=${cs_id }">
 							<img src="/wankangyuan/static/img/back.png" height="20"
 							width="20" alt="" class="backI" />
-						</a>${sourceData[1]} <input id="cs_id" value="${source.cs_id }"
+						</a>${sourceData[1]} <input id="cs_id"
+							value="${formatTypeFolders[0].cs_id }" style="display: none;" />
+						<input id="ft_id" value="${data[0].ft_id }" style="display: none;" />
+						<input id="formatNodeId" value="${formatNodeId}"
 							style="display: none;" /> <input id="sourceDataId"
-						style="display: none;"	value="${sourceData[0]}" />
+							value="${sourceDataId}" style="display: none;" />
 					</div>
-					<div class="app_expexport app_expexport_node"
-						>导出结点</div>
-					<div class="app_expexport app_expexport_type"
-						>导出格式类型</div>
+					<div class="app_expexport app_expexport_data">导出数据</div>
+					<div class="app_expexport app_expexport_node">导出结点</div>
+					<div class="app_expexport app_expexport_type">导出格式类型</div>
 				</div>
 			</div>
 			<div class="prodainm">
 				<div class="prodainmL">
+					<div class="dataclLbk">
+						<div class="dataclLb daclLb_add">添加数据节点</div>
+						<div class="dataclLb daclLb_del">删除</div>
+						<div class="dataclLb daclLb_mod">修改</div>
+					</div>
+					<div class="dataeditK">
+						<div class="dataeditT">
+							<div class="dataeditTx"></div>
+						</div>
+						<input id="type" class="type" value="" style="display: none;" />
+						<div class="dataeditM">
+							<div class="dataeditMt">名称</div>
+							<textarea name="" id="dataNodeTextArea" class="dataeditTta"></textarea>
+						</div>
+						<div class="dataeditB">
+							<input type="button" class="dataeditb" id="addDataNodeSubmit"
+								value="提交" />
+						</div>
+					</div>
+
 					<div class="PJliBK">
 						<c:forEach items="${formatTypeFolders}" var="formatTypeTemp"
 							varStatus="status">
@@ -128,6 +154,7 @@
 												<div class="PJliB2Lt" id="${formatDataNodeTemp.key}"
 													onclick="dataNodeClick('${formatDataNodeTemp.key}','${formatTypeTemp.ft_id }')">${formatDataNodeTemp.value}
 												</div>
+
 											</div>
 										</div>
 									</c:forEach>
@@ -587,6 +614,143 @@
                 //}
             }
         });
+		//移除结点
+    	$(".daclLb_del").click(function (){
+    		
+    		var afuxuanK=document.querySelectorAll('.fuxuanK42');
+            var afuxuan=[];
+            for(var i=0;i<afuxuanK.length;i++){
+                afuxuan.push(afuxuanK[i].querySelectorAll('.input_check')[0]);
+            }
+            var ids = [];
+            for(var i=0;i<afuxuanK.length;i++){
+            	if(afuxuan[i].checked){
+            		ids.push(afuxuan[i].name);
+            	}
+            }
+            if(ids == ""){
+            	alert("请勾选待删除的结点！");
+            	return;
+            }else if(ids.length > 1){
+            	alert("最多选择一个结点！")
+            }else{
+            	var con1=confirm("确定删除选中项吗？");
+                if(con1){
+              	var cs_id = $("#cs_id").val();
+        		var ft_id = $("#ft_id").val();
+        		var formatNodeId = $("#formatNodeId").val();
+        		var sourceDataId = $("#sourceDataId").val();
+            	$.ajax({
+        			url:"/wankangyuan/formatNode/deleteFormatNode",
+        			type:"post",
+        			data:{
+        				cs_id:cs_id,
+        				formatNodeId:ids.join(",")
+        			},
+        			dataType:"json",
+        			success : function(data){
+        				if(data.result == true){
+        					alert(data.message);
+        					window.location.href="/wankangyuan/sourceData/getSourceDataById?cs_id="+cs_id+"&sourceDataId="+sourceDataId+"&type=2"
+        				}else{
+        					alert(data.message);
+        				}
+        			},
+        			error : function(){
+        				alert("网络异常，请稍后重试！");
+        			}
+        		});	
+                }else{
+                    //点击取消的动作
+                }
+            }
+    	});
+    	//新增节点
+		$("#addDataNodeSubmit").click(function (){
+			var cs_id = $('#cs_id').val();
+			console.log(cs_id);
+			var ft_id = $('#ft_id').val();
+			var nodeName = $("#dataNodeTextArea").val();
+			var sourceDataId = $("#sourceDataId").val();
+			var formatNodeId = $("#formatNodeId").val();
+			var type = $("#type").val();
+			if(type == "edit"){
+	    		var afuxuanK=document.querySelectorAll('.fuxuanK42');
+	    		
+	            var afuxuan=[];
+	            for(var i=0;i<afuxuanK.length;i++){
+	                afuxuan.push(afuxuanK[i].querySelectorAll('.input_check')[0]);
+	            }
+	            var formatNodeIds = [];
+	            var ft_ids = [];
+	            for(var i=0;i<afuxuanK.length;i++){
+	            	if(afuxuan[i].checked){
+	            		formatNodeIds.push(afuxuan[i].name);
+	            		ft_ids.push(afuxuan[i].value);
+	            	}
+	            }
+	            $.ajax({
+	    			url:"/wankangyuan/formatNode/updateFormatNode",
+	    			type:"post",
+	    			data:{
+	    				cs_id:cs_id,
+	    				nodeName:nodeName,
+	    				ft_id:ft_ids.join(","),
+	    				sourceDataId:sourceDataId,
+	    				formatNodeId:formatNodeIds.join(",")
+	    			},
+	    			dataType:"json",
+	    			success : function(data){
+	    				if(data.result == true){
+	    					alert(data.message);
+	    					window.location.href="/wankangyuan/sourceData/getSourceDataById?cs_id="+cs_id+"&sourceDataId="+sourceDataId+"&type=2"
+	    				}else{
+	    					alert(data.message);
+	    				}
+	    			},
+	    			error : function(){
+	    				alert("网络异常，请稍后重试！");
+	    			}	
+	    		});   
+			}else if(type == "add"){
+	    		var afuxuanK=document.querySelectorAll('.fuxuanK41');
+	            var afuxuan=[];
+	            for(var i=0;i<afuxuanK.length;i++){
+	                afuxuan.push(afuxuanK[i].querySelectorAll('.input_check')[0]);
+	            }
+	            var ids = [];
+	            for(var i=0;i<afuxuanK.length;i++){
+	            	if(afuxuan[i].checked){
+	            		ids.push(afuxuan[i].name);
+	            	}
+	            }
+	    		$.ajax({
+	    			url:"/wankangyuan/formatNode/insertFormatNode",
+	    			type:"post",
+	    			data:{
+	    				cs_id:cs_id,
+	    				nodeName:nodeName,
+	    				sourceDataId:sourceDataId,
+	    				ft_id:ids.join(",")
+	    			},
+	    			dataType:"json",
+	    			success : function(data){
+	    				if(data.result == true){
+	    					alert(data.message);
+	    					/* alert(ft_id); */
+	    					/* window.location.href="/wankangyuan/formatNode/getFormatNodeById?cs_id="
+	    	    				+cs_id+"&sourceDataId="+sourceDataId+"&type=2&ft_id="+ft_id+"&formatNodeId="+formatNodeId; */
+	    					window.location.href="/wankangyuan/sourceData/getSourceDataById?cs_id="+cs_id+"&sourceDataId="+sourceDataId+"&type=2"
+	    				}else{
+	    					alert(data.message);
+	    				}
+	    			},
+	    			error : function(){
+	    				alert("网络异常，请稍后重试！");
+	    			}
+	    		});  
+			}
+		});
 	</script>
 </body>
 </html>

@@ -780,8 +780,8 @@ public class SourceDataController {
 		switch (type) {
 		case "1":
 			List<String> authority_numbers = new ArrayList<>();
-			authority_numbers.add("30");
-			authority_numbers.add("31");
+//			authority_numbers.add("30");
+			authority_numbers.add("32");
 			List<ProjectCustomRole> projects = projectCustomRoleService.selectProjectCustomRolesByUID(user.getId(),
 					authority_numbers);
 			// projects =
@@ -1271,12 +1271,14 @@ public class SourceDataController {
 				formatTypeMap);
 		httpSession.setAttribute("formatTypeFolders", formatTypeFolders);
 		httpSession.setAttribute("type123", type);
+		httpSession.setAttribute("sourceDataId", sourceDataId);
+		httpSession.setAttribute("cs_id", cs_id);
 
 		switch (type) {
 		case "1":
 			List<String> authority_numbers = new ArrayList<>();
-			authority_numbers.add("30");
-			authority_numbers.add("31");
+//			authority_numbers.add("30");
+			authority_numbers.add("32");
 			List<ProjectCustomRole> projects = projectCustomRoleService.selectProjectCustomRolesByUID(user.getId(),
 					authority_numbers);
 			// projects = projectCustomRoleService.selectMyProject(user.getId());

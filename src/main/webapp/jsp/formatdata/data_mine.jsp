@@ -388,7 +388,7 @@
 	var searchFirstWord=$(".searchCt").val();
 	$("#source_Select").change(function(){
 		cs_id = $("#source_Select").val();
-		alert(cs_id);
+		/* alert(cs_id); */
 			window.location.href="/wankangyuan/sourceData/getSourceDatas?type=1&cs_id="+cs_id+"&ids="+$("#ids2").val()+"&isAll="+$("#isAll2").val();
 	
 	});
