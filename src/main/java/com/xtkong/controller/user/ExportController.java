@@ -113,7 +113,10 @@ public class ExportController {
 		Map<String,String> result=new HashMap();
 
 		//_号前面是MD5值, _号后边是真正的文件名
-		result.put(fileName.substring(fileName.indexOf("_")+1,fileName.length()),this.dataFileLocation+File.separatorChar+fileName.substring(0,fileName.indexOf("_")));
+		//fileNameINDB当初用户可能填的是文件相对路径,这个名字会用于下载时的文件名,所以最好处理一下
+		String fileNameINDB=fileName.substring(fileName.indexOf("_")+1,fileName.length());
+		String fileRealPath=this.dataFileLocation+File.separatorChar+fileName.substring(0,fileName.indexOf("_"));
+		result.put(fileNameINDB,fileRealPath);
 
 		return (Entry<String,String>)result.entrySet().toArray()[0];
 	}

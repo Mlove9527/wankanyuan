@@ -67,7 +67,7 @@ public class ImportController {
 		return new File(dataFileTmpLocation+File.separatorChar+username+File.separatorChar+fileName).exists();
 	}
 
-	private void validateData(String val,SourceField csf,String username) throws Exception
+	private String validateData(String val,SourceField csf,String username) throws Exception
 	{
 		if(val==null || val.trim().isEmpty())
 		{
@@ -76,6 +76,8 @@ public class ImportController {
 			{
 				throw new Exception(csf.getError_msg());
 			}
+
+			return "";
 		}
 		else
 		{
@@ -83,6 +85,11 @@ public class ImportController {
 			{
 				if(!ifImgExists(username,val.trim()))
 				{
+					//如果字段可以为空,即使数据是非法的也不会报错,只是数据当做空
+//					if(!csf.isNot_null())
+//					{
+//						return "";
+//					}
 					logger.warn("username: "+username+", image file: "+val.trim()+" not exists.");
 					throw new Exception(csf.getError_msg());
 				}
@@ -91,6 +98,11 @@ public class ImportController {
 			{
 				if(!ifFileExists(username,val.trim()))
 				{
+					//如果字段可以为空,即使数据是非法的也不会报错,只是数据当做空
+//					if(!csf.isNot_null())
+//					{
+//						return "";
+//					}
 					logger.warn("username: "+username+", file: "+val.trim()+" not exists.");
 					throw new Exception(csf.getError_msg());
 				}
@@ -113,16 +125,22 @@ public class ImportController {
 					}
 					if(!ifHas)
 					{
+						//如果字段可以为空,即使数据是非法的也不会报错,只是数据当做空
+//						if(!csf.isNot_null())
+//						{
+//							return "";
+//						}
 						throw new Exception(csf.getError_msg());
 					}
 				}
 
 			}
-		}
 
+			return val.trim();
+		}
 	}
 
-	private void validateData(String val,FormatField ff,String username) throws Exception
+	private String validateData(String val,FormatField ff,String username) throws Exception
 	{
 		if(val==null || val.trim().isEmpty())
 		{
@@ -131,6 +149,8 @@ public class ImportController {
 			{
 				throw new Exception(ff.getError_msg());
 			}
+
+			return "";
 		}
 		else
 		{
@@ -138,6 +158,11 @@ public class ImportController {
 			{
 				if(!ifImgExists(username,val.trim()))
 				{
+					//如果字段可以为空,即使数据是非法的也不会报错,只是数据当做空
+//					if(!ff.isNot_null())
+//					{
+//						return "";
+//					}
 					logger.warn("username: "+username+", image file: "+val.trim()+" not exists.");
 					throw new Exception(ff.getError_msg());
 				}
@@ -146,6 +171,11 @@ public class ImportController {
 			{
 				if(!ifFileExists(username,val.trim()))
 				{
+					//如果字段可以为空,即使数据是非法的也不会报错,只是数据当做空
+//					if(!ff.isNot_null())
+//					{
+//						return "";
+//					}
 					logger.warn("username: "+username+", file: "+val.trim()+" not exists.");
 					throw new Exception(ff.getError_msg());
 				}
@@ -168,11 +198,18 @@ public class ImportController {
 					}
 					if(!ifHas)
 					{
+						//如果字段可以为空,即使数据是非法的也不会报错,只是数据当做空
+//						if(!ff.isNot_null())
+//						{
+//							return "";
+//						}
 						throw new Exception(ff.getError_msg());
 					}
 				}
 
 			}
+
+			return val.trim();
 		}
 
 	}
@@ -410,7 +447,7 @@ public class ImportController {
 						cell = row.getCell(index_csf.getKey());
 						String cellValue=getStringCellValue(cell);
 
-						validateData(cellValue,index_csf.getValue(),user.getUsername());
+						cellValue=validateData(cellValue,index_csf.getValue(),user.getUsername());
 
 						//如果字段是文件或图片,则先导入文件,再把文件名(MD5+文件名)写入hbase
 						if(cellValue!=null && !cellValue.trim().isEmpty() && (index_csf.getValue().getType().equals("图片")||index_csf.getValue().getType().equals("文件"))){
