@@ -1267,8 +1267,15 @@ public class SourceDataController {
 		for (FormatType formatType : formatTypes) {
 			formatTypeMap.put(String.valueOf(formatType.getFt_id()), formatType);
 		}
-		List<FormatType> formatTypeFolders = HBaseFormatNodeDao.getFormatTypeFolders(cs_id, sourceDataId,
-				formatTypeMap);
+		List<FormatType> formatTypeFolders = null;
+		try {
+			formatTypeFolders = HBaseFormatNodeDao.getFormatTypeFolders(cs_id, sourceDataId,
+					formatTypeMap);
+		}
+		catch(Exception e)
+		{
+			logger.error(e);
+		}
 		httpSession.setAttribute("formatTypeFolders", formatTypeFolders);
 		httpSession.setAttribute("type123", type);
 		httpSession.setAttribute("sourceDataId", sourceDataId);
