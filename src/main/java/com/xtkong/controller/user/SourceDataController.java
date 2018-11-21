@@ -1031,14 +1031,20 @@ public class SourceDataController {
 					   }
 
 					   String path1 =this.dataFileLocation+File.separator+relaPath;
-					   File temp1 = new File(path1);
-					   if(!temp1.exists() && !temp1.isDirectory()){
-						   temp1.mkdir();
-					   }
+					   logger.info("path1-------------"+path1);
+					   //File temp1 = new File(path1);
+//					   if(!temp1.exists() && !temp1.isDirectory()){
+//						   temp1.mkdir();
+//					   }
 
 					   File dest = new File(path1);
 					   if(!dest.getParentFile().exists()){//判断文件父目录是否存在
-						   dest.getParentFile().mkdir();
+						   if(!dest.getParentFile().mkdir() || !dest.createNewFile())
+						   {
+							   map.put("result", false);
+							   map.put("message", "无法创建文件: "+path1);
+							   return map;
+						   }
 					   }
 					   file.transferTo(dest); //保存文件
 					   System.out.println(dest.getAbsolutePath());
