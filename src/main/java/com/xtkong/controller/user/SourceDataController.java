@@ -1241,7 +1241,7 @@ public class SourceDataController {
 			s.setCsf_id(sourceField.getCsf_id());
 			s.setCsf_name(sourceField.getCsf_name());
 			s.setCs_id(sourceField.getCs_id());
-			s.setType(type);
+			s.setType(sourceField.getType());
 			s.setCheck_rule(sourceField.getCheck_rule());
 			s.setEnumerated(sourceField.isEnumerated());
 			s.setNot_null(sourceField.isNot_null());
