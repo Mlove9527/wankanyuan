@@ -7,6 +7,8 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -135,6 +137,18 @@ public class ImportController {
 				}
 
 			}
+			else
+			{
+				if(csf.getCheck_rule()!=null && !csf.getCheck_rule().trim().equals(""))
+				{
+					Pattern p= Pattern.compile(csf.getCheck_rule().trim());
+					Matcher m=p.matcher(val.trim());
+					if(!m.matches()){
+						throw new Exception(csf.getError_msg());
+					}
+				}
+
+			}
 
 			return val.trim();
 		}
@@ -207,6 +221,17 @@ public class ImportController {
 					}
 				}
 
+			}
+			else
+			{
+				if(ff.getCheck_rule()!=null && !ff.getCheck_rule().trim().equals(""))
+				{
+					Pattern p= Pattern.compile(ff.getCheck_rule().trim());
+					Matcher m=p.matcher(val.trim());
+					if(!m.matches()){
+						throw new Exception(ff.getError_msg());
+					}
+				}
 			}
 
 			return val.trim();
