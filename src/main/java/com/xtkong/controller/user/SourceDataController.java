@@ -973,7 +973,20 @@ public class SourceDataController {
 		 while (entries.hasNext()) { 
 		   Map.Entry entry = (Map.Entry) entries.next(); 
 		   String key = (String)entry.getKey(); 
-		   String[] value = (String[])entry.getValue(); 
+		   String[] value = (String[])entry.getValue();
+			 //替换日期类型中的T
+			 try {
+				 if(sourceFieldService.getSourceField(Integer.parseInt(key)).getType().equals("日期")
+						 && !value[0].equals("undefined"))
+				 {
+					 value[0]=value[0].replace("T"," ");
+				 }
+			 }
+			 catch(Exception e)
+			 {
+				 logger.warn("无法判断字段类型是否日期,将不处理日期数据: "+e.getMessage());
+			 }
+
 		   resultMap.put(key, value[0].equals("undefined")?"":value[0]);
 		   System.out.println("Key = " + key + ", Value = " + value[0]); 
 		 }
