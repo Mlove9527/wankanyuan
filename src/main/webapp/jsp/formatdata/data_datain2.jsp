@@ -743,6 +743,33 @@
 	    		});  
 			}
 		});
+		//导出数据
+    	$(".app_expexport_data").click(function (){
+
+            var cs_id = $("#cs_id").val();
+    		var ft_id = $("#ft_id").val();
+    		var formatNodeId = $("#formatNodeId").val();
+    		var sourceDataId = $("#sourceDataId").val();
+    		var afuxuanK=document.querySelectorAll('.fx4');
+            var afuxuan=[];
+            for(var i=0;i<afuxuanK.length;i++){
+                afuxuan.push(afuxuanK[i].querySelectorAll('.input_check')[0]);
+            }
+            var formatDataIds = [];
+            for(var i=0;i<afuxuanK.length;i++){
+            	if(afuxuan[i].checked){
+            		formatDataIds.push(afuxuan[i].name);
+            	}
+            }
+            if(formatDataIds == ""){
+          	   alert("请选择待导出数据！");
+          	   return;
+             }
+              //刷新页面
+            window.location.href="/wankangyuan/export/formatData?cs_id="
+            				+cs_id+"&ft_id="+ft_id+"&formatDataIds="+formatDataIds;
+           	
+    	});
 	</script>
 </body>
 </html>
