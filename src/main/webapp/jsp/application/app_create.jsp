@@ -202,6 +202,7 @@ function project1(bol){
 		project1();
 		// pro_mine();
 		app_mine();
+		app_create();
 	}
 </script>
 
