@@ -206,11 +206,11 @@
 										</c:if>
 									</c:if>
 									<c:if test="${sourceFieldTemp.enumerated==false }">
-										<c:if test="${sourceFieldTemp.emvalue==null }">
+										<%-- <c:if test="${sourceFieldTemp.emvalue==null }"> --%>
 												<input class="prodainmRz1R" type="text" id=${sourceFieldTemp.csf_id }
 													value="${sourceData[status.index+1] }" />
 										
-										</c:if>
+										<%-- </c:if> --%>
 									</c:if>
 							</c:if>
 							<c:if test="${sourceFieldTemp.type=='数值'}">
@@ -231,11 +231,11 @@
 											</c:if>
 										</c:if>
 										<c:if test="${sourceFieldTemp.enumerated==false }">
-										<c:if test="${sourceFieldTemp.emvalue==null }">
+										<%-- <c:if test="${sourceFieldTemp.emvalue==null }"> --%>
 												<input class="prodainmRz1R" type="number" id=${sourceFieldTemp.csf_id }
 													value="${sourceData[status.index+1] }" />
 										
-										</c:if>
+										<%-- </c:if> --%>
 									</c:if>
 							</c:if>
 							<c:if test="${sourceFieldTemp.type=='日期'}">
@@ -256,11 +256,11 @@
 											</c:if>
 										</c:if>
 										<c:if test="${sourceFieldTemp.enumerated==false }">
-										<c:if test="${sourceFieldTemp.emvalue==null }">
+										<%-- <c:if test="${sourceFieldTemp.emvalue==null }"> --%>
 												<input class="prodainmRz1R" type="datetime-local" step="01" id=${sourceFieldTemp.csf_id }
 													value="${sourceData[status.index+1] }" />
 										
-										</c:if>
+										<%-- </c:if> --%>
 									</c:if>
 							</c:if>
 							<%-- <c:choose>
