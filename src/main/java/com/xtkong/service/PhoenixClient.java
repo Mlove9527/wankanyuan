@@ -23,6 +23,7 @@ import java.util.concurrent.TimeoutException;
 import com.google.gson.Gson;
 import com.xtkong.util.ConstantsHBase;
 import com.xtkong.util.HBaseDB;
+import org.apache.log4j.Logger;
 
 /**
  * 利用Phoenix访问Hbase
@@ -30,6 +31,7 @@ import com.xtkong.util.HBaseDB;
  */
 public class PhoenixClient {
 
+	private static final Logger logger  =  Logger.getLogger(PhoenixClient.class );
 	/**
 	 * 利用静态块的方式初始化Driver，防止Tomcat加载不到（有时候比较诡异）
 	 */
@@ -176,8 +178,8 @@ public class PhoenixClient {
 
 			msg.put("msg", "success");
 			map.put("msg", msg);
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			logger.warn("hbase查询失败: "+e.getMessage());
 			msg.put("msg", "SQL执行出错：\n SQL:  " + phoenixSQL + "\n异常信息:  " + e.getMessage());
 			map.put("msg", msg);
 			return map;
