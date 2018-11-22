@@ -1439,13 +1439,13 @@ function data_create(){
 	        							}else{
 		            						adddataM.append('<tr>'+
 		                               				'<td><div class="adddataMlit">'+sourceFields[index].csf_name+'<span style="color:red">*</span>:</div></td>'+
-		                                			'<td><input type="date" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" /></td>'+
+		                                			'<td><input type="datetime-local" step="01" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" /></td>'+
 		                            			'</tr>');
 	        							}
             						}else{
             							adddataM.append('<tr>'+
 	                               				'<td><div class="adddataMlit" title="'+sourceFields[index].description+'">'+sourceFields[index].csf_name+'<span style="color:red">*</span>:</div></td>'+
-	                                			'<td><input type="date" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" /></td>'+
+	                                			'<td><input type="datetime-local" step="01" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" /></td>'+
 	                            			'</tr>');
             							}
             						
@@ -1536,13 +1536,13 @@ function data_create(){
 	        							}else{
 	            						adddataM.append('<tr>'+
 	                               				'<td><div class="adddataMlit" title="'+sourceFields[index].description+'">'+sourceFields[index].csf_name+':</div></td>'+
-	                                			'<td><input type="date" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" /></td>'+
+	                                			'<td><input type="datetime-local" step="01" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" /></td>'+
 	                            			'</tr>');
 	        							}
             						}else{
             							adddataM.append('<tr>'+
 	                               				'<td><div class="adddataMlit" title="'+sourceFields[index].description+'">'+sourceFields[index].csf_name+':</div></td>'+
-	                                			'<td><input type="date" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" /></td>'+
+	                                			'<td><input type="datetime-local" step="01" id="'+sourceFields[index].csf_id+'" class="adddataMliTT adddataMliT" /></td>'+
 	                            			'</tr>');
             						}
             					}else if(sourceFields[index].type=="图片"){

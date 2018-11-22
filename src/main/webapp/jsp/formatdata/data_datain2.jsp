@@ -250,14 +250,14 @@
 														value="${sourceData[status.index+1] }" /> --%>
 											</c:if>
 											<c:if test="${sourceFieldTemp.emvalue==null }">
-													<input class="prodainmRz1R" type="date" id=${sourceFieldTemp.csf_id }
+													<input class="prodainmRz1R" type="datetime-local" step="01" id=${sourceFieldTemp.csf_id }
 														value="${sourceData[status.index+1] }" />
 											
 											</c:if>
 										</c:if>
 										<c:if test="${sourceFieldTemp.enumerated==false }">
 										<c:if test="${sourceFieldTemp.emvalue==null }">
-												<input class="prodainmRz1R" type="date" id=${sourceFieldTemp.csf_id }
+												<input class="prodainmRz1R" type="datetime-local" step="01" id=${sourceFieldTemp.csf_id }
 													value="${sourceData[status.index+1] }" />
 										
 										</c:if>
