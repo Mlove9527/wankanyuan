@@ -1260,10 +1260,9 @@ function data_create(){
     var adddataPD=0;// 添加源数据框状态判断
     
 
-    // 提交数据源按钮
     adddataBb.onclick=function(){
-    	var btpd=true;
-    	var btpd_id=[];
+    	var btpd=true;//非空为空的判断，false则要弹出alert
+    	var btpd_id=[];//非空为空的id数组
     	var aadddataMlit=oadddataK.querySelectorAll('.adddataMlit');
     	var atr=oadddataK.querySelectorAll('tr'); 
     	for(var i=0;i<atr.length;i++){
@@ -1285,38 +1284,65 @@ function data_create(){
     		}
     	}
     	if(btpd){
-	        var form_data = new FormData();
-	    	var cs_id = $("#source_Select").val();
-	    	form_data.append("cs_id",cs_id);
-	        aadddataMliTT=oadddataK.querySelectorAll('.adddataMliTT');
-	        for(var i=0;i<aadddataMliTT.length;i++){
-	        	if(aadddataMliTT[i].type=="file"){
-	        		//文件
-	        		var fileObj = aadddataMliTT[i].files[0]; // 获取文件对象
-	        		form_data.append(aadddataMliTT[i].id, fileObj);
-	        	}else{
-	        		form_data.append(aadddataMliTT[i].id, aadddataMliTT[i].value);
-	        	}
-	        }
-	        $.ajax({
-	        	url:"/wankangyuan/sourceData/insertSourceData",
-	        	type:"post",
-	        	data:form_data,
-	        	processData : false,  //必须false才会避开jQuery对 formdata 的默认处理   
-	            contentType : false,  //必须false才会自动加上正确的Content-Type 
-	        	success : function(data){
-	        		if(data.result == true){
-	        			alert(data.message);
-	        			// 刷新页面
-	        			window.location.href="/wankangyuan/sourceData/getSourceDatas?type=2&cs_id="+cs_id;       			                    
-	        		}else{
-	        			alert(data.message);
-	        		}
-	        	},
-	        	error : function(){
-	        		alert("联网失败");
-	        	}
-	        });
+    		//正则规则判断
+    		var rule_pd=true;//规则的判断，false则要弹出alert
+        	var rule_pd_id=[];//不符合规则的id数组
+        	var aadddataMlit=oadddataK.querySelectorAll('.adddataMlit');
+        	var atr=oadddataK.querySelectorAll('tr'); 
+        	for(var i=0;i<atr.length;i++){
+        		if(check_rule[i]){
+        			var oadddataMliT=atr[i].querySelectorAll('.adddataMliT')[0];
+        			if(oadddataMliT.tagName=='INPUT'){
+        				console.log(check_rule[i]);
+        				console.log(oadddataMliT.value);
+        				/*check_rule[i]=/e/;*/
+        				if(!check_rule[i].test(oadddataMliT.value)){//警告：如果数据库中存放的规则不是正则表达式，则此处的test必报错，如果要做测试，可以把上一行的注释内容解开，输入时带一个e就可以判断成功
+        					rule_pd=false;
+        					rule_pd_id.push(i);
+        					console.log(1);
+            			}
+        			}
+        			
+        		}
+        	}
+        	if(rule_pd){
+        		var form_data = new FormData();
+    	    	var cs_id = $("#source_Select").val();
+    	    	form_data.append("cs_id",cs_id);
+    	        aadddataMliTT=oadddataK.querySelectorAll('.adddataMliTT');
+    	        for(var i=0;i<aadddataMliTT.length;i++){
+    	        	if(aadddataMliTT[i].type=="file"){
+    	        		//文件
+    	        		var fileObj = aadddataMliTT[i].files[0]; // 获取文件对象
+    	        		form_data.append(aadddataMliTT[i].id, fileObj);
+    	        	}else{
+    	        		form_data.append(aadddataMliTT[i].id, aadddataMliTT[i].value);
+    	        	}
+    	        }
+    	        $.ajax({
+    	        	url:"/wankangyuan/sourceData/insertSourceData",
+    	        	type:"post",
+    	        	data:form_data,
+    	        	processData : false,  //必须false才会避开jQuery对 formdata 的默认处理   
+    	            contentType : false,  //必须false才会自动加上正确的Content-Type 
+    	        	success : function(data){
+    	        		if(data.result == true){
+    	        			alert(data.message);
+    	        			// 刷新页面
+    	        			window.location.href="/wankangyuan/sourceData/getSourceDatas?type=2&cs_id="+cs_id;       			                    
+    	        		}else{
+    	        			alert(data.message);
+    	        		}
+    	        	},
+    	        	error : function(){
+    	        		alert("联网失败");
+    	        	}
+    	        });
+        	}else{
+        		var j=rule_pd_id[0];
+    			alert(errname[j]+'项错误信息：'+errmsg[j]);
+        	}
+	        
     	}else{
 //    		alert('必填项不能为空');
 //    		for(var i=0;i<btpd_id.length;i++){
@@ -1330,6 +1356,7 @@ function data_create(){
     
     var errmsg=[];//错误提示数组
     var errname=[];//错误提示数组名字
+    var check_rule=[];//规则判断
     
     // 打开新添数据源弹出框
     opro_adddata.onclick=function(){
@@ -1355,6 +1382,7 @@ function data_create(){
         				for (var i=0;i<sourceFields.length;i++){
         					errmsg.push(sourceFields[i].error_msg);
         					errname.push(sourceFields[i].csf_name);
+        					check_rule.push(sourceFields[i].check_rule);
         				}
         				//console.log(errname);
         				
