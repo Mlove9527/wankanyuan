@@ -178,32 +178,244 @@
 								<c:if test="${metaDataListTemp.not_null==true }">
 									<div class="prodaclmRzBz">
 										<div class="prodaclmRzBzt prodaclmRzTtmz" title="${metaDataListTemp.description }">${metaDataListTemp.ff_name }<span class="redstar" style="color: red;">*</span></div>
-										<div class="prodaclmRzBzt prodaclmRzTtmz">
-											<div class="ff_name" style="display:none;">${metaDataListTemp.ff_name}</div>
-											<div class="error_msg" style="display:none;">${metaDataListTemp.error_msg}</div>
-											<c:if test="${metaDataListTemp.enumerated==true }">
-												<c:if test="${metaDataListTemp.emvalue !=null}">
-													<select class="meta_input" id="${metaDataListTemp.ff_id }">
-														<c:forEach items="${metaDataListTemp.emvalue }" var="emvalue">
-														<option  value="${emvalue}">${emvalue}</option>
-														</c:forEach>
-													</select>
-												</c:if>
-												<c:if test="${metaDataListTemp.emvalue ==null}">
-													<input class="meta_input" id="${metaDataListTemp.ff_id }" value="${metaDataListTemp.mete }" />
-												</c:if>
+											<c:if test="${metaDataListTemp.type=='字符' }">
+												<div class="prodaclmRzBzt prodaclmRzTtmz">
+													<div class="ff_name" style="display:none;">${metaDataListTemp.ff_name}</div>
+													<div class="error_msg" style="display:none;">${metaDataListTemp.error_msg}</div>
+													<c:if test="${metaDataListTemp.enumerated==true }">
+														<c:if test="${metaDataListTemp.emvalue !=null}">
+															<select class="meta_input" id="${metaDataListTemp.ff_id }">
+																<c:forEach items="${metaDataListTemp.emvalue }" var="emvalue">
+																<option  value="${emvalue}">${emvalue}</option>
+																</c:forEach>
+															</select>
+														</c:if>
+														<c:if test="${metaDataListTemp.emvalue ==null}">
+															<input class="meta_input" type="text" id="${metaDataListTemp.ff_id }" value="${metaDataListTemp.mete }" />
+														</c:if>
+													</c:if>
+													<c:if test="${metaDataListTemp.enumerated==false }">
+														<input class="meta_input" id="${metaDataListTemp.ff_id }" type="text" value="${metaDataListTemp.mete }" />
+													</c:if>
+													<div class="pdclmRz_li pdclmRz_edit"
+													onclick="meta_input_submit('${metaDataListTemp.ff_id }')">保存</div>
+												</div>
 											</c:if>
-											<c:if test="${metaDataListTemp.enumerated==false }">
-												<input class="meta_input" id="${metaDataListTemp.ff_id }" value="${metaDataListTemp.mete }" />
+											<c:if test="${metaDataListTemp.type=='数值' }">
+												<div class="prodaclmRzBzt prodaclmRzTtmz">
+													<div class="ff_name" style="display:none;">${metaDataListTemp.ff_name}</div>
+													<div class="error_msg" style="display:none;">${metaDataListTemp.error_msg}</div>
+													<c:if test="${metaDataListTemp.enumerated==true }">
+														<c:if test="${metaDataListTemp.emvalue !=null}">
+															<select class="meta_input" id="${metaDataListTemp.ff_id }">
+																<c:forEach items="${metaDataListTemp.emvalue }" var="emvalue">
+																<option  value="${emvalue}">${emvalue}</option>
+																</c:forEach>
+															</select>
+														</c:if>
+														<c:if test="${metaDataListTemp.emvalue ==null}">
+															<input class="meta_input" type="number" id="${metaDataListTemp.ff_id }" value="${metaDataListTemp.mete }" />
+														</c:if>
+													</c:if>
+													<c:if test="${metaDataListTemp.enumerated==false }">
+														<input class="meta_input" id="${metaDataListTemp.ff_id }" type="number" value="${metaDataListTemp.mete }" />
+													</c:if>
+													<div class="pdclmRz_li pdclmRz_edit"
+													onclick="meta_input_submit('${metaDataListTemp.ff_id }')">保存</div>
+												</div>
 											</c:if>
-											<div class="pdclmRz_li pdclmRz_edit"
-											onclick="meta_input_submit('${metaDataListTemp.ff_id }')">保存</div>
-										</div>
+											<c:if test="${metaDataListTemp.type=='日期' }">
+												<div class="prodaclmRzBzt prodaclmRzTtmz">
+													<div class="ff_name" style="display:none;">${metaDataListTemp.ff_name}</div>
+													<div class="error_msg" style="display:none;">${metaDataListTemp.error_msg}</div>
+													<c:if test="${metaDataListTemp.enumerated==true }">
+														<c:if test="${metaDataListTemp.emvalue !=null}">
+															<select class="meta_input" id="${metaDataListTemp.ff_id }">
+																<c:forEach items="${metaDataListTemp.emvalue }" var="emvalue">
+																<option  value="${emvalue}">${emvalue}</option>
+																</c:forEach>
+															</select>
+														</c:if>
+														<c:if test="${metaDataListTemp.emvalue ==null}">
+															<input class="meta_input" type="datetime-local" step="01" id="${metaDataListTemp.ff_id }" value="${metaDataListTemp.mete }" />
+														</c:if>
+													</c:if>
+													<c:if test="${metaDataListTemp.enumerated==false }">
+														<input class="meta_input" id="${metaDataListTemp.ff_id }" type="datetime-local" step="01" value="${metaDataListTemp.mete }" />
+													</c:if>
+													<div class="pdclmRz_li pdclmRz_edit"
+													onclick="meta_input_submit('${metaDataListTemp.ff_id }')">保存</div>
+												</div>
+											</c:if>
+											<c:if test="${metaDataListTemp.type=='图片' }">
+												<div class="prodaclmRzBzt prodaclmRzTtmz">
+													<div class="ff_name" style="display:none;">${metaDataListTemp.ff_name}</div>
+													<div class="error_msg" style="display:none;">${metaDataListTemp.error_msg}</div>
+													<c:if test="${metaDataListTemp.enumerated==true }">
+														<c:if test="${metaDataListTemp.emvalue !=null}">
+															<select class="meta_input" id="${metaDataListTemp.ff_id }">
+																<c:forEach items="${metaDataListTemp.emvalue }" var="emvalue">
+																<option  value="${emvalue}">${emvalue}</option>
+																</c:forEach>
+															</select>
+														</c:if>
+														<c:if test="${metaDataListTemp.emvalue ==null}">
+															<input class="meta_input" type="file" id="${metaDataListTemp.ff_id }" value="${metaDataListTemp.mete }" />
+														</c:if>
+													</c:if>
+													<c:if test="${metaDataListTemp.enumerated==false }">
+														<input class="meta_input" id="${metaDataListTemp.ff_id }" type="file" value="${metaDataListTemp.mete }" />
+													</c:if>
+													<div class="pdclmRz_li pdclmRz_edit"
+													onclick="meta_input_submit('${metaDataListTemp.ff_id }')">保存</div>
+												</div>
+											</c:if>
+											<c:if test="${metaDataListTemp.type=='文件' }">
+												<div class="prodaclmRzBzt prodaclmRzTtmz">
+													<div class="ff_name" style="display:none;">${metaDataListTemp.ff_name}</div>
+													<div class="error_msg" style="display:none;">${metaDataListTemp.error_msg}</div>
+													<c:if test="${metaDataListTemp.enumerated==true }">
+														<c:if test="${metaDataListTemp.emvalue !=null}">
+															<select class="meta_input" id="${metaDataListTemp.ff_id }">
+																<c:forEach items="${metaDataListTemp.emvalue }" var="emvalue">
+																<option  value="${emvalue}">${emvalue}</option>
+																</c:forEach>
+															</select>
+														</c:if>
+														<c:if test="${metaDataListTemp.emvalue ==null}">
+															<input class="meta_input" type="file" id="${metaDataListTemp.ff_id }" value="${metaDataListTemp.mete }" />
+														</c:if>
+													</c:if>
+													<c:if test="${metaDataListTemp.enumerated==false }">
+														<input class="meta_input" id="${metaDataListTemp.ff_id }" type="file" value="${metaDataListTemp.mete }" />
+													</c:if>
+													<div class="pdclmRz_li pdclmRz_edit"
+													onclick="meta_input_submit('${metaDataListTemp.ff_id }')">保存</div>
+												</div>
+											</c:if>
 									</div>
 								
 								</c:if>
 								<c:if test="${metaDataListTemp.not_null==false }">
 									<div class="prodaclmRzBz">
+										<div class="prodaclmRzBzt prodaclmRzTtmz" title="${metaDataListTemp.description }">${metaDataListTemp.ff_name }</div>
+											<c:if test="${metaDataListTemp.type=='字符' }">
+												<div class="prodaclmRzBzt prodaclmRzTtmz">
+													<div class="ff_name" style="display:none;">${metaDataListTemp.ff_name}</div>
+													<div class="error_msg" style="display:none;">${metaDataListTemp.error_msg}</div>
+													<c:if test="${metaDataListTemp.enumerated==true }">
+														<c:if test="${metaDataListTemp.emvalue !=null}">
+															<select class="meta_input" id="${metaDataListTemp.ff_id }">
+																<c:forEach items="${metaDataListTemp.emvalue }" var="emvalue">
+																<option  value="${emvalue}">${emvalue}</option>
+																</c:forEach>
+															</select>
+														</c:if>
+														<c:if test="${metaDataListTemp.emvalue ==null}">
+															<input class="meta_input" type="text" id="${metaDataListTemp.ff_id }" value="${metaDataListTemp.mete }" />
+														</c:if>
+													</c:if>
+													<c:if test="${metaDataListTemp.enumerated==false }">
+														<input class="meta_input" id="${metaDataListTemp.ff_id }" type="text" value="${metaDataListTemp.mete }" />
+													</c:if>
+													<div class="pdclmRz_li pdclmRz_edit"
+													onclick="meta_input_submit('${metaDataListTemp.ff_id }')">保存</div>
+												</div>
+											</c:if>
+											<c:if test="${metaDataListTemp.type=='数值' }">
+												<div class="prodaclmRzBzt prodaclmRzTtmz">
+													<div class="ff_name" style="display:none;">${metaDataListTemp.ff_name}</div>
+													<div class="error_msg" style="display:none;">${metaDataListTemp.error_msg}</div>
+													<c:if test="${metaDataListTemp.enumerated==true }">
+														<c:if test="${metaDataListTemp.emvalue !=null}">
+															<select class="meta_input" id="${metaDataListTemp.ff_id }">
+																<c:forEach items="${metaDataListTemp.emvalue }" var="emvalue">
+																<option  value="${emvalue}">${emvalue}</option>
+																</c:forEach>
+															</select>
+														</c:if>
+														<c:if test="${metaDataListTemp.emvalue ==null}">
+															<input class="meta_input" type="number" id="${metaDataListTemp.ff_id }" value="${metaDataListTemp.mete }" />
+														</c:if>
+													</c:if>
+													<c:if test="${metaDataListTemp.enumerated==false }">
+														<input class="meta_input" id="${metaDataListTemp.ff_id }" type="number" value="${metaDataListTemp.mete }" />
+													</c:if>
+													<div class="pdclmRz_li pdclmRz_edit"
+													onclick="meta_input_submit('${metaDataListTemp.ff_id }')">保存</div>
+												</div>
+											</c:if>
+											<c:if test="${metaDataListTemp.type=='日期' }">
+												<div class="prodaclmRzBzt prodaclmRzTtmz">
+													<div class="ff_name" style="display:none;">${metaDataListTemp.ff_name}</div>
+													<div class="error_msg" style="display:none;">${metaDataListTemp.error_msg}</div>
+													<c:if test="${metaDataListTemp.enumerated==true }">
+														<c:if test="${metaDataListTemp.emvalue !=null}">
+															<select class="meta_input" id="${metaDataListTemp.ff_id }">
+																<c:forEach items="${metaDataListTemp.emvalue }" var="emvalue">
+																<option  value="${emvalue}">${emvalue}</option>
+																</c:forEach>
+															</select>
+														</c:if>
+														<c:if test="${metaDataListTemp.emvalue ==null}">
+															<input class="meta_input" type="datetime-local" step="01" id="${metaDataListTemp.ff_id }" value="${metaDataListTemp.mete }" />
+														</c:if>
+													</c:if>
+													<c:if test="${metaDataListTemp.enumerated==false }">
+														<input class="meta_input" id="${metaDataListTemp.ff_id }" type="datetime-local" step="01" value="${metaDataListTemp.mete }" />
+													</c:if>
+													<div class="pdclmRz_li pdclmRz_edit"
+													onclick="meta_input_submit('${metaDataListTemp.ff_id }')">保存</div>
+												</div>
+											</c:if>
+											<c:if test="${metaDataListTemp.type=='图片' }">
+												<div class="prodaclmRzBzt prodaclmRzTtmz">
+													<div class="ff_name" style="display:none;">${metaDataListTemp.ff_name}</div>
+													<div class="error_msg" style="display:none;">${metaDataListTemp.error_msg}</div>
+													<c:if test="${metaDataListTemp.enumerated==true }">
+														<c:if test="${metaDataListTemp.emvalue !=null}">
+															<select class="meta_input" id="${metaDataListTemp.ff_id }">
+																<c:forEach items="${metaDataListTemp.emvalue }" var="emvalue">
+																<option  value="${emvalue}">${emvalue}</option>
+																</c:forEach>
+															</select>
+														</c:if>
+														<c:if test="${metaDataListTemp.emvalue ==null}">
+															<input class="meta_input" type="file" id="${metaDataListTemp.ff_id }" value="${metaDataListTemp.mete }" />
+														</c:if>
+													</c:if>
+													<c:if test="${metaDataListTemp.enumerated==false }">
+														<input class="meta_input" id="${metaDataListTemp.ff_id }" type="file" value="${metaDataListTemp.mete }" />
+													</c:if>
+													<div class="pdclmRz_li pdclmRz_edit"
+													onclick="meta_input_submit('${metaDataListTemp.ff_id }')">保存</div>
+												</div>
+											</c:if>
+											<c:if test="${metaDataListTemp.type=='文件' }">
+												<div class="prodaclmRzBzt prodaclmRzTtmz">
+													<div class="ff_name" style="display:none;">${metaDataListTemp.ff_name}</div>
+													<div class="error_msg" style="display:none;">${metaDataListTemp.error_msg}</div>
+													<c:if test="${metaDataListTemp.enumerated==true }">
+														<c:if test="${metaDataListTemp.emvalue !=null}">
+															<select class="meta_input" id="${metaDataListTemp.ff_id }">
+																<c:forEach items="${metaDataListTemp.emvalue }" var="emvalue">
+																<option  value="${emvalue}">${emvalue}</option>
+																</c:forEach>
+															</select>
+														</c:if>
+														<c:if test="${metaDataListTemp.emvalue ==null}">
+															<input class="meta_input" type="file" id="${metaDataListTemp.ff_id }" value="${metaDataListTemp.mete }" />
+														</c:if>
+													</c:if>
+													<c:if test="${metaDataListTemp.enumerated==false }">
+														<input class="meta_input" id="${metaDataListTemp.ff_id }" type="file" value="${metaDataListTemp.mete }" />
+													</c:if>
+													<div class="pdclmRz_li pdclmRz_edit"
+													onclick="meta_input_submit('${metaDataListTemp.ff_id }')">保存</div>
+												</div>
+											</c:if>
+									</div>
+									<%-- <div class="prodaclmRzBz">
 										<div class="prodaclmRzBzt prodaclmRzTtmz" title="${metaDataListTemp.description }">${metaDataListTemp.ff_name }</div>
 										<div class="prodaclmRzBzt prodaclmRzTtmz">
 											<div class="error_msg" style="display:none;">${metaDataListTemp.error_msg}</div>
@@ -225,7 +437,7 @@
 											<div class="pdclmRz_li pdclmRz_edit"
 											onclick="meta_input_submit('${metaDataListTemp.ff_id }')">保存</div>
 										</div>
-									</div>
+									</div> --%>
 								</c:if>
 								<%-- <c:if test="${metaDataListTemp[7]=='是' }">
 									<div class="prodaclmRzBz">
@@ -406,35 +618,213 @@
 						<div class="clmReditM">
 							<c:forEach items="${data}" var="dataTemp">
 								<c:if test="${dataTemp.not_null==true }"><!-- 是否是必填 -->
-									<c:if test="${dataTemp.enumerated==true }"><!-- 是否枚举 -->
-										<div class="clmReditMz">
-											<div class="ff_name" style="display:none;">${dataTemp.ff_name}</div>
-											<div class="error_msg" style="display:none;">${dataTemp.error_msg}</div>
-											<div class="clmReditMzt" title="${dataTemp.description}">${dataTemp.ff_name }<span class="redstar" style="color: red;">*</span></div>
-											<c:if test="${dataTemp.emvalue !=null}">
-												<select class="clmReditMzp" id="${dataTemp.ff_id}">
-													<c:forEach items="${dataTemp.emvalue }" var="emvaluess">
-														<option value="${emvaluess }">${emvaluess }</option>
-													</c:forEach>
-												</select>
-											</c:if>
-											<c:if test="${dataTemp.emvalue ==null}">
+									<c:if test="${dataTemp.type=='字符' }">
+										<c:if test="${dataTemp.enumerated==true }"><!-- 是否枚举 -->
+											<div class="clmReditMz">
+												<div class="ff_name" style="display:none;">${dataTemp.ff_name}</div>
+												<div class="error_msg" style="display:none;">${dataTemp.error_msg}</div>
+												<div class="clmReditMzt" title="${dataTemp.description}">${dataTemp.ff_name }<span class="redstar" style="color: red;">*</span></div>
+												<c:if test="${dataTemp.emvalue !=null}">
+													<select class="clmReditMzp" id="${dataTemp.ff_id}">
+														<c:forEach items="${dataTemp.emvalue }" var="emvaluess">
+															<option value="${emvaluess }">${emvaluess }</option>
+														</c:forEach>
+													</select>
+												</c:if>
+												<c:if test="${dataTemp.emvalue ==null}">
+													<input type="text" class="clmReditMzp" id="${dataTemp.ff_id }" />
+												</c:if>
+											</div>
+											<input type="hidden" value="${ dataTemp.emvalue}"><!-- 枚举值的保存地方 -->
+										</c:if>
+										<c:if test="${dataTemp.enumerated==false }">
+											<div class="clmReditMz">
+												<div class="ff_name" style="display:none;">${dataTemp.ff_name}</div>
+												<div class="error_msg" style="display:none;">${dataTemp.error_msg}</div>
+												<div class="clmReditMzt" title="${dataTemp.description}">${dataTemp.ff_name }<span class="redstar" style="color: red;">*</span></div>
 												<input type="text" class="clmReditMzp" id="${dataTemp.ff_id }" />
-											</c:if>
-										</div>
-										<input type="hidden" value="${ dataTemp.emvalue}"><!-- 枚举值的保存地方 -->
+											</div>
+										</c:if>
 									</c:if>
-									<c:if test="${dataTemp.enumerated==false }">
+									<c:if test="${dataTemp.type=='数值' }">
+										<c:if test="${dataTemp.enumerated==true }"><!-- 是否枚举 -->
+											<div class="clmReditMz">
+												<div class="ff_name" style="display:none;">${dataTemp.ff_name}</div>
+												<div class="error_msg" style="display:none;">${dataTemp.error_msg}</div>
+												<div class="clmReditMzt" title="${dataTemp.description}">${dataTemp.ff_name }<span class="redstar" style="color: red;">*</span></div>
+												<c:if test="${dataTemp.emvalue !=null}">
+													<select class="clmReditMzp" id="${dataTemp.ff_id}">
+														<c:forEach items="${dataTemp.emvalue }" var="emvaluess">
+															<option value="${emvaluess }">${emvaluess }</option>
+														</c:forEach>
+													</select>
+												</c:if>
+												<c:if test="${dataTemp.emvalue ==null}">
+													<input type="number" class="clmReditMzp" id="${dataTemp.ff_id }" />
+												</c:if>
+											</div>
+											<input type="hidden" value="${ dataTemp.emvalue}"><!-- 枚举值的保存地方 -->
+										</c:if>
+										<c:if test="${dataTemp.enumerated==false }">
+											<div class="clmReditMz">
+												<div class="ff_name" style="display:none;">${dataTemp.ff_name}</div>
+												<div class="error_msg" style="display:none;">${dataTemp.error_msg}</div>
+												<div class="clmReditMzt" title="${dataTemp.description}">${dataTemp.ff_name }<span class="redstar" style="color: red;">*</span></div>
+												<input type="number" class="clmReditMzp" id="${dataTemp.ff_id }" />
+											</div>
+										</c:if>
+									</c:if>
+									<c:if test="${dataTemp.type=='日期' }">
+										<c:if test="${dataTemp.enumerated==true }"><!-- 是否枚举 -->
+											<div class="clmReditMz">
+												<div class="ff_name" style="display:none;">${dataTemp.ff_name}</div>
+												<div class="error_msg" style="display:none;">${dataTemp.error_msg}</div>
+												<div class="clmReditMzt" title="${dataTemp.description}">${dataTemp.ff_name }<span class="redstar" style="color: red;">*</span></div>
+												<c:if test="${dataTemp.emvalue !=null}">
+													<select class="clmReditMzp" id="${dataTemp.ff_id}">
+														<c:forEach items="${dataTemp.emvalue }" var="emvaluess">
+															<option value="${emvaluess }">${emvaluess }</option>
+														</c:forEach>
+													</select>
+												</c:if>
+												<c:if test="${dataTemp.emvalue ==null}">
+													<input type="datetime-local" step="01" class="clmReditMzp" id="${dataTemp.ff_id }" />
+												</c:if>
+											</div>
+											<input type="hidden" value="${ dataTemp.emvalue}"><!-- 枚举值的保存地方 -->
+										</c:if>
+										<c:if test="${dataTemp.enumerated==false }">
+											<div class="clmReditMz">
+												<div class="ff_name" style="display:none;">${dataTemp.ff_name}</div>
+												<div class="error_msg" style="display:none;">${dataTemp.error_msg}</div>
+												<div class="clmReditMzt" title="${dataTemp.description}">${dataTemp.ff_name }<span class="redstar" style="color: red;">*</span></div>
+												<input type="number" class="clmReditMzp" id="${dataTemp.ff_id }" />
+											</div>
+										</c:if>
+									</c:if>
+									<c:if test="${dataTemp.type=='文件' }">
 										<div class="clmReditMz">
-											<div class="ff_name" style="display:none;">${dataTemp.ff_name}</div>
-											<div class="error_msg" style="display:none;">${dataTemp.error_msg}</div>
-											<div class="clmReditMzt" title="${dataTemp.description}">${dataTemp.ff_name }<span class="redstar" style="color: red;">*</span></div>
-											<input type="text" class="clmReditMzp" id="${dataTemp.ff_id }" />
+												<div class="ff_name" style="display:none;">${dataTemp.ff_name}</div>
+												<div class="error_msg" style="display:none;">${dataTemp.error_msg}</div>
+												<div class="clmReditMzt" title="${dataTemp.description}">${dataTemp.ff_name }<span class="redstar" style="color: red;">*</span></div>
+												<input type="file" class="clmReditMzp" id="${dataTemp.ff_id }" />
+										</div>
+									</c:if>
+									<c:if test="${dataTemp.type=='图片'}">
+										<div class="clmReditMz">
+												<div class="ff_name" style="display:none;">${dataTemp.ff_name}</div>
+												<div class="error_msg" style="display:none;">${dataTemp.error_msg}</div>
+												<div class="clmReditMzt" title="${dataTemp.description}">${dataTemp.ff_name }<span class="redstar" style="color: red;">*</span></div>
+												<%-- <input type="file" class="clmReditMzp" id="${dataTemp.ff_id }" />
+													<img alt="" class="prodainmRi" 
+														src="<%=path%>/export/getThumbnailImage"> --%>
 										</div>
 									</c:if>
 								</c:if>
 								<c:if test="${dataTemp.not_null==false }"><!-- 是否是必填 -->
-									<c:if test="${dataTemp.enumerated==true }"><!-- 是否枚举 -->
+									<c:if test="${dataTemp.type=='字符' }">
+										<c:if test="${dataTemp.enumerated==true }"><!-- 是否枚举 -->
+											<div class="clmReditMz">
+												<div class="ff_name" style="display:none;">${dataTemp.ff_name}</div>
+												<div class="error_msg" style="display:none;">${dataTemp.error_msg}</div>
+												<div class="clmReditMzt" title="${dataTemp.description}">${dataTemp.ff_name }</div>
+												<c:if test="${dataTemp.emvalue !=null}">
+													<select class="clmReditMzp" id="${dataTemp.ff_id}">
+														<c:forEach items="${dataTemp.emvalue }" var="emvaluess">
+															<option value="${emvaluess }">${emvaluess }</option>
+														</c:forEach>
+													</select>
+												</c:if>
+												<c:if test="${dataTemp.emvalue ==null}">
+													<input type="text" class="clmReditMzp" id="${dataTemp.ff_id }" />
+												</c:if>
+											</div>
+											<input type="hidden" value="${ dataTemp.emvalue}"><!-- 枚举值的保存地方 -->
+										</c:if>
+										<c:if test="${dataTemp.enumerated==false }">
+											<div class="clmReditMz">
+												<div class="ff_name" style="display:none;">${dataTemp.ff_name}</div>
+												<div class="error_msg" style="display:none;">${dataTemp.error_msg}</div>
+												<div class="clmReditMzt" title="${dataTemp.description}">${dataTemp.ff_name }</div>
+												<input type="text" class="clmReditMzp" id="${dataTemp.ff_id }" />
+											</div>
+										</c:if>
+									</c:if>
+									<c:if test="${dataTemp.type=='数值' }">
+										<c:if test="${dataTemp.enumerated==true }"><!-- 是否枚举 -->
+											<div class="clmReditMz">
+												<div class="ff_name" style="display:none;">${dataTemp.ff_name}</div>
+												<div class="error_msg" style="display:none;">${dataTemp.error_msg}</div>
+												<div class="clmReditMzt" title="${dataTemp.description}">${dataTemp.ff_name }</div>
+												<c:if test="${dataTemp.emvalue !=null}">
+													<select class="clmReditMzp" id="${dataTemp.ff_id}">
+														<c:forEach items="${dataTemp.emvalue }" var="emvaluess">
+															<option value="${emvaluess }">${emvaluess }</option>
+														</c:forEach>
+													</select>
+												</c:if>
+												<c:if test="${dataTemp.emvalue ==null}">
+													<input type="number" class="clmReditMzp" id="${dataTemp.ff_id }" />
+												</c:if>
+											</div>
+											<input type="hidden" value="${ dataTemp.emvalue}"><!-- 枚举值的保存地方 -->
+										</c:if>
+										<c:if test="${dataTemp.enumerated==false }">
+											<div class="clmReditMz">
+												<div class="ff_name" style="display:none;">${dataTemp.ff_name}</div>
+												<div class="error_msg" style="display:none;">${dataTemp.error_msg}</div>
+												<div class="clmReditMzt" title="${dataTemp.description}">${dataTemp.ff_name }</div>
+												<input type="number" class="clmReditMzp" id="${dataTemp.ff_id }" />
+											</div>
+										</c:if>
+									</c:if>
+									<c:if test="${dataTemp.type=='日期' }">
+										<c:if test="${dataTemp.enumerated==true }"><!-- 是否枚举 -->
+											<div class="clmReditMz">
+												<div class="ff_name" style="display:none;">${dataTemp.ff_name}</div>
+												<div class="error_msg" style="display:none;">${dataTemp.error_msg}</div>
+												<div class="clmReditMzt" title="${dataTemp.description}">${dataTemp.ff_name }</div>
+												<c:if test="${dataTemp.emvalue !=null}">
+													<select class="clmReditMzp" id="${dataTemp.ff_id}">
+														<c:forEach items="${dataTemp.emvalue }" var="emvaluess">
+															<option value="${emvaluess }">${emvaluess }</option>
+														</c:forEach>
+													</select>
+												</c:if>
+												<c:if test="${dataTemp.emvalue ==null}">
+													<input type="datetime-local" step="01" class="clmReditMzp" id="${dataTemp.ff_id }" />
+												</c:if>
+											</div>
+											<input type="hidden" value="${ dataTemp.emvalue}"><!-- 枚举值的保存地方 -->
+										</c:if>
+										<c:if test="${dataTemp.enumerated==false }">
+											<div class="clmReditMz">
+												<div class="ff_name" style="display:none;">${dataTemp.ff_name}</div>
+												<div class="error_msg" style="display:none;">${dataTemp.error_msg}</div>
+												<div class="clmReditMzt" title="${dataTemp.description}">${dataTemp.ff_name }</div>
+												<input type="datetime-local" step="01" class="clmReditMzp" id="${dataTemp.ff_id }" />
+											</div>
+										</c:if>
+									</c:if>
+									<c:if test="${dataTemp.type=='文件' }">
+										<div class="clmReditMz">
+												<div class="ff_name" style="display:none;">${dataTemp.ff_name}</div>
+												<div class="error_msg" style="display:none;">${dataTemp.error_msg}</div>
+												<div class="clmReditMzt" title="${dataTemp.description}">${dataTemp.ff_name }</div>
+												<input type="file" class="clmReditMzp" id="${dataTemp.ff_id }" />
+										</div>
+									</c:if>
+									<c:if test="${dataTemp.type=='图片'}">
+										<div class="clmReditMz">
+												<div class="ff_name" style="display:none;">${dataTemp.ff_name}</div>
+												<div class="error_msg" style="display:none;">${dataTemp.error_msg}</div>
+												<div class="clmReditMzt" title="${dataTemp.description}">${dataTemp.ff_name }</div>
+												<%-- <input type="file" class="clmReditMzp" id="${dataTemp.ff_id }" />
+													<img alt="" class="prodainmRi" 
+														src="<%=path%>/export/getThumbnailImage"> --%>
+										</div>
+									</c:if>
+									<%-- <c:if test="${dataTemp.enumerated==true }"><!-- 是否枚举 -->
 										<div class="clmReditMz">
 											<div class="ff_name" style="display:none;">${dataTemp.ff_name}</div>
 											<div class="error_msg" style="display:none;">${dataTemp.error_msg}</div>
@@ -459,7 +849,7 @@
 											<div class="clmReditMzt" title="${dataTemp.description}">${dataTemp.ff_name }</div>
 											<input type="text" class="clmReditMzp" id="${dataTemp.ff_id }" />
 										</div>
-									</c:if>
+									</c:if> --%>
 								</c:if>
 							
 							<%-- 

@@ -185,6 +185,7 @@ public class FormatNodeController {
 //					}
 					f.setEnumerated(formatField.isEnumerated());
 					f.setNot_null(formatField.isNot_null());
+					f.setType(formatField.getType());
 //					if(formatField.isNot_null()) {        			//7是否必填
 //						formatData.add("是");	
 //					}else {

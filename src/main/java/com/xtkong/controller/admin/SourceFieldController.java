@@ -74,7 +74,7 @@ public class SourceFieldController {
         Map<String, Object> map = new HashMap<String, Object>();
         // 设置更新时间
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        sourceField.setCreate_datetime(simpleDateFormat.format(new Date()));
+        sourceField.setUpdate_datetime(simpleDateFormat.format(new Date()));
         sourceField.setUpdate_uid(uid);
 
         if (1 == sourceFieldService.updateSourceField(sourceField)) {

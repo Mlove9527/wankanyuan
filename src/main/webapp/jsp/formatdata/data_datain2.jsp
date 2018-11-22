@@ -3,6 +3,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
+<%@ page import="java.text.*" %>
+<%@ page import="java.util.*" %>
 <%
 	String path = request.getContextPath();
 	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
@@ -239,6 +241,7 @@
 									</c:if>
 							</c:if>
 							<c:if test="${sourceFieldTemp.type=='日期'}">
+								<input type="hidden" id="hidden_${sourceFieldTemp.csf_id }" value="${sourceData[status.index+1] }">
 								<c:if test="${sourceFieldTemp.enumerated==true }">
 											<c:if test="${sourceFieldTemp.emvalue!=null }">
 												<select value="${sourceData[status.index+1] }">
@@ -252,7 +255,6 @@
 											<c:if test="${sourceFieldTemp.emvalue==null }">
 													<input class="prodainmRz1R" type="datetime-local" step="01" id=${sourceFieldTemp.csf_id }
 														value="${sourceData[status.index+1] }" />
-											
 											</c:if>
 										</c:if>
 										<c:if test="${sourceFieldTemp.enumerated==false }">
@@ -361,6 +363,37 @@
 					
 					<div class="prodainmRb">保存</div>
 				</div>
+				<script type="text/javascript">
+					var oprodainmR=document.querySelectorAll('.prodainmR')[0];
+					console.log(oprodainmR);
+					var ainput=oprodainmR.querySelectorAll('input');
+					var ainput_datetime=[];
+					//console.log(ainput);
+					for(var i=0;i<ainput.length;i++){
+						//console.log(ainput[i].type);
+						if(ainput[i].type=='datetime-local'){
+							ainput_datetime.push(ainput[i]);
+						}
+					}
+					console.log(ainput_datetime);
+					for(var i=0;i<ainput_datetime.length;i++){
+						var oid='hidden_'+ainput_datetime[i].id;
+						var ohidden=document.getElementById(oid);
+						console.log(ohidden);
+						console.log(ohidden.value);
+						var ovalue=ohidden.value;
+						if(ovalue.length==10){
+							ovalue=ovalue+'T'+'00:00:00';
+							console.log(ovalue);
+							ainput_datetime[i].value=ovalue;
+						}else if(ovalue.length==19){
+							ovalue=ovalue.replace(' ','T');
+							console.log(ovalue);
+							ainput_datetime[i].value=ovalue;
+						}
+					}
+					
+				</script>
 			</div>
 
 			<div class="bottom">
