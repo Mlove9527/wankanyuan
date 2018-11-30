@@ -39,8 +39,10 @@ public class HBaseDB {
 	static {
 		Configuration configuration = HBaseConfiguration.create();
 		configuration.set("hbase.zookeeper.quorum", ConstantsHBase.HBASE_ZOOKEEPER_QUORUM);
-		configuration.set("hbase.zookeeper.property.clientPort", ConstantsHBase.HBASE_ZOOKEEPER_PROPERTY_CLIENTPORT);
-		configuration.set("hbase.master.info.port", ConstantsHBase.HBASE_MASTER_INFO_PORT);
+		configuration.set("hbase.master", ConstantsHBase.HBASE_MASTER);
+		configuration.set("hbase.regionserver", ConstantsHBase.HBASE_REGIONSERVER);
+		//configuration.set("hbase.zookeeper.property.clientPort", ConstantsHBase.HBASE_ZOOKEEPER_PROPERTY_CLIENTPORT);
+		//configuration.set("hbase.master.info.port", ConstantsHBase.HBASE_MASTER_INFO_PORT);
 		try {
 			connection = ConnectionFactory.createConnection(configuration);
 		} catch (IOException e) {

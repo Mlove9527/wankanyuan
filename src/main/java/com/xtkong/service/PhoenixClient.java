@@ -7,10 +7,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -49,6 +46,10 @@ public class PhoenixClient {
 	 * @return
 	 */
 	private static Connection getConnection() {
+		Properties prp=new Properties();
+		prp.put("hbase.zookeeper.quorum",ConstantsHBase.HBASE_ZOOKEEPER_QUORUM);
+		prp.put("hbase.master",ConstantsHBase.HBASE_MASTER);
+		prp.put("hbase.regionserver",ConstantsHBase.HBASE_REGIONSERVER);
 		Connection conn = null;
 		final String url = ConstantsHBase.PhoenixJDBC;// zookeeper的master-host，zookeeper的master-port
 		if (conn == null) {
@@ -64,7 +65,7 @@ public class PhoenixClient {
 				final ExecutorService exec = Executors.newFixedThreadPool(1);
 				Callable<Connection> call = new Callable<Connection>() {
 					public Connection call() throws Exception {
-						return DriverManager.getConnection(url);
+						return DriverManager.getConnection(url,prp);
 					}
 				};
 				Future<Connection> future = exec.submit(call);

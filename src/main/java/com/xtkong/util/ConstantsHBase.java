@@ -7,7 +7,9 @@ import java.util.Properties;
 
 public class ConstantsHBase {
 
-	public static String HBASE_ZOOKEEPER_QUORUM = "hpc03";
+	public static String HBASE_ZOOKEEPER_QUORUM = "60.29.25.134:52181,60.29.25.134:52182";
+	public static String HBASE_MASTER = "60.29.25.134:56000,60.29.25.134:56001";
+	public static String HBASE_REGIONSERVER = "60.29.25.134:56020,60.29.25.134:56021";
 	public static String HBASE_ZOOKEEPER_PROPERTY_CLIENTPORT = "52181";
 	public static String HBASE_MASTER_INFO_PORT = "56010";
 	public static String PhoenixDriver = "org.apache.phoenix.jdbc.PhoenixDriver";
@@ -79,6 +81,14 @@ public class ConstantsHBase {
 			String hbaseZookeeperQuorum = properties.getProperty("hbase.zookeeper.quorum");
 			if (hbaseZookeeperQuorum != null) {
 				ConstantsHBase.HBASE_ZOOKEEPER_QUORUM = hbaseZookeeperQuorum;
+			}
+			String hbaseMaster = properties.getProperty("hbase.master");
+			if (hbaseMaster != null) {
+				ConstantsHBase.HBASE_MASTER = hbaseMaster;
+			}
+			String hbaseRegionServer = properties.getProperty("hbase.regionserver");
+			if (hbaseRegionServer != null) {
+				ConstantsHBase.HBASE_REGIONSERVER = hbaseRegionServer;
 			}
 			String hbasezookeeperpropertyclientPort = properties.getProperty("hbase.zookeeper.property.clientPort");
 			if (hbasezookeeperpropertyclientPort != null) {

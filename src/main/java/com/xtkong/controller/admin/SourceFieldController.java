@@ -10,6 +10,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +26,7 @@ import com.xtkong.util.ConstantsHBase;
 @Controller
 @RequestMapping(value = "/sourceField")
 public class SourceFieldController {
+    private static final Logger logger  =  Logger.getLogger(SourceFieldController.class );
     @Autowired
     SourceDao sourceDao;
     @Autowired
@@ -42,10 +44,20 @@ public class SourceFieldController {
         sourceField.setCreate_uid(uid);
         sourceField.setUpdate_datetime(simpleDateFormat.format(new Date()));
         sourceField.setUpdate_uid(uid);
-
+        logger.info("---add: "+sourceField.getCsf_name());
         if (1 == sourceFieldService.insertSourceField(sourceField)) {
-            PhoenixClient.alterViewAddColumn(ConstantsHBase.TABLE_PREFIX_SOURCE_ + sourceField.getCs_id(), String
-                    .valueOf(sourceFieldService.getSourceFieldId(sourceField.getCs_id(), sourceField.getCsf_name())));
+            try
+            {
+                PhoenixClient.alterViewAddColumn(ConstantsHBase.TABLE_PREFIX_SOURCE_ + sourceField.getCs_id(), String
+                        .valueOf(sourceFieldService.getSourceFieldId(sourceField.getCs_id(), sourceField.getCsf_name())));
+            }
+            catch(Exception e)
+            {
+                logger.error("添加hbase表字段失败: "+sourceField.getCs_id());
+                map.put("result", false);
+                map.put("message", "新增失败");
+                return map;
+            }
             map.put("result", true);
             map.put("message", "新增成功");
         } else {
