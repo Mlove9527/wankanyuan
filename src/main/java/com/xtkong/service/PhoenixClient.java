@@ -40,6 +40,39 @@ public class PhoenixClient {
 		}
 	}
 
+	public static void Main(String args[]) throws Exception
+	{
+		Properties prop=new Properties();
+		//prop.put("hbase.zookeeper.quorum","60.29.25.134:52181,60.29.25.134:52182");
+		prop.put("hbase.master","60.29.25.134:56000,60.29.25.134:56001");
+		prop.put("hbase.regionserver","60.29.25.134:56020,60.29.25.134:56021");
+		Connection conn = null;
+		final String url = "jdbc:phoenix:60.29.25.134:52181";// zookeeper的master-host，zookeeper的master-port
+		if (conn == null) {
+			try {
+				final ExecutorService exec = Executors.newFixedThreadPool(1);
+				Callable<Connection> call = new Callable<Connection>() {
+					public Connection call() throws Exception {
+						return DriverManager.getConnection(url);
+					}
+				};
+				Future<Connection> future = exec.submit(call);
+				long timeout = 1000 * 60;
+				conn = future.get(timeout, TimeUnit.MILLISECONDS);
+				exec.shutdownNow();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				e.printStackTrace();
+			} catch (TimeoutException e) {
+				e.printStackTrace();
+			}
+		}
+
+		PreparedStatement stmt = conn.prepareStatement("select * from \"SOURCE_77\"");
+		ResultSet set = stmt.executeQuery();
+	}
+
 	/**
 	 * 获取一个Hbase-Phoenix的连接
 	 * 
