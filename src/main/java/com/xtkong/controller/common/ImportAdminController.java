@@ -1,6 +1,7 @@
 package com.xtkong.controller.common;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
@@ -46,7 +47,9 @@ public class ImportAdminController {
 		try {
 			importBean = new ImportBean(jsonStr);
 		} catch (Exception e) {
-			map.put("result", "格式错误！");
+			map.put("code", "1");
+			map.put("message", "failed");
+			map.put("info","格式错误！");
 			return map;
 		}
 
@@ -75,54 +78,81 @@ public class ImportAdminController {
 					}
 				}
 				if (map.size() == 0) {
-					map.put("result", "格式错误！");
+					map.put("code", "1");
+					map.put("message", "failed");
+					map.put("info","格式错误！");
 				}
 				return map;
 			}
 		}
-		map.put("result", "格式错误！");
+		map.put("code", "1");
+		map.put("message", "failed");
+		map.put("info","格式错误！");
 		return map;
 	}
 
 	private Map<String, Object> sourceData(String sourceid, String userid, String fileurl, List<String> srcCol,
-			List<String> distCol, List<String> defUnique) {
+			List<String> distCol, List<String> defUnique)  {
 		Map<String, Object> map = new HashMap<String, Object>();
-		try {
+		 
+			System.out.println(sourceService.getSourceId(sourceid));
 			Integer cs_id = sourceService.getSourceId(sourceid);
-			Scanner scanner = new Scanner(new FileInputStream(fileurl));
-			HashMap<Integer, String> csfIndex_IdMap = new HashMap<>();
-			if (scanner.hasNextLine()) {
-				int i = 0;
-				for (String head : scanner.nextLine().split("\t")) {
-					if (srcCol.contains(head)) {
-						String csf_Id = null;
-						if ((csf_Id = String
-								.valueOf(sourceFieldService.getSourceFieldId(cs_id, distCol.get(srcCol.indexOf(head)))))
-										.equals("null")) {
-							scanner.close();
-							map.put("result", "失败");
-							return map;
+			FileInputStream fileIn;
+			try {
+				fileIn = new FileInputStream(fileurl);
+				if(null!=fileIn) {
+					Scanner scanner = new Scanner(fileIn);
+					HashMap<Integer, String> csfIndex_IdMap = new HashMap<>();
+					if (scanner.hasNextLine()) {
+						int i = 0;
+						for (String head : scanner.nextLine().split("\t")) {
+							if (srcCol.contains(head)) {
+								String csf_Id = null;
+								if ((csf_Id = String
+										.valueOf(sourceFieldService.getSourceFieldId(cs_id, distCol.get(srcCol.indexOf(head)))))
+												.equals("null")) {
+									scanner.close();
+									map.put("code", "1");
+									map.put("message", "failed");
+									map.put("info",srcCol.indexOf(head)+"字段没有找到对应的csf_id");
+									return map;
+								}
+								csfIndex_IdMap.put(i, csf_Id);
+							}
+							i++;
 						}
-						csfIndex_IdMap.put(i, csf_Id);
 					}
-					i++;
+					if(null==csfIndex_IdMap||csfIndex_IdMap.size()==0) {
+						map.put("code", "1");
+						map.put("message", "failed");
+						map.put("info","待导入文件中要导入的列的列名有误");
+						scanner.close();
+						return map;
+					}
+					while (scanner.hasNextLine()) {
+						Map<String, String> sourceFieldDatas = new HashMap<>();
+						String[] datas = scanner.nextLine().split("\t");
+						for (Entry<Integer, String> sourceFieldId : csfIndex_IdMap.entrySet()) {
+							sourceFieldDatas.put(sourceFieldId.getValue(), datas[sourceFieldId.getKey()]);
+						}
+						if (!sourceFieldDatas.isEmpty()) {
+								HBaseSourceDataDao.insertSourceData1(String.valueOf(cs_id), userid, sourceFieldDatas);
+						}
+					}
+					scanner.close();
+					map.put("code", "0");
+					map.put("message", "success");
+				 
 				}
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				map.put("code", "1");
+				map.put("message", "failed");
+				map.put("info",fileurl+"没找到对应文件");
 			}
-			while (scanner.hasNextLine()) {
-				Map<String, String> sourceFieldDatas = new HashMap<>();
-				String[] datas = scanner.nextLine().split("\t");
-				for (Entry<Integer, String> sourceFieldId : csfIndex_IdMap.entrySet()) {
-					sourceFieldDatas.put(sourceFieldId.getValue(), datas[sourceFieldId.getKey()]);
-				}
-				if (!sourceFieldDatas.isEmpty()) {
-						HBaseSourceDataDao.insertSourceData1(String.valueOf(cs_id), userid, sourceFieldDatas);
-				}
-			}
-			scanner.close();
-			map.put("result", "成功");
-		} catch (IOException e1) {
-			map.put("result", "失败");
-		}
+ 
+			 
 		return map;
 	}
 
