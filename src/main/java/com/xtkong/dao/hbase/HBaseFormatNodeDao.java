@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.hadoop.hbase.TableNotFoundException;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
@@ -106,9 +107,15 @@ public class HBaseFormatNodeDao {
 			resultScanner.close();
 			table.close();
 
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			if (e.getMessage().contains("TableNotFoundException")) {
+				createFormatNodeTable(cs_id);
+			}
+			else
+			{
+				e.printStackTrace();
+			}
 		}
 		return formatNodeId;
 	}

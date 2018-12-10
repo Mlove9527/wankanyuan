@@ -16,22 +16,6 @@ public class ImportBean {
 	private Basic basic;//采集源基础信息
 	private List<Analysis> analysisList;//配置的分析结果
 	public ImportBean(String jsonStr) {
-//		Map<String, Object> gsonMap = new Gson().fromJson(jsonStr, new TypeToken<Map<String, Object>>() {
-//		}.getType());
-//
-//		if (gsonMap.containsKey("sourceid")) {
-//			sourceid = gsonMap.get("sourceid").toString();
-//		}
-//		if (gsonMap.containsKey("userid")) {
-//			userid = gsonMap.get("userid").toString();
-//		}
-//		if (gsonMap.containsKey("basic")) {
-//			basic = new Basic((Map<String, Object>) gsonMap.get("basic"));
-//		}if (gsonMap.containsKey("analysis")) {
-//			analysisList=(List<Analysis>) gsonMap.get("analysis");
-//			
-//			
-//		}
 		
 		JSONObject jsonObject=null;
 	    jsonObject= JSON.parseObject(jsonStr);

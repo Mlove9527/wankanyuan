@@ -14,6 +14,7 @@ import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.TableName;
+import org.apache.hadoop.hbase.TableNotFoundException;
 import org.apache.hadoop.hbase.client.Admin;
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.ConnectionFactory;
@@ -145,7 +146,7 @@ public class HBaseDB {
 				table.close();
 				tryCnt=5;
 			} catch (Exception e) {
-				if (e.getMessage().contains("Table undefined")) {
+				if (e instanceof TableNotFoundException) {
 					String cf[]=new String[]{family};
 					HBaseDB.getInstance().createTable(tableName,cf,1);
 				}
