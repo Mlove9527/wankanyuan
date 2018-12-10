@@ -31,8 +31,11 @@ import org.apache.hadoop.hbase.filter.PrefixFilter;
 import org.apache.hadoop.hbase.filter.SingleColumnValueFilter;
 import org.apache.hadoop.hbase.filter.FilterList.Operator;
 import org.apache.hadoop.hbase.util.Bytes;
+import org.apache.log4j.Logger;
 
 public class HBaseDB {
+	private static final Logger logger  =  Logger.getLogger(HBaseDB.class );
+
 	// 避免多线程导致生成多个实例
 	private static final HBaseDB hBaseDBTool = new HBaseDB();
 	private static Connection connection = null;
@@ -134,12 +137,26 @@ public class HBaseDB {
 	 */
 	public Long getNewId(String tableName, String rowKey, String family, String qualifier) {
 		long id = 0;
-		try {
-			Table table = getTable(tableName);
-			id = table.incrementColumnValue(Bytes.toBytes(rowKey), Bytes.toBytes(family), Bytes.toBytes(qualifier), 1);
-			table.close();
-		} catch (Exception e) {
+		int tryCnt=0;
+		do {
+			try {
+				Table table = getTable(tableName);
+				id = table.incrementColumnValue(Bytes.toBytes(rowKey), Bytes.toBytes(family), Bytes.toBytes(qualifier), 1);
+				table.close();
+				tryCnt=5;
+			} catch (Exception e) {
+				if (e.getMessage().contains("Table undefined")) {
+					String cf[]=new String[]{family};
+					HBaseDB.getInstance().createTable(tableName,cf,1);
+				}
+				else
+				{
+					logger.error(e);
+				}
+				tryCnt++;
+			}
 		}
+		while(tryCnt<5);
 		return id;
 	}
 
