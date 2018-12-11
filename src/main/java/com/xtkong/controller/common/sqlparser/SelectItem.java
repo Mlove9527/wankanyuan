@@ -235,7 +235,8 @@ public class SelectItem {
         {
             result+=express.substring(startIdx,col.startIndex);
             //System.out.println("00000after replace: "+result);
-            result+=this.colMapping.get(col.getName());
+            String newVal=this.colMapping.get(col.getName());
+            result+=(newVal==null?col.getName():newVal);
             //System.out.println("11111after replace: "+result);
             startIdx=col.getEndIndex()+1;
         }
