@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.liutianjun.pojo.User;
+import com.xtkong.dao.SourceFieldDao;
+import com.xtkong.dao.UserDataDao;
 import com.xtkong.dao.hbase.HBaseFormatDataDao;
 import com.xtkong.dao.hbase.HBaseFormatNodeDao;
 import com.xtkong.dao.hbase.HBaseSourceDataDao;
@@ -38,6 +41,8 @@ public class ImportAdminController {
 	FormatTypeService formatTypeService;
 	@Autowired
 	FormatFieldService formatFieldService;
+	@Autowired
+	UserDataDao userDataDao;
 
 	@RequestMapping(value = "/import")
 	@ResponseBody
@@ -56,21 +61,42 @@ public class ImportAdminController {
 
 		if (importBean != null) {
 			if ((importBean.getSourceid() != null) && (importBean.getUserid() != null)) {
+				//校验数据正确性
+				System.out.println(sourceService.getSourceId(importBean.getSourceid()));
+				Integer cs_id = sourceService.getSourceId(importBean.getSourceid());
+				String userName = "";//用户名称
+				List<User> userList = userDataDao.selectUserById(Integer.valueOf(importBean.getUserid()));
+				if(userList!=null&&userList.size()>0) {
+					userName = (userList.get(0).getUsername())==null?"":userList.get(0).getUsername();
+				}
+				if(null==cs_id) {
+					map.put("code", "1");
+					map.put("message", "failed");
+					map.put("info",importBean.getSourceid()+"没找到对应cs_id");
+					return map;
+				}
+				if(userName.equals("")) {
+					map.put("code", "1");
+					map.put("message", "failed");
+					map.put("info",importBean.getUserid()+"没找到对应userName");
+					return map;
+				}
+				//处理数据
 				if (importBean.getBasic() != null) {
-//					map = sourceData(importBean.getSourceid(), importBean.getUserid(),
-//							importBean.getBasic().getFileurl(), importBean.getBasic().getSrcCol(),
-//							importBean.getBasic().getDistCol(), importBean.getBasic().getDefUnique());
+					map = sourceData(importBean.getSourceid(),cs_id, importBean.getUserid(),userName,
+	        		importBean.getBasic().getFileurl(), importBean.getBasic().getSrcCol(),
+					importBean.getBasic().getDistCol(), importBean.getBasic().getDefUnique());
 
 				}
 				if (importBean.getAnalysisList() != null) {
 					for (Analysis analysis : importBean.getAnalysisList()) {
 						if (analysis.getToBCol() != null) {
-							map = formatDataToBCol(importBean.getSourceid(), importBean.getUserid(), analysis.getName(),
+							map = formatDataToBCol(importBean.getSourceid(), cs_id, importBean.getUserid(), analysis.getName(),
 									analysis.getNodeName(), analysis.getFileurl(), analysis.getBCol(),
 									analysis.getToBCol(), analysis.getSrcMCol(), analysis.getDistMCol(),
 									analysis.getSrcDCol(), analysis.getDistDCol(), analysis.getDefUnique());
 						} else if (analysis.getToBColValue() != null) {
-							map = formatDataToBColValue(importBean.getSourceid(), importBean.getUserid(),
+							map = formatDataToBColValue(importBean.getSourceid(), cs_id, importBean.getUserid(),
 									analysis.getName(), analysis.getNodeName(), analysis.getFileurl(),
 									analysis.getBCol(), analysis.getToBColValue(), analysis.getSrcMCol(),
 									analysis.getDistMCol(), analysis.getSrcDCol(), analysis.getDistDCol(),
@@ -92,12 +118,10 @@ public class ImportAdminController {
 		return map;
 	}
 
-	private Map<String, Object> sourceData(String sourceid, String userid, String fileurl, List<String> srcCol,
+	private Map<String, Object> sourceData(String sourceid,Integer cs_id, String userid,String userName, String fileurl, List<String> srcCol,
 			List<String> distCol, List<String> defUnique)  {
 		Map<String, Object> map = new HashMap<String, Object>();
-		 
-			System.out.println(sourceService.getSourceId(sourceid));
-			Integer cs_id = sourceService.getSourceId(sourceid);
+			//读取文件TXT
 			FileInputStream fileIn;
 			try {
 				fileIn = new FileInputStream(fileurl);
@@ -117,7 +141,7 @@ public class ImportAdminController {
 						map.put("code", "1");
 						map.put("message", "failed");
 						map.put("info",srcCol.indexOf(head)+"字段没有找到对应的csf_id");
-								return map;
+						return map;
 							}
 							csfIndex_IdMap.put(i, csf_Id);
 						}
@@ -126,11 +150,12 @@ public class ImportAdminController {
 				}
 				if(null==csfIndex_IdMap||csfIndex_IdMap.size()==0) {
 					map.put("code", "1");
-				map.put("message", "failed");
-				map.put("info","待导入文件中要导入的列的列名有误");
+				    map.put("message", "failed");
+				    map.put("info","待导入文件中要导入的列的列名有误");
 					scanner.close();
 					return map;
 				}
+				int j=1;//导入数据行数
 				while (scanner.hasNextLine()) {
 					Map<String, String> sourceFieldDatas = new HashMap<>();
 					String[] datas = scanner.nextLine().split("\t");
@@ -138,12 +163,14 @@ public class ImportAdminController {
 						sourceFieldDatas.put(sourceFieldId.getValue(), datas[sourceFieldId.getKey()]);
 					}
 					if (!sourceFieldDatas.isEmpty()) {
-							HBaseSourceDataDao.insertSourceData(String.valueOf(cs_id), userid, sourceFieldDatas,userid);
+						HBaseSourceDataDao.insertSourceData(String.valueOf(cs_id), userid, sourceFieldDatas,userName);
 					}
+					j++;
 				}
 				scanner.close();
 				map.put("code", "0");
 				map.put("message", "success");
+				map.put("info","共导入数据"+j+"行");
 				 
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -156,13 +183,18 @@ public class ImportAdminController {
 		return map;
 	}
 
-	private Map<String, Object> formatDataToBCol(String sourceid, String userid, String name, String nodeName,
+	private Map<String, Object> formatDataToBCol(String sourceid,Integer cs_id, String userid, String name, String nodeName,
 			String fileurl, List<String> bCol, List<String> toBCol, List<String> srcMCol, List<String> distMCol,
 			List<String> srcDCol, List<String> distDCol, List<String> defUnique) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			Integer cs_id = sourceService.getSourceId(sourceid);
 			Integer ft_id = formatTypeService.getFormatTypeId(cs_id, name);
+			if(null==ft_id||ft_id==0) {
+				map.put("code", "1");
+				map.put("message", "failed");
+				map.put("info",name+"没在表format_type中");
+				return map;
+			}
 			FileInputStream fileIn;
 			fileIn = new FileInputStream(fileurl);
 			Scanner scanner = new Scanner(fileIn);
@@ -184,7 +216,8 @@ public class ImportAdminController {
 						return map;
 					}
 					csfIndex_IdMap.put(i, csf_Id);
-				} else if (srcMCol.contains(head)) {
+				} else 
+				if (srcMCol.contains(head)) {
 					String meta_Id = null;
 					if ((meta_Id = String.valueOf(
 							formatFieldService.getFormatField_ff_id(ft_id, distMCol.get(srcMCol.indexOf(head)))))
@@ -194,7 +227,8 @@ public class ImportAdminController {
 						return map;
 					}
 					metaIndex_IdMap.put(i, meta_Id);
-				} else if (srcDCol.contains(head)) {
+				} else 
+				if (srcDCol.contains(head)) {
 					String data_Id = null;
 					if ((data_Id = String.valueOf(
 							formatFieldService.getFormatField_ff_id(ft_id, distDCol.get(srcDCol.indexOf(head)))))
@@ -204,14 +238,14 @@ public class ImportAdminController {
 						return map;
 					}
 					dataIndex_IdMap.put(i, data_Id);
-					}
-					i++;
+				}
+				i++;
 			 }
 		}
 			Map<Map<String, String>, String> sourceDataIds = new HashMap<>();
 			Map<String, String> formatNodeIds = new HashMap<>();
-			while (scanner.hasNextLine()) {
-				String[] datas = scanner.nextLine().split("\t");
+	   while (scanner.hasNextLine()) {
+			String[] datas = scanner.nextLine().split("\t");
 			String sourceDataId = null;
 			Map<String, String> sourceFieldDatas = new HashMap<>();
 			Map<String, String> metaDatas = new HashMap<>();
@@ -239,28 +273,28 @@ public class ImportAdminController {
 			
 			String formatNodeId = null;
 			if (formatNodeIds.containsKey(sourceDataId)) {// 记录id，减少数据库查询
-					formatNodeId = formatNodeIds.get(sourceDataId);
-				} else {
+				formatNodeId = formatNodeIds.get(sourceDataId);
+			} else {
+				formatNodeId = HBaseFormatNodeDao.getFormatNodeId(String.valueOf(cs_id), sourceDataId,
+						String.valueOf(ft_id), nodeName);
+				if (formatNodeId == null) {
+					HBaseFormatNodeDao.insertFormatNode(String.valueOf(cs_id), sourceDataId, String.valueOf(ft_id),
+							nodeName, metaDatas);
 					formatNodeId = HBaseFormatNodeDao.getFormatNodeId(String.valueOf(cs_id), sourceDataId,
 							String.valueOf(ft_id), nodeName);
-					if (formatNodeId == null) {
-						HBaseFormatNodeDao.insertFormatNode(String.valueOf(cs_id), sourceDataId, String.valueOf(ft_id),
-								nodeName, metaDatas);
-						formatNodeId = HBaseFormatNodeDao.getFormatNodeId(String.valueOf(cs_id), sourceDataId,
-								String.valueOf(ft_id), nodeName);
-					}
-					formatNodeIds.put(sourceDataId, formatNodeId);
 				}
-			
-				if (!metaDatas.isEmpty()) {
-						HBaseFormatDataDao.updateFormatData(String.valueOf(cs_id), String.valueOf(ft_id), formatNodeId,
-								metaDatas);
-				}
-				if (!dataDatas.isEmpty()) {
-						HBaseFormatDataDao.insertFormatData(String.valueOf(cs_id), String.valueOf(ft_id), sourceDataId,
-								formatNodeId, dataDatas);
-				}
+				formatNodeIds.put(sourceDataId, formatNodeId);
 			}
+		
+			if (!metaDatas.isEmpty()) {
+					HBaseFormatDataDao.updateFormatData(String.valueOf(cs_id), String.valueOf(ft_id), formatNodeId,
+							metaDatas);
+			}
+			if (!dataDatas.isEmpty()) {
+					HBaseFormatDataDao.insertFormatData(String.valueOf(cs_id), String.valueOf(ft_id), sourceDataId,
+							formatNodeId, dataDatas);
+			}
+		}
 			
 			scanner.close();
 			map.put("result", "成功");
@@ -281,21 +315,22 @@ public class ImportAdminController {
 		return map;
 	}
 
-	private Map<String, Object> formatDataToBColValue(String sourceid, String userid, String name, String nodeName,
+	private Map<String, Object> formatDataToBColValue(String sourceid,Integer cs_id, String userid, String name, String nodeName,
 			String fileurl, List<String> toBCol, List<String> toBColValue, List<String> srcMCol, List<String> distMCol,
 			List<String> srcDCol, List<String> distDCol, List<String> defUnique) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			Integer cs_id = sourceService.getSourceId(sourceid);
 			Integer ft_id = formatTypeService.getFormatTypeId(cs_id, name);
 			Map<String, String> sourceFieldDatas = new HashMap<>();
 			for (int i = 0; i < toBCol.size(); i++) {
-				String field = null;
-				if ((String.valueOf(sourceFieldService.getSourceFieldId(cs_id, toBCol.get(i)))).equals("null")) {
-					map.put("result", "失败");
+				Integer field = sourceFieldService.getSourceFieldId(cs_id, toBCol.get(i));
+				if (null==field||String.valueOf(field).equals("null")) {
+					map.put("code", "1");
+					map.put("message", "failed");
+					map.put("info","toBCol中"+toBCol.get(i)+"没对应csf_id");
 					return map;
 				}
-				sourceFieldDatas.put(field, toBColValue.get(i));
+				sourceFieldDatas.put(String.valueOf(field), toBColValue.get(i));//("216","col1_1")
 			}
 			Scanner scanner = new Scanner(new FileInputStream(fileurl));
 			String sourceDataId = HBaseSourceDataDao.getSourceDataId(String.valueOf(userid), String.valueOf(cs_id),
@@ -372,7 +407,17 @@ public class ImportAdminController {
 			scanner.close();
 			map.put("result", "成功");
 		} catch (IOException e1) {
-			map.put("result", "失败");
+			if(e1 instanceof FileNotFoundException) {
+				e1.printStackTrace();
+				map.put("code", "1");
+				map.put("message", "failed");
+				map.put("info",fileurl+"没找到对应文件");
+			}else {
+				e1.printStackTrace();
+				map.put("code", "1");
+				map.put("message", "failed");
+				map.put("info",e1);
+			}
 			return map;
 		}
 		return map;
