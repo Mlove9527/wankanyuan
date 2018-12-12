@@ -36,6 +36,9 @@ public interface FormatTypeDao {
 	@Select("select * from view_format_type where ft_id=#{ft_id}  ")
 	public FormatType getFormatType(@Param("ft_id") Integer ft_id);
 
+	@Select("select * from format_type where cs_id=#{cs_id} and ft_name=#{ft_name}  ")
+	public FormatType getFormatType(@Param("cs_id") Integer cs_id,@Param("ft_name") String ft_name);
+
 	@Select("select cs_id from format_type where ft_id=#{ft_id}  ")
 	public Integer getFormatType_cs_id(@Param("ft_id") Integer ft_id);
 

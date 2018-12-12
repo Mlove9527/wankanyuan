@@ -36,6 +36,10 @@ public class FormatFieldService {
 		return formatFieldDao.getFormatFieldsForAdmin(ft_id);
 	}
 
+	public List<FormatField> getFormatFieldsByFormatTypeID(Integer ft_id) {
+		return formatFieldDao.getFormatFieldsByFormatTypeID(ft_id);
+	}
+
 	public List<FormatField> getFormatFieldsForUser(Integer ft_id) {
 		return formatFieldDao.getFormatFieldsForUser(ft_id);
 	}

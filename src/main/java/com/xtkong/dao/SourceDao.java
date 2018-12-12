@@ -38,6 +38,9 @@ public interface SourceDao {
 	@Select("select * from collection_source where cs_id=#{cs_id}")
 	public Source getSourceByCs_id(@Param("cs_id") Integer cs_id);
 
+	@Select("select * from collection_source where cs_name=#{cs_name}")
+	public Source getSourceByCs_Name(@Param("cs_name") String cs_name);
+
 	@Select("	select *	from collection_source	order by	cs_id asc	limit #{num}")
 	public Source getSourceLimit(@Param("num") Integer num);
 

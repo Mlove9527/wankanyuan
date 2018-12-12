@@ -1,7 +1,6 @@
 package com.xtkong.controller.common.sqlparser;
 
 import java.util.Arrays;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,7 +12,7 @@ public class From {
     private String originalSQL;
     private String newSQL;
 
-    private Map<String,String> tabMapping;
+    //private Map<String,String> tabMapping;
 
     //as "colAlias"
     private Pattern as1=Pattern.compile("(\\s+)[Aa][Ss](\\s+)\\\"([\\s\\S]+)\\\"$");
@@ -27,6 +26,7 @@ public class From {
     private String schema;
     private String tableName;
     private String alias;
+    private String express;
 
     private void cutoffAlias(String str)
     {
@@ -36,35 +36,35 @@ public class From {
         Matcher matchSpace2 = space2.matcher(str);
         if(matchAs1.find() && matchAs1.start()>0)
         {
-            tableName=str.substring(0,matchAs1.start());
+            express=str.substring(0,matchAs1.start());
             alias=str.substring(matchAs1.start());
         }
         else if(matchAs2.find() && matchAs2.start()>0)
         {
-            tableName=str.substring(0,matchAs2.start());
+            express=str.substring(0,matchAs2.start());
             alias=str.substring(matchAs2.start());
         }
         else if(matchSpace1.find() && matchSpace1.start()>0)
         {
-            tableName=str.substring(0,matchSpace1.start());
+            express=str.substring(0,matchSpace1.start());
             alias=str.substring(matchSpace1.start());
         }
         else if(matchSpace2.find() && matchSpace2.start()>0)
         {
-            tableName=str.substring(0,matchSpace2.start());
+            express=str.substring(0,matchSpace2.start());
             alias=str.substring(matchSpace2.start());
         }
         //没有别名
         else
         {
-            tableName=str;
+            express=str;
         }
     }
 
-    public From(String str,Map<String,String> tabMapping) throws Exception
+    public From(String str) throws Exception
     {
         this.originalSQL=str!=null?str.trim():str;
-        this.tabMapping=tabMapping;
+        //this.tabMapping=tabMapping;
 
         cutoffAlias(this.originalSQL);
 
@@ -73,9 +73,9 @@ public class From {
         int startIndex=-1;
 
         //然后搜索表达式中的列名
-        for(int i=0;i<originalSQL.length();i++)
+        for(int i=0;i<express.length();i++)
         {
-            char chr=originalSQL.charAt(i);
+            char chr=express.charAt(i);
             //包裹结束
             if(SelectItem.isEndPackChar(chr,packStart) && packStart!=0)
             {
@@ -88,7 +88,7 @@ public class From {
                 //双引号结束,获取的可能是表名也可能是列名
                 if(SelectItem.isSpecialPackChar(chr) && !recentWord.equals(""))
                 {
-                    if(SelectItem.isHas(originalSQL,i+1, Arrays.asList(new Character[]{'.'})))
+                    if(SelectItem.isHas(express,i+1, Arrays.asList(new Character[]{'.'})))
                     {
                         schema=recentWord;
                     }
@@ -104,11 +104,15 @@ public class From {
                 continue;
             }
 
-            //碰到包裹符之前的点号,说明之前的是表名,从现在开始要准备截取列名
-            if(packStart==0 && chr=='.'/* && tabOrColName!=null*/)
+            //碰到非包裹符的点号,说明之前的是表名,从现在开始要准备截取列名
+            if(packStart==0 && chr=='.' /* && tabOrColName!=null*/)
             {
-                schema=recentWord;
-                recentWord="";
+                if(!recentWord.equals(""))
+                {
+                    schema=recentWord;
+                    recentWord="";
+                }
+
                 startIndex=-1;
                 continue;
             }
@@ -146,9 +150,13 @@ public class From {
                 {
                     if(!recentWord.equals("") && SelectItem.isReallyColName(recentWord))
                     {
-                        if(SelectItem.isHas(originalSQL,i+1, Arrays.asList(new Character[]{'.'})))
+                        if(SelectItem.isHas(express,i+1, Arrays.asList(new Character[]{'.'})))
                         {
                             schema=recentWord;
+                        }
+                        else
+                        {
+                            tableName=recentWord;
                         }
                     }
                     recentWord="";
@@ -158,12 +166,17 @@ public class From {
             }
         }
 
-        replace();
+        if(!recentWord.equals("") && SelectItem.isReallyColName(recentWord))
+        {
+            tableName=recentWord;
+        }
+
+        //replace();
     }
 
-    private void replace()
+    public void replace(String newFrom)
     {
-
+        newSQL=newFrom;
     }
 
     public String getOriginalSQL() {
@@ -182,5 +195,13 @@ public class From {
 
     public String getNewSQL() {
         return newSQL;
+    }
+
+    public String getSchema() {
+        return schema;
+    }
+
+    public String getAlias() {
+        return alias;
     }
 }

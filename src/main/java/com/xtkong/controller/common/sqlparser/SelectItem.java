@@ -80,9 +80,11 @@ public class SelectItem {
             "desc",
             "and",
             "or",
-            "not"};
+            "not",
+            "having",
+            "distinct"};
 
-    private Map<String,String> colMapping;
+    //private Map<String,String> colMapping;
 
     //as "colAlias"
     private Pattern as1=Pattern.compile("(\\s+)[Aa][Ss](\\s+)\\\"([\\s\\S]+)\\\"$");
@@ -126,10 +128,10 @@ public class SelectItem {
         }
     }
 
-    public SelectItem(String str,Map<String,String> colMapping) throws Exception
+    public SelectItem(String str) throws Exception
     {
         this.originalSQL=str!=null?str.trim():str;
-        this.colMapping=colMapping;
+        //this.colMapping=colMapping;
         //将表达式和别名分离
         cutoffAlias(this.originalSQL);
 
@@ -166,9 +168,12 @@ public class SelectItem {
             }
 
             //碰到包裹符之前的点号,说明之前的是表名,从现在开始要准备截取列名
-            if(packStart==0 && chr=='.'/* && tabOrColName!=null*/)
+            if(packStart==0 && chr=='.' /* && tabOrColName!=null*/)
             {
-                recentWord="";
+                if(!recentWord.equals(""))
+                {
+                    recentWord="";
+                }
                 startIndex=-1;
                 continue;
             }
@@ -224,10 +229,10 @@ public class SelectItem {
             //System.out.println("################列名: "+col);
         }
 
-        replace();
+        //replace();
     }
 
-    private void replace()
+    public void replace(Map<String,String> colMapping)
     {
         String result="";
         int startIdx=0;
@@ -235,7 +240,7 @@ public class SelectItem {
         {
             result+=express.substring(startIdx,col.startIndex);
             //System.out.println("00000after replace: "+result);
-            String newVal=this.colMapping.get(col.getName());
+            String newVal=colMapping.get(col.getName());
             result+=(newVal==null?col.getName():newVal);
             //System.out.println("11111after replace: "+result);
             startIdx=col.getEndIndex()+1;

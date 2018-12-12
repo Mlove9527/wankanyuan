@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.xtkong.controller.common.sqlparser.Select;
+import com.xtkong.model.SourceField;
 import org.apache.hadoop.hbase.client.Scan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -58,6 +60,59 @@ public class CommonSelect {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("message", selectContdation);
 		return map;
+	}
+
+	private Select getSQLAfterReplace(String sql) throws Exception
+	{
+		Map<String,String> colMapping=new HashMap<>();
+
+		Select select=new Select(sql);
+		//只有一级表
+		if(select.getFrom().getSchema()==null || select.getFrom().getSchema().trim().equals(""))
+		{
+			Source source=sourceService.getSourceByCs_Name(select.getFrom().getTableName());
+			if(source==null)
+			{
+				throw new Exception("Source不存在: "+select.getFrom().getTableName());
+			}
+			for(SourceField sf : sourceFieldService.getSourceFields(source.getCs_id()))
+			{
+				colMapping.put(sf.getCsf_name(),"\""+ConstantsHBase.FAMILY_INFO+"\".\""+sf.getCsf_id()+"\"");
+				//TODO 还有一些额外的字段
+			}
+			//替换后表名
+			String newFrom="\""+ConstantsHBase.TABLE_PREFIX_SOURCE_+source.getCs_id()+"\"";
+			select.replace(newFrom,colMapping);
+
+			//return select.getNewSQL();
+		}
+		//有二级表,schema是SourceName,table是FormatType
+		else
+		{
+			Source source=sourceService.getSourceByCs_Name(select.getFrom().getSchema());
+			if(source==null)
+			{
+				throw new Exception("Source不存在: "+select.getFrom().getSchema());
+			}
+			FormatType formatType=formatTypeService.getFormatType(source.getCs_id(),select.getFrom().getTableName());
+			if(formatType==null)
+			{
+				throw new Exception("Source "+source.getCs_name()+" 下 FormatType不存在: "+select.getFrom().getTableName());
+			}
+
+			for(FormatField ff : formatFieldService.getFormatFieldsByFormatTypeID(formatType.getFt_id()))
+			{
+				colMapping.put(ff.getFf_name(),"\""+ConstantsHBase.FAMILY_INFO+"\".\""+ff.getFf_id()+"\"");
+				//TODO 还有一些额外的字段
+			}
+			//替换后表名
+			String newFrom="\""+ConstantsHBase.TABLE_PREFIX_FORMAT_+source.getCs_id()+"_"+formatType.getFt_id()+"\"";
+			select.replace(newFrom,colMapping);
+
+			//return select.getNewSQL();
+		}
+
+		return select;
 	}
 
 	@SuppressWarnings("unchecked")

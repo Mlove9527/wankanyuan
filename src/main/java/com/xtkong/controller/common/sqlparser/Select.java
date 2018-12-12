@@ -18,7 +18,7 @@ public class Select {
     private String newSQL;
     private int fromStartIndex=-1;
 
-    public Select(String str,Map<String,String> tabMapping,Map<String,String> colMapping) throws Exception
+    public Select(String str) throws Exception
     {
         originalSQL=str.trim();
 
@@ -69,7 +69,7 @@ public class Select {
                 }
                 else if(chr==',')
                 {
-                    selectItemList.add(new SelectItem(tmpSelectItemStr,colMapping));
+                    selectItemList.add(new SelectItem(tmpSelectItemStr));
                     tmpSelectItemStr="";
                 }
                 else if( recentWord.toLowerCase().equals("from") ||  recentWord.toLowerCase().equals("where"))
@@ -78,14 +78,14 @@ public class Select {
                     {
                         hasFromKeyword=true;
                         tmpSelectItemStr=tmpSelectItemStr.substring(0,tmpSelectItemStr.length()-"from".length());
-                        selectItemList.add(new SelectItem(tmpSelectItemStr,colMapping));
+                        selectItemList.add(new SelectItem(tmpSelectItemStr));
                         tmpSelectItemStr="";
                     }
                     else if(recentWord.toLowerCase().equals("where"))
                     {
                         hasWhereKeyword=true;
                         tmpSelectItemStr=tmpSelectItemStr.substring(0,tmpSelectItemStr.length()-"where".length());
-                        from=new From(tmpSelectItemStr,tabMapping);
+                        from=new From(tmpSelectItemStr);
                         tmpSelectItemStr="";
                     }
                 }
@@ -104,22 +104,23 @@ public class Select {
         }
         else if(!hasWhereKeyword)
         {
-            from=new From(tmpSelectItemStr,tabMapping);
+            from=new From(tmpSelectItemStr);
         }
         else
         {
-            where=new Where(tmpSelectItemStr,colMapping);
+            where=new Where(tmpSelectItemStr);
         }
 
-        replace();
+        //replace();
     }
 
-    private void replace() throws Exception
+    public void replace(String newFrom,Map<String,String> colMapping) throws Exception
     {
         newSQL="select ";
         boolean catoff=false;
         for(SelectItem selectItem : this.selectItemList)
         {
+            selectItem.replace(colMapping);
             newSQL+=selectItem.getNewSQL()+",";
             catoff=true;
         }
@@ -127,11 +128,14 @@ public class Select {
             throw new Exception("select没有item,非法的select语句.");
         }
         newSQL=newSQL.substring(0,newSQL.length()-1);
-
         fromStartIndex=newSQL.length()+1;
+
+        from.replace(newFrom);
         newSQL+=" from "+from.getNewSQL();
+
         if(where!=null)
         {
+            where.replace(colMapping);
             newSQL+=" where "+where.getNewSQL();
         }
     }

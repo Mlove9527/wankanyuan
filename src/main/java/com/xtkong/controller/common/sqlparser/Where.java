@@ -14,14 +14,14 @@ public class Where {
 
     private String newSQL;
 
-    private Map<String,String> colMapping;
+    //private Map<String,String> colMapping;
 
     private List<SelectItem.Column> columns=new ArrayList<>();
 
-    public Where(String str,Map<String,String> colMapping) throws Exception
+    public Where(String str) throws Exception
     {
         this.originalSQL=str!=null?str.trim():str;
-        this.colMapping=colMapping;
+        //this.colMapping=colMapping;
 
         String recentWord="";
         char packStart=0;
@@ -114,10 +114,10 @@ public class Where {
             //System.out.println("################列名: "+col);
         }
 
-        replace();
+        //replace();
     }
 
-    private void replace()
+    public void replace(Map<String,String> colMapping)
     {
         String result="";
         int startIdx=0;
@@ -125,7 +125,7 @@ public class Where {
         {
             result+=originalSQL.substring(startIdx,col.getStartIndex());
             //System.out.println("00000after replace: "+result);
-            String newVal=this.colMapping.get(col.getName());
+            String newVal=colMapping.get(col.getName());
             result+=(newVal==null?col.getName():newVal);
             //System.out.println("11111after replace: "+result);
             startIdx=col.getEndIndex()+1;

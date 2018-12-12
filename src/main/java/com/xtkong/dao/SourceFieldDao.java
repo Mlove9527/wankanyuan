@@ -31,6 +31,9 @@ public interface SourceFieldDao {
 	@Select("select * from view_collection_source_field where cs_id=#{cs_id} and  is_view=1 order by csf_id ")
 	public List<SourceField> getSourceFields(@Param("cs_id") int cs_id);
 
+	@Select("select csf.* from collection_source cs inner join collection_source_field csf on cs.cs_id=csf.cs_id where cs.cs_name=#{cs_name} and  csf.is_view=1 order by csf.csf_id ")
+	public List<SourceField> getSourceFieldsBySourceName(@Param("cs_name") String cs_name);
+
 	@Select("select * from view_collection_source_field where cs_id=#{cs_id} order by csf_id ")
 	public List<SourceField> getSourceFieldsForAdmin(@Param("cs_id") int cs_id);
 

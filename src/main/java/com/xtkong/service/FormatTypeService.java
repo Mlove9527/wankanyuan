@@ -37,6 +37,10 @@ public class FormatTypeService {
 		return formatTypeDao.getFormatType(ft_id);
 	}
 
+	public FormatType getFormatType(Integer cs_id,String ft_name) {
+		return formatTypeDao.getFormatType(cs_id,ft_name);
+	}
+
 	public Integer getFormatType_cs_id(Integer ft_id) {
 
 		return formatTypeDao.getFormatType_cs_id(ft_id);

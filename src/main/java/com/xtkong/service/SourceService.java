@@ -44,6 +44,9 @@ public class SourceService {
 	public Source getSourceByCs_id(Integer cs_id){
 		return sourceDao.getSourceByCs_id(cs_id);
 	}
+	public Source getSourceByCs_Name(String cs_name){
+		return sourceDao.getSourceByCs_Name(cs_name);
+	}
 	public Source getSourceLimit( Integer num){
 		return sourceDao.getSourceLimit(num);
 	}
