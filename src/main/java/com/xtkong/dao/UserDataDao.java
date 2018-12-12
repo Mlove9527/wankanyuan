@@ -6,6 +6,8 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+
+import com.liutianjun.pojo.User;
 import com.xtkong.model.UserData;
 
 public interface UserDataDao {
@@ -24,4 +26,8 @@ public interface UserDataDao {
 
 	@Delete("delete from user_data_relation where dataid=#{dataid} and cs_id=#{cs_id}")
 	public int deleteid(@Param("dataid") String dataid, @Param("cs_id") Integer cs_id);
+	
+	
+	@Select("select * from user where id=#{id}")
+	public List<User> selectUserById(@Param("id") Integer id);
 }
