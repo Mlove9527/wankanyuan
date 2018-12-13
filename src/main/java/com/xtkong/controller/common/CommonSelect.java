@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import com.xtkong.controller.common.sqlparser.Select;
 import com.xtkong.model.SourceField;
 import org.apache.hadoop.hbase.client.Scan;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +37,7 @@ import com.xtkong.util.HBaseDB;
 @RequestMapping("/common")
 public class CommonSelect {
 
+	private static final Logger logger  =  Logger.getLogger(CommonSelect.class );
 	@Autowired
 	SourceService sourceService;
 	@Autowired
@@ -115,11 +117,14 @@ public class CommonSelect {
 		return select;
 	}
 
+	/*
+	{"userid":["45","1"],"projectid":["94","114"],"select":{"condition":"select t.col1, t.col2 from test_1203 t where t.col1 =1"},"selectContdation":"","page":{"pageSize":10,"currPage":1}}
+	 */
 	@SuppressWarnings("unchecked")
 	@RequestMapping("/commonSelectJson")
 	@ResponseBody
 	public String commonSelect(String jsonStr) {
-		
+
 		String s = jsonStr.replaceAll("%20", "");
 		List<String> userid = null;
 		List<String> projectid = null;
@@ -172,6 +177,7 @@ public class CommonSelect {
 				selectContdation = gsonMap.get("selectContdation").toString();
 			}
 			Select selectAfterParse=getSQLAfterReplace(condition);
+			logger.info("改写之后的SQL: "+selectAfterParse.getNewSQL());
 			if (conditionEqual != null && conditionLike != null) {
 				return commonSelect(userid, projectid, selectAfterParse, /*isAddWhere, */ conditionEqual, conditionLike, currPage,
 						pageSize);
