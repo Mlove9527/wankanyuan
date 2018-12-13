@@ -762,7 +762,7 @@ public class PhoenixClient {
 	 * @param strip
 	 * @return
 	 */
-	public static Map<String, Object> commonSelect(String phoenixSQL, Integer page, Integer strip) {
+	public static Map<String, Object> commonSelect(String phoenixSQL,int fromIndex, Integer page, Integer strip) {
 		Map<String, Object> map = new HashMap<>();
 		try {
 			Connection conn = PhoenixClient.getConnection();
@@ -770,11 +770,11 @@ public class PhoenixClient {
 				map.put("msg", "Phoenix DB连接超时！");
 				return map;
 			}
-			Integer index = 0;
-			if ((index = phoenixSQL.indexOf("FROM")) == -1) {
-				index = phoenixSQL.indexOf("from");
-			}
-			if (index == -1) {
+//			Integer index = 0;
+//			if ((index = phoenixSQL.indexOf("FROM")) == -1) {
+//				index = phoenixSQL.indexOf("from");
+//			}
+			if (fromIndex == -1) {
 				Map<String, Object> msg = new HashMap<String, Object>();
 				msg.put("msg", "phoenixSQL 语法错误！");
 				map.put("msg", msg);
@@ -782,7 +782,7 @@ public class PhoenixClient {
 			}
 			if ((page != null) && (strip != null) && (page > 0) && (strip > 0)) {
 				Map<String, Object> pages = new HashMap<String, Object>();
-				Integer totalCount = count("SELECT COUNT(*)" + phoenixSQL.substring(index));
+				Integer totalCount = count("SELECT COUNT(*)" + phoenixSQL.substring(fromIndex));
 				pages.put("totalCount", totalCount);
 				pages.put("pageSize", strip);
 				Integer totalPage = totalCount / strip;
