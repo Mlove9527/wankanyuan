@@ -188,8 +188,6 @@ public class HttpUtils {
         		"	  \"bCol\":[\"col1\",\"col2\"], \r\n" + 
         		"	  \"toBCol\":[\"col1\",\"col2\"],\r\n" + 
         		"      \"toBColValue\":[],\r\n" + 
-        		"      \"srcMCol\":[\"ft_col1\", \"ft_col2\"],\r\n" + 
-        		"	  \"distMCol\":[\"ft_col1\", \"ft_col2\"],\r\n" + 
         		"	  \"srcDCol\":[\"ft_col1\", \"ft_col2\"], \r\n" + 
         		"	  \"distDCol\":[\"ft_col1\", \"ft_col2\"],\r\n" + 
         		"	  \"defUnique\":[]\r\n" + 
