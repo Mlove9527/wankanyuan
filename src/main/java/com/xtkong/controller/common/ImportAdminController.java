@@ -47,7 +47,7 @@ public class ImportAdminController {
 	public Map<String, Object> test(String jsonStr) {
 		Map<String, Object> map = new HashMap<String, Object>();
 
-		ImportBean importBean = null;
+		ImportBean importBean = null; 
 		try {
 			importBean = new ImportBean(jsonStr);
 		} catch (Exception e) {
