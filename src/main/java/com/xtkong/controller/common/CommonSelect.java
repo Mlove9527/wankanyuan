@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import com.xtkong.controller.common.sqlparser.Select;
 import com.xtkong.model.SourceField;
 import org.apache.hadoop.hbase.client.Scan;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +37,7 @@ import com.xtkong.util.HBaseDB;
 @RequestMapping("/common")
 public class CommonSelect {
 
+	private static final Logger logger  =  Logger.getLogger(CommonSelect.class );
 	@Autowired
 	SourceService sourceService;
 	@Autowired
@@ -115,16 +117,19 @@ public class CommonSelect {
 		return select;
 	}
 
+	/*
+	{"userid":["45","1"],"projectid":["94","114"],"select":{"condition":"select t.col1, t.col2 from test_1203 t where t.col1 =1"},"selectContdation":"","page":{"pageSize":10,"currPage":1}}
+	 */
 	@SuppressWarnings("unchecked")
 	@RequestMapping("/commonSelectJson")
 	@ResponseBody
 	public String commonSelect(String jsonStr) {
-		
+
 		String s = jsonStr.replaceAll("%20", "");
 		List<String> userid = null;
 		List<String> projectid = null;
 		String condition = null;
-		Boolean isAddWhere = false;
+		//Boolean isAddWhere = false;
 		Map<String, String> conditionEqual = null;
 		Map<String, String> conditionLike = null;
 		Integer currPage = null;
@@ -150,9 +155,9 @@ public class CommonSelect {
 				msg.put("msg", "查询语句缺失！");
 				return new Gson().toJson(msg).toString();
 			}
-			if (gsonMap.containsKey("isAddWhere")) {
-				isAddWhere = (Boolean) gsonMap.get("isAddWhere");
-			}
+//			if (gsonMap.containsKey("isAddWhere")) {
+//				isAddWhere = (Boolean) gsonMap.get("isAddWhere");
+//			}
 			if (gsonMap.containsKey("conditionEqual")) {
 				conditionEqual = (Map<String, String>) gsonMap.get("conditionEqual");
 			}
@@ -171,53 +176,67 @@ public class CommonSelect {
 			if (gsonMap.containsKey("selectContdation")) {
 				selectContdation = gsonMap.get("selectContdation").toString();
 			}
+			Select selectAfterParse=getSQLAfterReplace(condition);
+			logger.info("改写之后的SQL: "+selectAfterParse.getNewSQL());
 			if (conditionEqual != null && conditionLike != null) {
-				return commonSelect(userid, projectid, condition, isAddWhere, conditionEqual, conditionLike, currPage,
+				return commonSelect(userid, projectid, selectAfterParse, /*isAddWhere, */ conditionEqual, conditionLike, currPage,
 						pageSize);
 			} else {
-				return commonSelect(userid, projectid, condition, isAddWhere, selectContdation, currPage, pageSize);
+				return commonSelect(userid, projectid, selectAfterParse, /*isAddWhere,*/  selectContdation, currPage, pageSize);
 			}
 		} catch (JsonSyntaxException e) {
 			e.printStackTrace();
 			msg.put("msg", "Json解析异常，请核对Json格式！  Json:" + jsonStr + " 提示：" + e.getMessage());
 			return new Gson().toJson(msg).toString();
 		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			msg.put("msg", "异常:  Json:" + jsonStr + " 提示：" + e.getMessage());
+			return new Gson().toJson(msg).toString();
+		}
 	}
 
 	@RequestMapping("/commonSelect1")
 	@ResponseBody
-	public String commonSelect(List<String> userid, List<String> projectid, String select, Boolean isAddWhere,
-			String selectContdation, Integer currPage, Integer pageSize) {
-		if (isAddWhere == null) {
-			isAddWhere = false;
-		}
-		if (isAddWhere) {
-			select += " WHERE ";
+	public String commonSelect(List<String> userid, List<String> projectid, Select select, /*Boolean isAddWhere,*/
+							   String selectContdation, Integer currPage, Integer pageSize) {
+//		if (isAddWhere == null) {
+//			isAddWhere = false;
+//		}
+//		if (isAddWhere) {
+//			select += " WHERE ";
+//		} else {
+//			select += " AND ";
+//		}
+		String sqlStr=select.getNewSQL();
+		if (select.getWhere()==null) {
+			sqlStr += " WHERE ";
 		} else {
-			select += " AND ";
+			sqlStr += " AND ";
 		}
 		if (userid != null && !userid.isEmpty()) {
-			select += "(";
+			sqlStr += "(";
 			for (String string : userid) {
-				select += " \"" + ConstantsHBase.QUALIFIER_USER + "\"= '" + string + "' OR ";
+				sqlStr += " \"" + ConstantsHBase.QUALIFIER_USER + "\"= '" + string + "' OR ";
 			}
-			select = select.substring(0, select.lastIndexOf("OR")) + ") AND ";
+			sqlStr = sqlStr.substring(0, sqlStr.lastIndexOf("OR")) + ") AND ";
 		}
 		if (projectid != null && !projectid.isEmpty()) {
-			select += " (";
+			sqlStr += " (";
 			for (String pid : projectid) {
-				select += " \"" + ConstantsHBase.QUALIFIER_PROJECT + "\"= '" + pid + "' OR ";
+				sqlStr += " \"" + ConstantsHBase.QUALIFIER_PROJECT + "\"= '" + pid + "' OR ";
 			}
-			select = select.substring(0, select.lastIndexOf("OR")) + ") AND ";
+			sqlStr = sqlStr.substring(0, sqlStr.lastIndexOf("OR")) + ") AND ";
 		}
 		if (selectContdation != null) {
-			select += " " + selectContdation + " ";
+			sqlStr += " " + selectContdation + " ";
 		}
-		if (select.trim().endsWith("WHERE")) {
-			select = select.substring(0, select.lastIndexOf("WHERE"));
+		if (sqlStr.trim().endsWith("WHERE")) {
+			sqlStr = sqlStr.substring(0, sqlStr.lastIndexOf("WHERE"));
 		}
-		if (select.trim().endsWith("AND")) {
-			select = select.substring(0, select.lastIndexOf("AND"));
+		if (sqlStr.trim().endsWith("AND")) {
+			sqlStr = sqlStr.substring(0, sqlStr.lastIndexOf("AND"));
 		}
 		if (currPage == null) {
 			currPage = 0;
@@ -225,7 +244,7 @@ public class CommonSelect {
 		if (pageSize == null) {
 			pageSize = 0;
 		}
-		return new Gson().toJson(PhoenixClient.commonSelect(select, currPage, pageSize)).toString();
+		return new Gson().toJson(PhoenixClient.commonSelect(sqlStr, select.getFromStartIndex(),currPage, pageSize)).toString();
 	}
 
 	/**
@@ -233,7 +252,6 @@ public class CommonSelect {
 	 * @param userid
 	 * @param projectid
 	 * @param select
-	 * @param isAddWhere
 	 * @param conditionEqual
 	 * @param conditionLike
 	 * @param currPage
@@ -242,47 +260,54 @@ public class CommonSelect {
 	 */
 	@RequestMapping("/commonSelect")
 	@ResponseBody
-	public String commonSelect(List<String> userid, List<String> projectid, String select, boolean isAddWhere,
+	public String commonSelect(List<String> userid, List<String> projectid, Select select, /*boolean isAddWhere,*/
 			Map<String, String> conditionEqual, Map<String, String> conditionLike, Integer currPage, Integer pageSize) {
 
 		boolean and = false;
-		if (isAddWhere) {
-			select += " WHERE ";
-			isAddWhere = false;
+//		if (isAddWhere) {
+//			select += " WHERE ";
+//			isAddWhere = false;
+//		} else {
+//			select += " AND ";
+//			and = true;
+//		}
+		String sqlStr=select.getNewSQL();
+		if (select.getWhere()==null) {
+			sqlStr += " WHERE ";
 		} else {
-			select += " AND ";
-			and = true;
+			sqlStr += " AND ";
 		}
+
 		if (userid != null && !userid.isEmpty()) {
-			select += "(";
+			sqlStr += "(";
 			for (String string : userid) {
-				select += " \"" + ConstantsHBase.QUALIFIER_USER + "\"= '" + string + "' OR";
+				sqlStr += " \"" + ConstantsHBase.QUALIFIER_USER + "\"= '" + string + "' OR";
 			}
-			select = select.substring(0, select.lastIndexOf("OR")) + ") AND ";
+			sqlStr = sqlStr.substring(0, sqlStr.lastIndexOf("OR")) + ") AND ";
 			and = true;
 		}
 		if (projectid != null && !projectid.isEmpty()) {
-			select += " (";
+			sqlStr += " (";
 			for (String string : projectid) {
-				select += " \"" + ConstantsHBase.QUALIFIER_PROJECT + "\"= '" + string + "' OR";
+				sqlStr += " \"" + ConstantsHBase.QUALIFIER_PROJECT + "\"= '" + string + "' OR";
 			}
-			select = select.substring(0, select.lastIndexOf("OR")) + ") AND ";
+			sqlStr = sqlStr.substring(0, sqlStr.lastIndexOf("OR")) + ") AND ";
 			and = true;
 		}
 		if ((conditionEqual != null) && (!conditionEqual.isEmpty())) {
 			for (Entry<String, String> eqlual : conditionEqual.entrySet()) {
-				select += eqlual.getKey() + "='" + eqlual.getValue() + "' AND ";
+				sqlStr += eqlual.getKey() + "='" + eqlual.getValue() + "' AND ";
 				and = true;
 			}
 		}
 		if ((conditionLike != null) && (!conditionLike.isEmpty())) {
 			for (Entry<String, String> like : conditionLike.entrySet()) {
-				select += like.getKey() + " like '%" + like.getValue() + "%' AND ";
+				sqlStr += like.getKey() + " like '%" + like.getValue() + "%' AND ";
 				and = true;
 			}
 		}
 		if (and) {
-			select = select.substring(0, select.lastIndexOf("AND"));
+			sqlStr = sqlStr.substring(0, sqlStr.lastIndexOf("AND"));
 		}
 		if (currPage == null) {
 			currPage = 0;
@@ -291,7 +316,7 @@ public class CommonSelect {
 			pageSize = 0;
 		}
 		return new Gson()
-				.toJson(PhoenixClient.commonSelect(select, Integer.valueOf(currPage), Integer.valueOf(pageSize)))
+				.toJson(PhoenixClient.commonSelect(sqlStr,select.getFromStartIndex(), Integer.valueOf(currPage), Integer.valueOf(pageSize)))
 				.toString();
 	}
 
@@ -389,11 +414,9 @@ public class CommonSelect {
 	 * source 选中采集源的字段列表
 	 * 
 	 * sourceDatas 源数据字数据，注：每个列表第一个值sourceDataId不显示
-	 * 
-	 * @param httpSession
+	 *
 	 * @param type
 	 *            "1":我的 "2":我创建的 "3":公开
-	 * @param cs_id
 	 * @param page
 	 * @param strip
 	 * @return
@@ -438,8 +461,7 @@ public class CommonSelect {
 
 	/**
 	 * 通过sourceDataId获取一条源数据
-	 * 
-	 * @param httpSession
+	 *
 	 * @param cs_id
 	 * @param sourceDataId
 	 * @return
@@ -497,8 +519,7 @@ public class CommonSelect {
 
 	/**
 	 * 通过formatNodeId获取一个数据节点
-	 * 
-	 * @param httpSession
+	 *
 	 * @param cs_id
 	 * @param sourceDataId
 	 * @param ft_id
