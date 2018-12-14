@@ -338,7 +338,7 @@ public class ImportController {
 	/*
 	key是最终的文件名,value是相对路径
 	 */
-	private Entry<String,String> importFile(String username,Integer uid,String fileName) throws Exception
+	public Entry<String,String> importFile(String username,Integer uid,String fileName) throws Exception
 	{
 		File sourceFile=new File(dataFileTmpLocation+File.separatorChar+username+File.separatorChar+fileName);
 		if(!sourceFile.exists())

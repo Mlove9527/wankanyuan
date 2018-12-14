@@ -65,6 +65,13 @@ public class ConstantsHBase {
 	// 扫描器最大缓冲，一次扫描请求返回数据量
 	public static final int SCAN_CACHING_MAX = 50;
 	
+	/***数据类型**/
+	public static final String DATA_TYPE_ZIFU = "字符";
+	public static final String DATA_TYPE_TUPIAN = "图片";
+	public static final String DATA_TYPE_SHUZHI = "数值";
+	public static final String DATA_TYPE_WENJIAN = "文件";
+	public static final String DATA_TYPE_RIQI = "日期";
+	
 	static {
 		try {			
 			Properties properties = new Properties();

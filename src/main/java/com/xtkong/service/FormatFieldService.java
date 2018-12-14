@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.xtkong.dao.FormatFieldDao;
 import com.xtkong.model.FormatField;
+import com.xtkong.util.ConstantsHBase;
 
 @Service
 public class FormatFieldService {
@@ -59,4 +60,10 @@ public class FormatFieldService {
 	public Integer getFormatField_ff_id(Integer ft_id, String ff_name) {
 		return formatFieldDao.getFormatField_ff_id(ft_id,ff_name);
 	}
+	
+	/**获取一行数据**/
+	public FormatField getFormatFieldInfo(Integer ft_id, String ff_name) {
+		return formatFieldDao.getFormatFieldInfo(ft_id,ff_name);
+	}
+	
 }

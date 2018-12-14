@@ -49,4 +49,6 @@ public interface SourceFieldDao {
 	@Select("SELECT v.description FROM collection_source_field v WHERE v.csf_id=#{csf_id} AND v.cs_id=#{cs_id}")
 	public SourceField getSourceFieldMsg(@Param("cs_id")int cs_id,@Param("csf_id")int csf_id);
 
+	@Select("select * from collection_source_field where cs_id=#{cs_id} and csf_name=#{csf_name} ORDER BY csf_id ASC LIMIT 1 ")
+	public SourceField getSourceFieldInfo(@Param("cs_id") int cs_id, @Param("csf_name") String csf_name);
 }

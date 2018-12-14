@@ -51,5 +51,9 @@ public interface FormatFieldDao {
 
 	@Delete("delete from format_field where ff_id=#{ff_id}")
 	public int deleteFormatField(@Param("ff_id") Integer ff_id);
+	
+	@Select("select * from format_field where ft_id=#{ft_id}  and ff_name=#{ff_name} ORDER BY ff_id ASC LIMIT 1")
+	public FormatField getFormatFieldInfo(@Param("ft_id") Integer ft_id, @Param("ff_name") String ff_name);
 
+	
 }

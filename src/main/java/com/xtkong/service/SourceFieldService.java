@@ -57,4 +57,9 @@ public class SourceFieldService {
 	public SourceField getSourceFieldMsg(int cs_id,int csf_id) {
 		return sourceFieldDao.getSourceFieldMsg(cs_id, csf_id);
 	}
+	
+	/**获取一条sourceFied数据**/
+	public SourceField getSourceFieldInfo(int cs_id,String csf_name){
+		return sourceFieldDao.getSourceFieldInfo(cs_id, csf_name);
+	}
 }

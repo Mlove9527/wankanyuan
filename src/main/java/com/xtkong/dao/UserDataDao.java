@@ -30,4 +30,7 @@ public interface UserDataDao {
 	
 	@Select("select * from user where id=#{id}")
 	public List<User> selectUserById(@Param("id") Integer id);
+	
+	@Select("select * from user where username=#{username}")
+	public List<User> selectUserByUserName(@Param("username") String username);
 }
