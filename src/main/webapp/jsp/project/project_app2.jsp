@@ -283,6 +283,8 @@
             	return;
             }
             var app_id = ids.join(",");
+            //打开一个不被拦截的新窗口
+            var newWindow = window.open(null,'_blank','width=1200,height=600,menubar=no,toolbar=no,status=no,scrollbars=yes');
             $.ajax({
             	url:"/wankangyuan/projectApp/projectAppRun",
             	type:"post",
@@ -292,9 +294,10 @@
             	dataType:"json",
             	success : function(data){
             		if(data.result == true){
-            			window.open(data.message
+/*             			window.open(data.message
                         		,'_blank'
-                        		,'width=1200,height=600,menubar=no,toolbar=no,status=no,scrollbars=yes')
+                        		,'width=1200,height=600,menubar=no,toolbar=no,status=no,scrollbars=yes') */
+                     newWindow.location.href = data.message;
             		}else{
             			layer.msg("应用运行地址解失败");
             		}
