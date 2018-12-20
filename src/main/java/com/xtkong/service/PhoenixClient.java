@@ -71,6 +71,10 @@ public class PhoenixClient {
 
 		PreparedStatement stmt = conn.prepareStatement("select * from \"SOURCE_75\"");
 		ResultSet set = stmt.executeQuery();
+		while(set.next())
+		{
+			System.out.println(set.getString(1));
+		}
 	}
 
 	/**
