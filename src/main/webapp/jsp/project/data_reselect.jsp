@@ -153,51 +153,52 @@
     
     //进入详情页
     function datainHref(sourceDataId){
-		var cs_id = $("#source_Select").val();
+		var cs_id = $("#source_Select option:selected").val();
+
 		window.location.href="/wankangyuan/sourceData/getSourceDataById?type=5&cs_id="+cs_id+"&p_id="+p_id+"&sourceDataId="+sourceDataId;
 	}
     	
-    	//切换数据源
-	    $("#source_Select").change(function(){
-			var cs_id = $("#source_Select").val();
-			var p_id = ${p_id};
-			window.location.href="/wankangyuan/sourceData/getSourceDatas?type=5&cs_id="+cs_id+"&p_id="+p_id;
-		});
-    	//提交勾选的数据
-    	$("#submit_data").click(function (){
-    		
-    		var afuxuanK=document.querySelectorAll('.fuxuanK2');
-            var afuxuan=[];
-            for(var i=0;i<afuxuanK.length;i++){
-                afuxuan.push(afuxuanK[i].querySelectorAll('.input_check')[0]);
-            }
-            var ids = [];
-            for(var i=0;i<afuxuanK.length;i++){
-            	if(afuxuan[i].checked){
-            		ids.push(afuxuan[i].name);
-            	}
-            }
-            if(ids == ""){
-            	layer.msg("请勾选源数据");
-            	return;
-            }
-            var cs_id = $("#source_Select").val();
-            $.ajax({
-            	url:"/wankangyuan/common/selectCondition",
-            	type:"post",
-            	data:{
-            		cs_id:cs_id,
-            		sourceDataIds:ids.join(",")
-            	},
-            	dataType:"json",
-            	success : function(data){
-            		window.parent.postMessage(data.message, "*");
-            	},
-            	error : function(){
-            		layer.msg("联网失败");
-            	}
-            });
-    	});	
+  	//切换数据源
+   $("#source_Select").change(function(){
+	var cs_id = $("#source_Select option:selected").val();
+	var p_id = ${p_id};
+	window.location.href="/wankangyuan/sourceData/getSourceDatas?type=5&cs_id="+cs_id+"&p_id="+p_id;
+    });
+  	//提交勾选的数据
+  	$("#submit_data").click(function (){
+  		
+  		var afuxuanK=document.querySelectorAll('.fuxuanK2');
+          var afuxuan=[];
+          for(var i=0;i<afuxuanK.length;i++){
+              afuxuan.push(afuxuanK[i].querySelectorAll('.input_check')[0]);
+          }
+          var ids = [];
+          for(var i=0;i<afuxuanK.length;i++){
+          	if(afuxuan[i].checked){
+          		ids.push(afuxuan[i].name);
+          	}
+          }
+          if(ids == ""){
+          	layer.msg("请勾选源数据");
+          	return;
+          }
+          var cs_id = $("#source_Select option:selected").val();
+          $.ajax({
+          	url:"/wankangyuan/common/selectCondition",
+          	type:"post",
+          	data:{
+          		cs_id:cs_id,
+          		sourceDataIds:ids.join(",")
+          	},
+          	dataType:"json",
+          	success : function(data){
+          		window.parent.postMessage(data.message, "*");
+          	},
+          	error : function(){
+          		layer.msg("联网失败");
+          	}
+          });
+  	});	
 	    
     </script>
 </body>
