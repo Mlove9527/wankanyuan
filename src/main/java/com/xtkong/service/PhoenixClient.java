@@ -40,10 +40,10 @@ public class PhoenixClient {
 		}
 	}
 
-	public static void Main(String args[]) throws Exception
+	public static void main(String args[]) throws Exception
 	{
 		Properties prop=new Properties();
-		//prop.put("hbase.zookeeper.quorum","60.29.25.134:52181,60.29.25.134:52182");
+		prop.put("hbase.zookeeper.quorum","60.29.25.134:52181,60.29.25.134:52182");
 		prop.put("hbase.master","60.29.25.134:56000,60.29.25.134:56001");
 		prop.put("hbase.regionserver","60.29.25.134:56020,60.29.25.134:56021");
 		Connection conn = null;
@@ -53,7 +53,7 @@ public class PhoenixClient {
 				final ExecutorService exec = Executors.newFixedThreadPool(1);
 				Callable<Connection> call = new Callable<Connection>() {
 					public Connection call() throws Exception {
-						return DriverManager.getConnection(url);
+						return DriverManager.getConnection(url,prop);
 					}
 				};
 				Future<Connection> future = exec.submit(call);
@@ -69,7 +69,7 @@ public class PhoenixClient {
 			}
 		}
 
-		PreparedStatement stmt = conn.prepareStatement("select * from \"SOURCE_77\"");
+		PreparedStatement stmt = conn.prepareStatement("select * from \"SOURCE_75\"");
 		ResultSet set = stmt.executeQuery();
 	}
 
@@ -833,7 +833,7 @@ public class PhoenixClient {
 	}
 
 	@SuppressWarnings("unused")
-	public static void main(String[] args) {
+	public static void main2(String[] args) {
 
 		int cs_id = 49;
 		String tableName = "XXQQ";
