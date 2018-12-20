@@ -17,7 +17,9 @@ import com.dzjin.model.ProjectCustomRole;
 import com.dzjin.service.ProjectCustomRoleService;
 import com.dzjin.service.ProjectService;
 import com.liutianjun.pojo.User;
+import com.xtkong.controller.user.SourceDataController.SourceDataSQLInfo;
 import com.xtkong.dao.hbase.HBaseFormatNodeDao;
+import com.xtkong.model.FormatDataSQLInfo;
 import com.xtkong.model.FormatField;
 import com.xtkong.model.FormatField1;
 import com.xtkong.model.FormatType;
@@ -89,26 +91,31 @@ public class FormatNodeController {
 	}
 
 	@SuppressWarnings("unchecked")
-	@RequestMapping("/getFormatNodeById")
-	public String getFormatNodeById(HttpServletRequest request,HttpSession httpSession, String cs_id, String sourceDataId, String ft_id,
-			String formatNodeId, String type, Integer page, Integer strip, Integer searchId, String desc_asc,
-			String chooseDatas, String oldConditionNode8, String searchWord, String searchFirstWord, String fieldIds,
-			String likeSearch,String ids,boolean isAll) {
-		if (page == null) {
-			page = 1;
-		}
-		if (strip == null) {
-			strip = 12;
-		}
-		User user = (User) request.getAttribute("user");
+	public FormatDataSQLInfo getFormatDataSQL(String cs_id,
+			   User user,
+			   String ft_id,
+			   String sourceDataId,
+			   String formatNodeId,
+			   HttpSession httpSession,
+			   String type,
+			   String desc_asc,
+			   String searchFirstWord,
+			   String oldCondition,
+			   String fieldIds,
+			   Integer p_id,
+			   Integer searchId,
+			   String chooseDatas,
+			   String likeSearch,
+			   String searchWord,
+			   boolean isOnlySelectPK,
+			   String excludeIDs){
+		FormatDataSQLInfo formatDataSQLInfo = new FormatDataSQLInfo();
 		List<FormatType> formatTypeFolders = new ArrayList<>();
-//		List<List<FormatField1>> metaDataListTemp = new ArrayList<>();
 		List<FormatField1> metaDataListTemp = new ArrayList<FormatField1>();
 		List<FormatField> data = new ArrayList<>();
 		List<FormatField1> data1 = new ArrayList<>();
 		List<List<String>> dataDataLists = new ArrayList<>();
 		Integer dataCount = 0;
-		String oldCondition = null;
 		if (cs_id != null && ft_id != null && sourceDataId != null && formatNodeId != null) {
 
 			HashMap<String, FormatType> formatTypeMap = new HashMap<>();
@@ -117,6 +124,7 @@ public class FormatNodeController {
 				formatTypeMap.put(String.valueOf(formatType.getFt_id()), formatType);
 			}
 			formatTypeFolders = HBaseFormatNodeDao.getFormatTypeFolders(cs_id, sourceDataId, formatTypeMap);
+			formatDataSQLInfo.setFormatTypeFolders(formatTypeFolders);
 
 			// meta数据
 			List<FormatField> meta = formatFieldService.getFormatFieldsIs_meta(Integer.valueOf(ft_id),
@@ -156,14 +164,10 @@ public class FormatNodeController {
 					f.setFf_id(formatField.getFf_id());
 					f.setFf_name(formatField.getFf_name());
 					
-//					formatData.add(String.valueOf(formatField.getFf_id()));//获取ff_id 0
-//					formatData.add(formatField.getFf_name());//获取名称,差描述信息和错误提醒   1
 					try { 
 						f.setMete(metaDataList.get(0).get(++i));
-//						formatData.add(metaDataList.get(0).get(++i));   			  //2
 					} catch (Exception e) {
 						f.setMete("");
-//						formatData.add("");
 					}
 					f.setDescription(formatField.getDescription());
 					if(formatField.getEmvalue()!=null && formatField.getEmvalue()!="") {
@@ -172,27 +176,13 @@ public class FormatNodeController {
 					}else {
 						f.setEmvalue(null);
 					}
-//					f.setEmvalue(formatField.getError_msg());
 					f.setError_msg(formatField.getError_msg());
-//					formatData.add(formatField.getDescription());						//3 描述信息
-//					formatData.add(formatField.getEmvalue());						//4  枚举值
-//					formatData.add(formatField.getError_msg());						//5 错误提醒
-//					if(formatField.isEnumerated()) {
-//						
-////						formatData.add("是");						//6是否枚举
-//					}else {
-////						formatData.add("否");
-//					}
 					f.setEnumerated(formatField.isEnumerated());
 					f.setNot_null(formatField.isNot_null());
 					f.setType(formatField.getType());
-//					if(formatField.isNot_null()) {        			//7是否必填
-//						formatData.add("是");	
-//					}else {
-//						formatData.add("否");
-//					}
 					metaDataListTemp.add(f);
 				}
+				formatDataSQLInfo.setMetaDataListTemp(metaDataListTemp);
 			}
 			if (!data.isEmpty()) {
 				for (FormatField formatField : data) {
@@ -213,6 +203,8 @@ public class FormatNodeController {
 					f.setError_msg(formatField.getError_msg());
 					data1.add(f);
 				}
+				formatDataSQLInfo.setData1(data1);
+				
 				condition = null;
 
 				List<String> dataQualifiers = new ArrayList<>();
@@ -289,12 +281,257 @@ public class FormatNodeController {
 				} else {
 					condition = " \"" + tableName + "\".\"ID\"!='" + formatNodeId + "' AND " + oldCondition;
 				}
-				String dataphoenixSQL = PhoenixClient.getPhoenixSQL(tableName, dataQualifiers, conditionEqual,
-						conditionLike, condition, null, null);
-				dataCount = PhoenixClient.count(dataphoenixSQL);
-				// 排序
-				condition = null;
 				
+				
+				//添加排除ID列表
+				String excludeCondition="ID NOT IN (";
+				if(excludeIDs!=null && !excludeIDs.trim().equals(""))
+				{
+					String[] splitIds=excludeIDs.trim().replaceAll("check", "").split(",");
+					if(splitIds.length>0)
+					{
+						for(String id : splitIds)
+						{
+							excludeCondition+="'"+id.trim()+"',";
+						}
+						//去掉最后的逗号
+						excludeCondition=excludeCondition.substring(0,excludeCondition.length()-1);
+						excludeCondition+=")";
+
+						oldCondition+=" "+excludeCondition;
+					}
+				}
+				if (oldCondition != null && !oldCondition.trim().isEmpty()) {
+					if (type.equals("1")) {
+						condition = condition + " AND " + oldCondition;
+					} else {
+						condition = oldCondition;
+					}
+				}
+				
+				String dataphoenixSQL = PhoenixClient.getPhoenixSQL(tableName, isOnlySelectPK ? null : dataQualifiers, conditionEqual,
+						conditionLike, condition, null, null);
+				formatDataSQLInfo.setSql(dataphoenixSQL);
+				formatDataSQLInfo.setQualifiers(dataQualifiers);
+				formatDataSQLInfo.setConditionEqual(conditionEqual);
+				formatDataSQLInfo.setConditionLike(conditionLike);
+			}
+		}
+		
+		return formatDataSQLInfo;
+}
+	@SuppressWarnings("unchecked")
+	@RequestMapping("/getFormatNodeById")
+	public String getFormatNodeById(HttpServletRequest request,HttpSession httpSession, String cs_id, String sourceDataId, String ft_id,
+			String formatNodeId, String type, Integer page, Integer strip, Integer searchId, String desc_asc,
+			String chooseDatas, String oldConditionNode8, String searchWord, String searchFirstWord, String fieldIds,
+			String likeSearch,String ids,boolean isAll) {
+		if (page == null) {
+			page = 1;
+		}
+		if (strip == null) {
+			strip = 12;
+		}
+		User user = (User) request.getAttribute("user");
+		List<FormatType> formatTypeFolders = new ArrayList<>();
+//		List<List<FormatField1>> metaDataListTemp = new ArrayList<>();
+		List<FormatField1> metaDataListTemp = new ArrayList<FormatField1>();
+		List<FormatField> data = new ArrayList<>();
+		List<FormatField1> data1 = new ArrayList<>();
+		List<List<String>> dataDataLists = new ArrayList<>();
+		Integer dataCount = 0;
+		String oldCondition = null;
+		if (cs_id != null && ft_id != null && sourceDataId != null && formatNodeId != null) {
+			String tableName = ConstantsHBase.TABLE_PREFIX_FORMAT_ + cs_id + "_" + ft_id;
+
+//			HashMap<String, FormatType> formatTypeMap = new HashMap<>();
+//			List<FormatType> formatTypes = formatTypeService.getFormatTypes(Integer.valueOf(cs_id));
+//			for (FormatType formatType : formatTypes) {
+//				formatTypeMap.put(String.valueOf(formatType.getFt_id()), formatType);
+//			}
+//			formatTypeFolders = HBaseFormatNodeDao.getFormatTypeFolders(cs_id, sourceDataId, formatTypeMap);
+//
+//			// meta数据
+//			List<FormatField> meta = formatFieldService.getFormatFieldsIs_meta(Integer.valueOf(ft_id),
+//					ConstantsHBase.IS_meta_true);
+//			data = formatFieldService.getFormatFieldsIs_meta(Integer.valueOf(ft_id), ConstantsHBase.IS_meta_false);
+//			String tableName = ConstantsHBase.TABLE_PREFIX_FORMAT_ + cs_id + "_" + ft_id;
+//			Map<String, String> conditionEqual = new HashMap<>();
+//			Map<String, String> conditionLike = new HashMap<>();
+//			String condition = null;
+//
+//			conditionEqual.put(ConstantsHBase.QUALIFIER_FORMATNODEID, formatNodeId);
+//			if (!meta.isEmpty()) {
+//				List<String> mateQualifiers = new ArrayList<>();
+//				for (FormatField formatField : meta) {
+//					mateQualifiers.add(String.valueOf(formatField.getFf_id()));
+//				}
+//				String matephoenixSQL = PhoenixClient.getPhoenixSQL(tableName, mateQualifiers, conditionEqual,
+//						conditionLike, condition, 1, 1);
+//				Map<String, Map<String, Object>> metaDatas = PhoenixClient.select(matephoenixSQL);
+//				
+//				String metaMsg = String.valueOf((metaDatas.get("msg")).get("msg"));
+//				List<List<String>> metaDataList = new ArrayList<>();
+//				for (int j = 0; j < 6; j++) {
+//					metaMsg = String.valueOf((metaDatas.get("msg")).get("msg"));
+//					if (metaMsg.equals("success")) {
+//						metaDataList = (List<List<String>>) metaDatas.get("records").get("data");
+//						break;
+//					} else {
+//						PhoenixClient.undefined(metaMsg, tableName, mateQualifiers, conditionEqual, conditionLike);
+//						metaDatas = PhoenixClient.select(matephoenixSQL);
+//					}
+//				}
+//				int i = 0;
+//				
+//				for (FormatField formatField : meta) {
+//					FormatField1 f=new FormatField1();
+//					f.setFf_id(formatField.getFf_id());
+//					f.setFf_name(formatField.getFf_name());
+//					
+////					formatData.add(String.valueOf(formatField.getFf_id()));//获取ff_id 0
+////					formatData.add(formatField.getFf_name());//获取名称,差描述信息和错误提醒   1
+//					try { 
+//						f.setMete(metaDataList.get(0).get(++i));
+////						formatData.add(metaDataList.get(0).get(++i));   			  //2
+//					} catch (Exception e) {
+//						f.setMete("");
+////						formatData.add("");
+//					}
+//					f.setDescription(formatField.getDescription());
+//					if(formatField.getEmvalue()!=null && formatField.getEmvalue()!="") {
+//						
+//						f.setEmvalue(formatField.getEmvalue().split(","));
+//					}else {
+//						f.setEmvalue(null);
+//					}
+////					f.setEmvalue(formatField.getError_msg());
+//					f.setError_msg(formatField.getError_msg());
+////					formatData.add(formatField.getDescription());						//3 描述信息
+////					formatData.add(formatField.getEmvalue());						//4  枚举值
+////					formatData.add(formatField.getError_msg());						//5 错误提醒
+////					if(formatField.isEnumerated()) {
+////						
+//////						formatData.add("是");						//6是否枚举
+////					}else {
+//////						formatData.add("否");
+////					}
+//					f.setEnumerated(formatField.isEnumerated());
+//					f.setNot_null(formatField.isNot_null());
+//					f.setType(formatField.getType());
+////					if(formatField.isNot_null()) {        			//7是否必填
+////						formatData.add("是");	
+////					}else {
+////						formatData.add("否");
+////					}
+//					metaDataListTemp.add(f);
+//				}
+//			}
+//			if (!data.isEmpty()) {
+//				for (FormatField formatField : data) {
+//					FormatField1 f=new FormatField1();
+//					f.setFf_id(formatField.getFf_id());
+//					f.setFf_name(formatField.getFf_name());
+//					f.setFt_id(formatField.getFt_id());
+//					f.setIs_meta(formatField.isIs_meta());
+//					f.setType(formatField.getType());
+//					if(formatField.getEmvalue()!=null && formatField.getEmvalue()!="") {
+//						
+//						f.setEmvalue(formatField.getEmvalue().split(","));
+//					}else {
+//						f.setEmvalue(null);
+//					}
+//					f.setNot_null(formatField.isNot_null());
+//					f.setDescription(formatField.getDescription());
+//					f.setError_msg(formatField.getError_msg());
+//					data1.add(f);
+//				}
+//				condition = null;
+//
+//				List<String> dataQualifiers = new ArrayList<>();
+//				for (FormatField formatField : data) {
+//					dataQualifiers.add(String.valueOf(formatField.getFf_id()));
+//				}
+//				if ((type.equals((String) httpSession.getAttribute("oldSourceType")))
+//						&& (formatNodeId.equals((String) httpSession.getAttribute("formatNodeId")))
+//						&& (sourceDataId.equals((String) httpSession.getAttribute("sourceDataId")))) {
+//					oldCondition = (String) httpSession.getAttribute("oldCondition");
+//				}
+//
+//				// 头筛选
+//				if (searchFirstWord != null && !searchFirstWord.trim().isEmpty()) {
+//					if (oldCondition == null) {
+//						oldCondition = " ";
+//					} else if (oldCondition.trim().isEmpty()) {
+//						oldCondition = " ";
+//					} else {
+//						oldCondition += " AND ";
+//					}
+//					if (fieldIds != null && !fieldIds.trim().isEmpty()) {
+//						Map<String, String> like = new HashMap<>();
+//						for (String fieldId : fieldIds.split(",")) {
+//							if (dataQualifiers.contains(fieldId)) {
+//								like.put(fieldId, searchFirstWord);
+//							}
+//						}
+//						oldCondition += PhoenixClient.getSQLConditionLikes(tableName, like, "OR");
+//					} else if (!data.isEmpty()) {
+//						Map<String, String> like = new HashMap<>();
+//						for (String qualifier : dataQualifiers) {
+//							like.put(qualifier, searchFirstWord);
+//						}
+//						oldCondition += PhoenixClient.getSQLConditionLikes(tableName, like, "OR");
+//					}
+//				}
+//				// 筛选
+//				if (searchId != null) {
+//					if (oldCondition == null) {
+//						oldCondition = " ";
+//					} else if (oldCondition.trim().isEmpty()) {
+//						oldCondition = " ";
+//					} else {
+//						oldCondition += " AND ";
+//					}
+//					boolean isnull = false;
+//					if (chooseDatas != null && !chooseDatas.trim().isEmpty()) {
+//						oldCondition += "( ";
+//						for (String csfChooseData : chooseDatas.split(",")) {
+//							if (csfChooseData.equals("空值")) {
+//								oldCondition += "\"" + ConstantsHBase.FAMILY_INFO + "\".\"" + String.valueOf(searchId)
+//										+ "\" IS NULL OR ";
+//								isnull = true;
+//							} else {
+//								oldCondition += "\"" + ConstantsHBase.FAMILY_INFO + "\".\"" + String.valueOf(searchId)
+//										+ "\"='" + csfChooseData + "' OR ";
+//							}
+//						}
+//						if (oldCondition.trim().endsWith("OR")) {
+//							oldCondition = oldCondition.substring(0, oldCondition.lastIndexOf("OR")) + " ) AND ";
+//						}
+//					}
+//					if (likeSearch != null && likeSearch.equals("1") && searchWord != null && !isnull) {
+//						oldCondition += "(\"" + ConstantsHBase.FAMILY_INFO + "\".\"" + String.valueOf(searchId)
+//								+ "\" LIKE '%" + searchWord + "%') ";
+//					}
+//					if (oldCondition.trim().endsWith("AND")) {
+//						oldCondition = oldCondition.substring(0, oldCondition.lastIndexOf("AND"));
+//					}
+//				} 
+//				if (oldCondition == null || oldCondition.trim().isEmpty()) {
+//					condition = " \"" + tableName + "\".\"ID\"!='" + formatNodeId + "' ";
+//				} else {
+//					condition = " \"" + tableName + "\".\"ID\"!='" + formatNodeId + "' AND " + oldCondition;
+//				}
+//				String dataphoenixSQL = PhoenixClient.getPhoenixSQL(tableName, dataQualifiers, conditionEqual,
+//						conditionLike, condition, null, null);
+//				dataCount = PhoenixClient.count(dataphoenixSQL);
+				// 排序
+			String condition = null;
+			FormatDataSQLInfo formatDataSQLInfo = getFormatDataSQL(cs_id, user,ft_id,sourceDataId,formatNodeId,httpSession,
+ type,desc_asc,searchFirstWord, oldCondition,fieldIds,null,searchId,chooseDatas,likeSearch,searchWord,false,ids);
+			String dataphoenixSQL = formatDataSQLInfo.getSql();
+			List<String> dataQualifiers = formatDataSQLInfo.getQualifiers();
+			dataCount = PhoenixClient.count(dataphoenixSQL);
 				try {
 					switch (desc_asc) {
 					case "DESC":
@@ -340,11 +577,10 @@ public class FormatNodeController {
 						dataDataLists = (List<List<String>>) dataDatas.get("records").get("data");
 						break;
 					} else {
-						PhoenixClient.undefined(dataMsg, tableName, dataQualifiers, conditionEqual, conditionLike);
+						PhoenixClient.undefined(dataMsg, tableName, formatDataSQLInfo.getQualifiers(), formatDataSQLInfo.getConditionEqual(), formatDataSQLInfo.getConditionLike());
 						dataDatas = PhoenixClient.select(dataphoenixSQL);
 					}
 				}
-			}
 		}
 		httpSession.setAttribute("formatTypeFolders", formatTypeFolders);
 		httpSession.setAttribute("formatNodeId", formatNodeId);

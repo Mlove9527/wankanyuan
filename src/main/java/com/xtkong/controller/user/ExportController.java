@@ -16,6 +16,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.xtkong.model.SourceField;
 import com.xtkong.service.*;
@@ -36,7 +37,9 @@ import com.xtkong.controller.user.SourceDataController.SourceDataSQLInfo;
 import com.xtkong.dao.hbase.HBaseFormatDataDao;
 import com.xtkong.dao.hbase.HBaseFormatNodeDao;
 import com.xtkong.dao.hbase.HBaseSourceDataDao;
+import com.xtkong.model.FormatDataSQLInfo;
 import com.xtkong.model.FormatField;
+import com.xtkong.model.FormatField1;
 import com.xtkong.model.FormatType;
 import com.xtkong.model.Source;
 import com.xtkong.util.ConstantsHBase;
@@ -57,6 +60,8 @@ public class ExportController {
 	SourceDataController sourceDataController;
 	@Autowired
 	UserDataService userDataService;
+	@Autowired
+	FormatNodeController formatNodeController;
 
 	@Value("${formatData.file.location}")
 	private String dataFileLocation;
@@ -560,14 +565,61 @@ public class ExportController {
 	 *            1公共，0非公共
 	 */
 	@RequestMapping("/formatData")
-	public void formatData(HttpServletResponse response, String cs_id, String ft_id, String formatDataIds) {
+	public void formatData(HttpServletRequest request,HttpServletResponse response,HttpSession httpSession, String cs_id, String sourceDataId, String ft_id,
+			String formatNodeId, String type, Integer page, Integer strip, Integer searchId, String desc_asc,
+			String chooseDatas, String oldConditionNode8, String searchWord, String searchFirstWord, String fieldIds,
+			String likeSearch,String ids,boolean isAll) {
 		response.setContentType("application/vnd.ms-excel");
 
 		HSSFWorkbook workbook = new HSSFWorkbook();
 		HSSFCellStyle style = workbook.createCellStyle();
 		style.setAlignment(HorizontalAlignment.CENTER);
 		HSSFSheet sheet = workbook.createSheet("格式数据");
-		sheet = sheetFormatDataByIds(sheet, style, cs_id, ft_id, formatDataIds);
+		User user = (User) request.getAttribute("user");
+		if(isAll) {
+			//全选
+			List<List<String>> dataDataLists = new ArrayList<>();
+			String tableName = ConstantsHBase.TABLE_PREFIX_FORMAT_ + cs_id + "_" + ft_id;
+			FormatDataSQLInfo formatDataSQLInfo = formatNodeController.getFormatDataSQL(cs_id, user, ft_id, sourceDataId, formatNodeId, httpSession, type, desc_asc, searchFirstWord, null, fieldIds, null, searchId, chooseDatas, likeSearch, searchWord, false, ids);
+			Map<String, Map<String, Object>> dataDatas = PhoenixClient.select(formatDataSQLInfo.getSql());
+			String dataMsg = String.valueOf((dataDatas.get("msg")).get("msg"));
+			for (int j = 0; j < 6; j++) {
+				dataMsg = String.valueOf((dataDatas.get("msg")).get("msg"));
+				if (dataMsg.equals("success")) {
+					dataDataLists = (List<List<String>>) dataDatas.get("records").get("data");
+					break;
+				} else {
+					PhoenixClient.undefined(dataMsg, tableName, formatDataSQLInfo.getQualifiers(), formatDataSQLInfo.getConditionEqual(), formatDataSQLInfo.getConditionLike());
+					dataDatas = PhoenixClient.select(formatDataSQLInfo.getSql());
+				}
+			}
+			
+			HSSFRow row = sheet.createRow((short) 0);
+			// 设置表头
+
+			List<FormatField1> formatFields = formatDataSQLInfo.getData1();
+			if (!formatFields.isEmpty()&&formatFields.size()>0) {
+				HSSFCell cell = row.createCell(0);
+				for (int i = 0; i < formatFields.size(); i++) {
+					cell = row.createCell((i));
+					cell.setCellValue(formatFields.get(i).getFf_name());
+					cell.setCellStyle(style);
+				}
+				// 写入各条记录，每条记录对应Excel中的一行
+				if(dataDataLists.size()>0) {
+					for (int iRow = 0; iRow < dataDataLists.size(); iRow++) {
+						row = sheet.createRow((short) iRow + 1);
+						for (int j = 0; j < formatFields.size(); j++) {
+							cell = row.createCell(j);
+							cell.setCellValue(dataDataLists.get(iRow).get(j));
+							cell.setCellStyle(style);
+						}
+					}
+				}
+			}
+		}else {
+			sheet = sheetFormatDataByIds(sheet, style, cs_id, ft_id, ids);
+		}
 		try {
 			OutputStream output = response.getOutputStream();
 			workbook.write(output);

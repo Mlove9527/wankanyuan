@@ -1027,7 +1027,7 @@
     var IDparent1=fanhuiID.parentNode;
     var IDparent2=IDparent1.parentNode;
     var owenben=IDparent2.querySelectorAll('.PJliB2Lt')[0];
-    owenben.style.color="#16579b";
+	    owenben.style.color="#16579b";
 	//更换采集源，刷新页面
 	//选择待操作字段
 	$('.prodaclmRzTt2').click(function(){
@@ -1604,7 +1604,18 @@
     		var ft_id = $("#ft_id").val();
     		var formatNodeId = $("#formatNodeId").val();
     		var sourceDataId = $("#sourceDataId").val();
-    		var afuxuanK=document.querySelectorAll('.fx4');
+    		
+   		    var idQuanXuan= $("#isAll2").val();
+            var ids3=$(" #ids2").val();
+           
+            if(idQuanXuan =="false"){
+            	 if(ids3 == ""){
+            		alert("请勾选待导出数据！");
+                 	return;
+                 }
+            }
+    		
+            /* var afuxuanK=document.querySelectorAll('.fx4');
             var afuxuan=[];
             for(var i=0;i<afuxuanK.length;i++){
                 afuxuan.push(afuxuanK[i].querySelectorAll('.input_check')[0]);
@@ -1618,10 +1629,11 @@
             if(formatDataIds == ""){
           	   alert("请选择待导出数据！");
           	   return;
-             }
+             } */
               //刷新页面
             window.location.href="/wankangyuan/export/formatData?cs_id="
-            				+cs_id+"&ft_id="+ft_id+"&formatDataIds="+formatDataIds;
+            				+cs_id+"&ft_id="+ft_id+"&sourceDataId="+sourceDataId+"&formatNodeId="+formatNodeId+"&type=2"
+            				+"&searchId="+searchId+"&searchWord="+searchWord+"&oldCondition="+oldCondition+"&ids="+ids3+"&isAll="+idQuanXuan;
            	
     	});
     	//导出结点
