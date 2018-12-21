@@ -379,7 +379,7 @@
 		}
 	})
 	
-	var cs_id=$('#source_Select').val();
+	var cs_id=$('#source_Select option:selected').val();
 	var searchId="${searchId}";
 	var searchWord="";
 	var desc_asc="${desc_asc}";
@@ -387,7 +387,7 @@
 	var page="${page}";
 	var searchFirstWord=$(".searchCt").val();
 	$("#source_Select").change(function(){
-		cs_id = $("#source_Select").val();
+		cs_id = $("#source_Select option:selected").val();
 		/* alert(cs_id); */
 			window.location.href="/wankangyuan/sourceData/getSourceDatas?type=1&cs_id="+cs_id+"&ids="+$("#ids2").val()+"&isAll="+$("#isAll2").val();
 	
@@ -437,7 +437,7 @@
 			async:true,
 			data:{
 				type:1,
-				cs_id:$('#source_Select').val(),
+				cs_id:$('#source_Select option:selected').val(),
 				searchId:searchId,
 				searchWord:searchWord,
 			},
@@ -534,7 +534,7 @@
               }
          }
         
-        var cs_id=$('#source_Select').val();//采集源id
+        var cs_id=$('#source_Select option:selected').val();//采集源id
      	var searchId="${searchId}";//操作字段id
      	var searchWord=$(".BTSXcliGLK").val();//过滤条件
      	var desc_asc="${desc_asc}";//排序
@@ -600,7 +600,7 @@
 	              }
 	         }
 	        
-	        var cs_id=$('#source_Select').val();//采集源id
+	        var cs_id=$('#source_Select option:selected').val();//采集源id
 	     	var searchId="${searchId}";//操作字段id
 	     	var searchWord=$(".BTSXcliGLK").val();//过滤条件
 	     	var desc_asc="${desc_asc}";//排序
@@ -665,7 +665,7 @@
 	  	
     	//进入到详情页
     	function datainHref(sourceDataId){
-    		var cs_id = $("#source_Select").val();
+    		var cs_id = $("#source_Select option:selected").val();
     		reset();
     		window.location.href="/wankangyuan/sourceData/getSourceDataById?cs_id="+cs_id+"&sourceDataId="+sourceDataId+"&type=1";
     	}
@@ -678,7 +678,7 @@
             callback: function(page) { // 回调函数
                 
             	var user_id=${user.id};
-        		var cs_id = $("#source_Select").val();
+        		var cs_id = $("#source_Select option:selected").val();
         		//之前选中的id
         		var ids_str = distinct_ids($("#ids").val());
         		//之前选中的id+当页选中的id
