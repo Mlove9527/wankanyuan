@@ -36,6 +36,7 @@ import com.xtkong.dao.hbase.HBaseFormatDataDao;
 import com.xtkong.dao.hbase.HBaseSourceDataDao;
 import com.xtkong.model.FormatField;
 import com.xtkong.model.SourceField;
+import com.xtkong.util.CommonUtils;
 import com.xtkong.util.ConstantsHBase;
 
 @Controller
@@ -475,12 +476,28 @@ public class ImportController {
 						cellValue=validateData(cellValue,index_csf.getValue(),user.getUsername());
 
 						//如果字段是文件或图片,则先导入文件,再把文件名(MD5+文件名)写入hbase
-						if(cellValue!=null && !cellValue.trim().isEmpty() && (index_csf.getValue().getType().equals("图片")||index_csf.getValue().getType().equals("文件"))){
+						if(cellValue!=null && !cellValue.trim().isEmpty() && (index_csf.getValue().getType().equals(ConstantsHBase.DATA_TYPE_TUPIAN)||index_csf.getValue().getType().equals(ConstantsHBase.DATA_TYPE_WENJIAN))){
 							//把文件导入到正式目录
 							Entry<String,String> result=importFile(user.getUsername(),user.getId(),cellValue.trim());
 							sourceFieldDatas.put(String.valueOf(index_csf.getValue().getCsf_id()), result.getKey());
-						}
-						else
+						}else if(cellValue!=null && !cellValue.trim().isEmpty() && ((index_csf.getValue().getType()).equals(ConstantsHBase.DATA_TYPE_RIQI))) {
+							//日期格式校验yyyy-MM-dd HH:mm:ss或yyyy-MM-dd
+							if(CommonUtils.isValidDate(cellValue)) {
+								sourceFieldDatas.put(String.valueOf(index_csf.getValue().getCsf_id()), cellValue!=null && !cellValue.trim().isEmpty()?cellValue:"");
+							}else {
+								map.put("result", false);
+								map.put("message","第"+i+"行数据出错！"+cellValue+"不是日期格式yyyy-MM-dd HH:mm:ss或yyyy-MM-dd");
+								return map;
+							}
+						}else if(cellValue!=null && !cellValue.trim().isEmpty() && ((index_csf.getValue().getType()).equals(ConstantsHBase.DATA_TYPE_SHUZHI))) {
+							if(CommonUtils.isValidNum(cellValue)) {
+								sourceFieldDatas.put(String.valueOf(index_csf.getValue().getCsf_id()), cellValue!=null && !cellValue.trim().isEmpty()?cellValue:"");
+							}else {
+								map.put("result", false);
+								map.put("message","第"+i+"行数据出错！"+cellValue+"不是数值格式");
+								return map;
+							}
+						}else
 						{
 							sourceFieldDatas.put(String.valueOf(index_csf.getValue().getCsf_id()), cellValue!=null && !cellValue.trim().isEmpty()?cellValue:"");
 						}
