@@ -145,7 +145,15 @@ public class SourceDataController {
 	{
 		SourceDataSQLInfo result=new SourceDataSQLInfo();
 		Source source=sourceService.getSourceByCs_id(cs_id);
-		source.setSourceFields(sourceFieldService.getSourceFields(cs_id));
+		source.setSourceFields(new ArrayList<>());
+
+//		SourceField idSF = new SourceField();
+//		idSF.setCs_id(cs_id);
+//		idSF.setCsf_id(0);
+//		idSF.setCsf_name("ID");
+//		source.getSourceFields().add(idSF);
+
+		source.getSourceFields().addAll(sourceFieldService.getSourceFields(cs_id));
 		String tableName = ConstantsHBase.TABLE_PREFIX_SOURCE_ + cs_id;// 表名
 		List<String> qualifiers = new ArrayList<>();    //
 		Map<String, String> conditionEqual = new HashMap<>();
