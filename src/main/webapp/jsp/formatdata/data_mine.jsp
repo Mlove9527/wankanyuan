@@ -4,6 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%
 	String path = request.getContextPath();
 	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
@@ -209,7 +210,14 @@
                                 <td onclick="datainHref('${sourceData[0]}')" style="cursor:pointer;">
                                 <div class="PJliCli2">
                                     <a href="#" >
-                                        <span>${sourceDataField}</span>
+										<c:choose>
+											<c:when test="${source.sourceFields[status.index].type=='图片' || source.sourceFields[status.index].type=='文件'}">
+												<span>${status.index}=${source.sourceFields[status.index].type}=${fn:substringAfter(sourceDataField, "_")}</span>
+											</c:when>
+											<c:otherwise>
+												<span>${status.index}+${source.sourceFields[status.index].type}+${sourceDataField}</span>
+											</c:otherwise>
+										</c:choose>
                                     </a>
                                 </div>
                                 </td>
