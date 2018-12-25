@@ -211,11 +211,11 @@
                                 <div class="PJliCli2">
                                     <a href="#" >
 										<c:choose>
-											<c:when test="${source.sourceFields[status.index].type=='图片' || source.sourceFields[status.index].type=='文件'}">
-												<span>${status.index}=${source.sourceFields[status.index].type}=${fn:substringAfter(sourceDataField, "_")}</span>
+											<c:when test="${source.sourceFields[status.index-1].type=='图片' || source.sourceFields[status.index-1].type=='文件'}">
+												<span>${status.index-1}=${source.sourceFields[status.index-1].type}=${fn:substringAfter(sourceDataField, "_")}</span>
 											</c:when>
 											<c:otherwise>
-												<span>${status.index}+${source.sourceFields[status.index].type}+${sourceDataField}</span>
+												<span>${status.index-1}+${source.sourceFields[status.index-1].type}+${sourceDataField}</span>
 											</c:otherwise>
 										</c:choose>
                                     </a>
