@@ -58,6 +58,22 @@ public class HBaseDB {
 		return hBaseDBTool;
 	}
 
+	/***
+	 * HBase表是否存在***/
+	public boolean existTable(String tableName) {
+		boolean flag = false;
+		try {
+			Admin admin = connection.getAdmin();
+			TableName tableNameObject = TableName.valueOf(tableName);
+			if (admin.tableExists(tableNameObject)) {
+				flag = true;
+			} 
+			admin.close();
+		} catch (Exception e) {
+		}
+		return flag;
+	}
+	
 	/**
 	 * 创建HBase表
 	 * 

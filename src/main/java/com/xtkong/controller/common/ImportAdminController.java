@@ -271,6 +271,7 @@ public class ImportAdminController {
 		Map<String, String> formatNodeIds = new HashMap<>();
 	    int j = 1;//数据行数
 	    while (scanner.hasNextLine()) {
+	    	try {
 			String[] datas = scanner.nextLine().split("\t");
 			String sourceDataId = null;
 			Map<String, String> sourceFieldDatas = new HashMap<>();
@@ -348,6 +349,13 @@ public class ImportAdminController {
 							formatNodeId, dataDatas);
 			}
 			j++;
+	    	}catch(Exception e) {
+	    		e.printStackTrace();
+				map.put("code", "1");
+				map.put("message", "failed");
+				map.put("info",e);
+				return map;
+	    	}
 		}
 			scanner.close();
 			map.put("code", "0");
