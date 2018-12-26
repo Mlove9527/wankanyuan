@@ -96,7 +96,7 @@ public class CommonSelect {
 			{
 				throw new Exception("Source不存在: "+select.getFrom().getSchema());
 			}
-			FormatType formatType=formatTypeService.getFormatType(source.getCs_id(),select.getFrom().getTableName());
+			FormatType formatType=formatTypeService.getFormatType1(source.getCs_id(),select.getFrom().getTableName());
 			if(formatType==null)
 			{
 				throw new Exception("Source "+source.getCs_name()+" 下 FormatType不存在: "+select.getFrom().getTableName());
