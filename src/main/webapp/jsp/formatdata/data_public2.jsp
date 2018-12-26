@@ -4,6 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%
 	String path = request.getContextPath();
 	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
@@ -214,7 +215,17 @@
                                 <div onclick="datainHref('${sourceData[0]}')" style="cursor:pointer;">
 	                        <div class="PJK2litop">
 	                            <a href="#">
-	                                <div class="PJK2litopT PJliCli_1">${source.sourceFields[status.index-1].csf_name} : ${sourceDataField}</div>
+	                                <div class="PJK2litopT PJliCli_1">
+	                                ${source.sourceFields[status.index-1].csf_name} :
+										<c:choose>
+											<c:when test="${source.sourceFields[status.index-1].type=='图片' || source.sourceFields[status.index-1].type=='文件'}">
+												${fn:substringAfter(sourceDataField, "_")}
+											</c:when>
+											<c:otherwise>
+												${sourceDataField}
+											</c:otherwise>
+										</c:choose>
+									</div>
 	                            </a>
 	                        </div>
                         </div>

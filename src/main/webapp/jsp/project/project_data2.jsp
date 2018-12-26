@@ -238,7 +238,16 @@
 											style="cursor: pointer;">
 											<div class="PJK2litop">
 												<a href="#">
-													<div class="PJK2litopT PJliCli_1">${sourceDataField}</div>
+													<div class="PJK2litopT PJliCli_1">
+														<c:choose>
+															<c:when test="${source.sourceFields[status.index-1].type=='图片' || source.sourceFields[status.index-1].type=='文件'}">
+																${fn:substringAfter(sourceDataField, "_")}
+															</c:when>
+															<c:otherwise>
+																${sourceDataField}
+															</c:otherwise>
+														</c:choose>
+													</div>
 												</a>
 											</div>
 										</div>
