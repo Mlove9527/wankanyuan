@@ -32,6 +32,7 @@ import com.xtkong.service.SourceFieldService;
 import com.xtkong.service.SourceService;
 import com.xtkong.util.CommonUtils;
 import com.xtkong.util.ConstantsHBase;
+import com.xtkong.util.HBaseDB;
 
 @Controller
 @RequestMapping("/common")
@@ -168,6 +169,10 @@ public class ImportAdminController {
 				return map;
 			}
 			int j=1;//导入数据行数
+			//source表是否存在
+			if(!HBaseDB.getInstance().existTable(ConstantsHBase.TABLE_PREFIX_SOURCE_ + cs_id)) {
+				sourceService.insertSourceByCsId(cs_id);
+			};
 			while (scanner.hasNextLine()) {
 				Map<String, String> sourceFieldDatas = new HashMap<>();
 				String[] datas = scanner.nextLine().split("\t");
@@ -270,6 +275,13 @@ public class ImportAdminController {
 		Map<Map<String, String>, String> sourceDataIds = new HashMap<>();
 		Map<String, String> formatNodeIds = new HashMap<>();
 	    int j = 1;//数据行数
+	    //node、format表是否存在
+		if(!HBaseDB.getInstance().existTable(ConstantsHBase.TABLE_PREFIX_NODE_ + cs_id)) {
+			sourceService.insertNodeByCsId(cs_id);
+		};
+		if(!HBaseDB.getInstance().existTable(ConstantsHBase.TABLE_PREFIX_FORMAT_ + cs_id + "_" + ft_id)) {
+			sourceService.insertFormatByCsId(cs_id,ft_id);
+		};
 	    while (scanner.hasNextLine()) {
 	    	try {
 			String[] datas = scanner.nextLine().split("\t");

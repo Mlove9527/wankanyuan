@@ -35,6 +35,23 @@ public class HBaseFormatNodeDao {
 	 */
 	public static void createFormatNodeTable(String cs_id) {
 		// 格式类型节点表
+//		List<String> qualifiers = new ArrayList<String>();
+//		qualifiers.add(ConstantsHBase.QUALIFIER_FORMATTYPE);
+//		qualifiers.add(ConstantsHBase.QUALIFIER_NODENAME);
+//		qualifiers.add(ConstantsHBase.QUALIFIER_SOURCEDATAID);
+		String tableName = ConstantsHBase.TABLE_PREFIX_NODE_ + cs_id;
+		createFormatNodeTable(tableName, new String[]{ConstantsHBase.FAMILY_INFO}, ConstantsHBase.VERSION_NODE);
+//		PhoenixClient.createView(tableName, qualifiers);
+	}
+
+	private static void createFormatNodeTable(String tableName, String[] columnFamilies, int version) {
+		HBaseDB db = HBaseDB.getInstance();
+		db.createTable(tableName, columnFamilies, version);
+	}
+
+	/**新增表和视图***/
+	public static void createFormatNodeTableAndView(String cs_id) {
+		// 格式类型节点表
 		List<String> qualifiers = new ArrayList<String>();
 		qualifiers.add(ConstantsHBase.QUALIFIER_FORMATTYPE);
 		qualifiers.add(ConstantsHBase.QUALIFIER_NODENAME);
@@ -43,12 +60,6 @@ public class HBaseFormatNodeDao {
 		createFormatNodeTable(tableName, new String[]{ConstantsHBase.FAMILY_INFO}, ConstantsHBase.VERSION_NODE);
 		PhoenixClient.createView(tableName, qualifiers);
 	}
-
-	private static void createFormatNodeTable(String tableName, String[] columnFamilies, int version) {
-		HBaseDB db = HBaseDB.getInstance();
-		db.createTable(tableName, columnFamilies, version);
-	}
-
 	/**
 	 * 新增数据节点，创建共用数据
 	 * 
@@ -65,9 +76,6 @@ public class HBaseFormatNodeDao {
 				ConstantsHBase.QUALIFIER_GID_GID_GID);//gid，源数据id_格式类型id，gid，gid
 		String formatNodeId = sourceDataId + "_" + ft_id + "_" + count; //结点id_格式类型id_count
 		String tableName = ConstantsHBase.TABLE_PREFIX_NODE_ + cs_id;//结点_采集源id
-		if(!HBaseDB.getInstance().existTable(tableName)) {
-			createFormatNodeTable(cs_id);
-		}
 		Put put = new Put(Bytes.toBytes(formatNodeId));
 		put.addColumn(Bytes.toBytes(ConstantsHBase.FAMILY_INFO), Bytes.toBytes(ConstantsHBase.QUALIFIER_FORMATTYPE),
 				Bytes.toBytes(String.valueOf(ft_id)));//"INFO",结点格式类型，格式类型id
@@ -89,9 +97,6 @@ public class HBaseFormatNodeDao {
 		try {
 			HBaseDB db = HBaseDB.getInstance();
 			String tableName = ConstantsHBase.TABLE_PREFIX_NODE_ + cs_id;
-			if(!HBaseDB.getInstance().existTable(tableName)) {
-				createFormatNodeTable(cs_id);
-			}
 			Table table = db.getTable(tableName);//根据表名获取对象
 			Scan scan = new Scan();
 			scan.addFamily(Bytes.toBytes(ConstantsHBase.FAMILY_INFO));
@@ -119,7 +124,7 @@ public class HBaseFormatNodeDao {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			if (e.getMessage().contains("TableNotFoundException")) {
-				createFormatNodeTable(cs_id);
+				createFormatNodeTableAndView(cs_id);
 			}
 			else
 			{

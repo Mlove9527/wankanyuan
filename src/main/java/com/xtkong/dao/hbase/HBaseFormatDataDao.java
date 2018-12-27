@@ -49,18 +49,18 @@ public class HBaseFormatDataDao {
 	 */
 	public static void createFormatDataTable(String cs_id, String ft_id) {
 		// 格式类型节点表
-		List<String> qualifiers = new ArrayList<String>();
-		qualifiers.add(ConstantsHBase.QUALIFIER_SOURCEDATAID);
-		qualifiers.add(ConstantsHBase.QUALIFIER_FORMATNODEID);
-		List<FormatField> fieldList = formatFieldService.getFormatFieldsByFormatTypeID(Integer.parseInt(ft_id));
-		if(fieldList!=null&&fieldList.size()>0) {
-			for(FormatField field:fieldList) {
-				qualifiers.add(String.valueOf(field.getFf_id()));
-			}
-		}
+//		List<String> qualifiers = new ArrayList<String>();
+//		qualifiers.add(ConstantsHBase.QUALIFIER_SOURCEDATAID);
+//		qualifiers.add(ConstantsHBase.QUALIFIER_FORMATNODEID);
+//		List<FormatField> fieldList = formatFieldService.getFormatFieldsByFormatTypeID(Integer.parseInt(ft_id));
+//		if(fieldList!=null&&fieldList.size()>0) {
+//			for(FormatField field:fieldList) {
+//				qualifiers.add(String.valueOf(field.getFf_id()));
+//			}
+//		}
 		String tableName = ConstantsHBase.TABLE_PREFIX_FORMAT_ + cs_id + "_" + ft_id;
 		createFormatDataTable(tableName, new String[] { ConstantsHBase.FAMILY_INFO }, ConstantsHBase.VERSION_FORMAT);
-		PhoenixClient.createView(tableName, qualifiers);
+//		PhoenixClient.createView(tableName, qualifiers);
 	}
 
 	private static void createFormatDataTable(String tableName, String[] columnFamilies, int version) {
@@ -87,9 +87,6 @@ public class HBaseFormatDataDao {
 		Long count = db.getNewId(ConstantsHBase.TABLE_GID, formatNodeId, ConstantsHBase.FAMILY_GID_GID,
 				ConstantsHBase.QUALIFIER_GID_GID_GID);
 		String tableName = ConstantsHBase.TABLE_PREFIX_FORMAT_ + cs_id + "_" + ft_id;
-		if(!HBaseDB.getInstance().existTable(tableName)) {
-			createFormatDataTable(cs_id,ft_id);
-		}
 		String rowKey = formatNodeId + "_" + count;
 		Put put = new Put(Bytes.toBytes(rowKey));
 		for (Entry<String, String> formatFieldData : formatFieldDatas.entrySet()) {
@@ -111,9 +108,6 @@ public class HBaseFormatDataDao {
 			Map<String, String> formatFieldDatas) {
 		HBaseDB db = HBaseDB.getInstance();
 		String tableName = ConstantsHBase.TABLE_PREFIX_FORMAT_ + cs_id + "_" + ft_id;
-		if(!HBaseDB.getInstance().existTable(tableName)) {
-			createFormatDataTable(cs_id,ft_id);
-		}
 		String rowKey = formatNodeId;
 		Put put = new Put(Bytes.toBytes(rowKey));
 		if (formatFieldDatas != null) {
