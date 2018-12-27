@@ -456,6 +456,13 @@ public class ImportAdminController {
 				}
 				Map<String, String> formatNodeIds = new HashMap<>();
 				int j=1;//数据行数
+				//node、format表是否存在
+				if(!HBaseDB.getInstance().existTable(ConstantsHBase.TABLE_PREFIX_NODE_ + cs_id)) {
+					sourceService.insertNodeByCsId(cs_id);
+				};
+				if(!HBaseDB.getInstance().existTable(ConstantsHBase.TABLE_PREFIX_FORMAT_ + cs_id + "_" + ft_id)) {
+					sourceService.insertFormatByCsId(cs_id,ft_id);
+				};
 				while (scanner.hasNextLine()) {
 					String[] datas = scanner.nextLine().split("\t");
 					Map<String, String> metaDatas = new HashMap<>();
