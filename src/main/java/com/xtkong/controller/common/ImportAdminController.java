@@ -93,8 +93,13 @@ public class ImportAdminController {
 					map = sourceData(importBean.getSourceid(),cs_id, String.valueOf(userId),userName,
 	        		importBean.getBasic().getFileurl(), importBean.getBasic().getSrcCol(),
 					importBean.getBasic().getDistCol(), importBean.getBasic().getDefUnique());
+					if(map.get("code").equals("1")) {
+						//Source问题返回
+						return map;
+					}
 
 				}
+				
 				if (importBean.getAnalysisList() != null) {
 					for (Analysis analysis : importBean.getAnalysisList()) {
 						if (analysis.getToBCol() != null) {
