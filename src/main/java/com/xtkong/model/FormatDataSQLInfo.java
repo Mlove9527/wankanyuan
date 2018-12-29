@@ -13,6 +13,14 @@ public class FormatDataSQLInfo {
 	private List<FormatField> data;
 	private List<FormatField1> data1;
 	private List<List<String>> dataDataLists;
+	private String condition;
+	
+	public String getCondition() {
+		return condition;
+	}
+	public void setCondition(String condition) {
+		this.condition = condition;
+	}
 	public String getSql() {
 		return sql;
 	}

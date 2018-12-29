@@ -315,6 +315,7 @@ public class FormatNodeController {
 				formatDataSQLInfo.setQualifiers(dataQualifiers);
 				formatDataSQLInfo.setConditionEqual(conditionEqual);
 				formatDataSQLInfo.setConditionLike(conditionLike);
+				formatDataSQLInfo.setCondition(condition);
 			}
 		}
 		
@@ -529,6 +530,11 @@ public class FormatNodeController {
 			String condition = null;
 			FormatDataSQLInfo formatDataSQLInfo = getFormatDataSQL(cs_id, user,ft_id,sourceDataId,formatNodeId,httpSession,
  type,desc_asc,searchFirstWord, oldCondition,fieldIds,null,searchId,chooseDatas,likeSearch,searchWord,false,ids);
+			formatTypeFolders = formatDataSQLInfo.getFormatTypeFolders();
+			metaDataListTemp = formatDataSQLInfo.getMetaDataListTemp();
+			data1 = formatDataSQLInfo.getData1();
+			
+			if(null!=formatDataSQLInfo.getSql()) {
 			String dataphoenixSQL = formatDataSQLInfo.getSql();
 			List<String> dataQualifiers = formatDataSQLInfo.getQualifiers();
 			dataCount = PhoenixClient.count(dataphoenixSQL);
@@ -581,6 +587,7 @@ public class FormatNodeController {
 						dataDatas = PhoenixClient.select(dataphoenixSQL);
 					}
 				}
+			}
 		}
 		httpSession.setAttribute("formatTypeFolders", formatTypeFolders);
 		httpSession.setAttribute("formatNodeId", formatNodeId);
