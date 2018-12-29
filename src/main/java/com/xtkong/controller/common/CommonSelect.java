@@ -1,5 +1,8 @@
 package com.xtkong.controller.common;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -320,46 +323,129 @@ public class CommonSelect {
 				.toString();
 	}
 
+	public static String sendGet(String url, Map<String, String> parameters) {
+		String result="";
+		BufferedReader in = null;// 读取响应输入流
+		StringBuffer sb = new StringBuffer();// 存储参数
+		String params = "";// 编码之后的参数
+		try {
+			// 编码请求参数
+			if(parameters.size()==1){
+				for(String name:parameters.keySet()){
+					sb.append(name).append("=").append(
+							java.net.URLEncoder.encode(parameters.get(name),
+									"UTF-8"));
+				}
+				params=sb.toString();
+			}else{
+				for (String name : parameters.keySet()) {
+					sb.append(name).append("=").append(
+							java.net.URLEncoder.encode(parameters.get(name),
+									"UTF-8")).append("&");
+				}
+				String temp_params = sb.toString();
+				params = temp_params.substring(0, temp_params.length() - 1);
+			}
+			String full_url = url + "?" + params;
+			System.out.println(full_url);
+			// 创建URL对象
+			java.net.URL connURL = new java.net.URL(full_url);
+			// 打开URL连接
+			java.net.HttpURLConnection httpConn = (java.net.HttpURLConnection) connURL
+					.openConnection();
+			// 设置通用属性
+			httpConn.setRequestProperty("Accept", "*/*");
+			httpConn.setRequestProperty("Connection", "Keep-Alive");
+			httpConn.setRequestProperty("User-Agent",
+					"Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1)");
+			// 建立实际的连接
+			httpConn.connect();
+			// 响应头部获取
+			Map<String, List<String>> headers = httpConn.getHeaderFields();
+			// 遍历所有的响应头字段
+			for (String key : headers.keySet()) {
+				System.out.println(key + "\t：\t" + headers.get(key));
+			}
+			// 定义BufferedReader输入流来读取URL的响应,并设置编码方式
+			in = new BufferedReader(new InputStreamReader(httpConn
+					.getInputStream(), "UTF-8"));
+			String line;
+			// 读取返回的内容
+			while ((line = in.readLine()) != null) {
+				result += line;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				if (in != null) {
+					in.close();
+				}
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
+		return result ;
+	}
+
+	public static void test()
+	{
+		Map<String, String> parameters = new HashMap<String, String>();
+		String jsonStr = "{\n" +
+                "\t\"userid\":[],\n" +
+                "\t\"projectid\":[],\n" +
+                "\t\"select\":{\"condition\":\"select ABC.ziduanming1, ABC.analysis_1.ziduanming2 from ABC, ABC.analysis_1 where ABC.id =1\"},\n" +
+                "\t\"selectContdation\": \"\",\n" +
+                "\t\"page\": {\"pageSize\": 10,\"currPage\": 1}\n" +
+                "}";
+		parameters.put("jsonStr", jsonStr);
+		String result =sendGet("http://localhost:8080/wankangyuan/common/commonSelectJson", parameters);
+		System.out.println(result);
+	}
+
 	@SuppressWarnings("unused")
 	public static void main(String[] args) {
-		CommonSelect commonSl = new CommonSelect();
-		List<String> userid = new ArrayList<>();
-		// userid.add("45");
-		// userid.add("5");
-		List<String> projectid = new ArrayList<>();
-		// projectid.add("94");
-		String select = null;
-		select = "SELECT SOURCE_62.PROJECT,SOURCE_62.user,SOURCE_62.\"89\",SOURCE_62.\"90\",SOURCE_62.\"91\","
-				+ "SOURCE_62.\"92\",SOURCE_62.\"93\" FROM \"SOURCE_62\" WHERE (		 \"USER\"= '45' OR \"USER\"= '1' ) AND"
-				+ " ( \"PROJECT\"= '94' OR \"PROJECT\"= '114' ) AND "
-				+ "INFO.\"92\"='value92' AND INFO.\"93\"='value93' AND " + "INFO.\"90\" like '%value90%' " + " LIMIT "
-				+ 20 + " OFFSET " + 20 * (1 - 1);
-		select = "SELECT * FROM \"FORMAT_62_45\"";
-		boolean isAddWhere = false;
-		Map<String, String> conditionEqual = new HashMap<>();
-		// conditionEqual.put("INFO.PROJECT", "114");
-		Map<String, String> conditionLike = new HashMap<>();
-		// conditionLike.put("\"89\"", "e");
-		String currPage = null;
-		String pageSize = null;
-		String jsonStr = null;
-		String s = null;
-		jsonStr = "{\"userid\":[\"45\",\"1\"],\"projectid\":[\"94\",\"114\"],"
-				+ "\"select\":\"SELECT SOURCE_62.PROJECT,SOURCE_62.user,SOURCE_62.\"89\","
-				+ "SOURCE_62.\"90\",SOURCE_62.\"91\",SOURCE_62.\"92\",SOURCE_62.\"93\","
-				+ "FORMAT_62_45.FORMAT_62_45 FROM \"SOURCE_62\" \",\"isAddWhere\":true,"
-				+ "\"conditionEqual\":{\"SOURCE_62.\"92\"\":\"value92\",\"SOURCE_62.\"93\"\":\"SOURCE_62.id\"},"
-				+ "\"conditionLike\":{\"SOURCE_62.\"90\"\":\"value91\"},\"currPage\":\"1\",\"pageSize\":\"20\"}";
-		 s=jsonStr.replaceAll(":", "：").replace("/", "");
-		 
-		String result = null;
-		//
-		// result = commonSl.commonSelect(userid, projectid, select, isAddWhere,
-		// conditionEqual, conditionLike, currPage,
-		// pageSize);
 
-		result = commonSl.commonSelect(s);
-		System.out.println("\n" + result + "\n");
+//		CommonSelect commonSl = new CommonSelect();
+//		List<String> userid = new ArrayList<>();
+//		// userid.add("45");
+//		// userid.add("5");
+//		List<String> projectid = new ArrayList<>();
+//		// projectid.add("94");
+//		String select = null;
+//		select = "SELECT SOURCE_62.PROJECT,SOURCE_62.user,SOURCE_62.\"89\",SOURCE_62.\"90\",SOURCE_62.\"91\","
+//				+ "SOURCE_62.\"92\",SOURCE_62.\"93\" FROM \"SOURCE_62\" WHERE (		 \"USER\"= '45' OR \"USER\"= '1' ) AND"
+//				+ " ( \"PROJECT\"= '94' OR \"PROJECT\"= '114' ) AND "
+//				+ "INFO.\"92\"='value92' AND INFO.\"93\"='value93' AND " + "INFO.\"90\" like '%value90%' " + " LIMIT "
+//				+ 20 + " OFFSET " + 20 * (1 - 1);
+//		select = "SELECT * FROM \"FORMAT_62_45\"";
+//		boolean isAddWhere = false;
+//		Map<String, String> conditionEqual = new HashMap<>();
+//		// conditionEqual.put("INFO.PROJECT", "114");
+//		Map<String, String> conditionLike = new HashMap<>();
+//		// conditionLike.put("\"89\"", "e");
+//		String currPage = null;
+//		String pageSize = null;
+//		String jsonStr = null;
+//		String s = null;
+//		jsonStr = "{\"userid\":[\"45\",\"1\"],\"projectid\":[\"94\",\"114\"],"
+//				+ "\"select\":\"SELECT SOURCE_62.PROJECT,SOURCE_62.user,SOURCE_62.\"89\","
+//				+ "SOURCE_62.\"90\",SOURCE_62.\"91\",SOURCE_62.\"92\",SOURCE_62.\"93\","
+//				+ "FORMAT_62_45.FORMAT_62_45 FROM \"SOURCE_62\" \",\"isAddWhere\":true,"
+//				+ "\"conditionEqual\":{\"SOURCE_62.\"92\"\":\"value92\",\"SOURCE_62.\"93\"\":\"SOURCE_62.id\"},"
+//				+ "\"conditionLike\":{\"SOURCE_62.\"90\"\":\"value91\"},\"currPage\":\"1\",\"pageSize\":\"20\"}";
+//		 s=jsonStr.replaceAll(":", "：").replace("/", "");
+//
+//		String result = null;
+//		//
+//		// result = commonSl.commonSelect(userid, projectid, select, isAddWhere,
+//		// conditionEqual, conditionLike, currPage,
+//		// pageSize);
+//
+//		result = commonSl.commonSelect(s);
+//		System.out.println("\n" + result + "\n");
+
+        test();
 	}
 
 	/**
