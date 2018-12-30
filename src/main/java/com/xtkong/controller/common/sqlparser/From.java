@@ -176,7 +176,14 @@ public class From {
 
     public void replace(String newFrom)
     {
-        newSQL=newFrom;
+        if(this.alias!=null && !this.alias.trim().equals(""))
+        {
+            newSQL=newFrom+" "+this.alias.trim();
+        }
+        else
+        {
+            newSQL=newFrom;
+        }
     }
 
     public String getOriginalSQL() {

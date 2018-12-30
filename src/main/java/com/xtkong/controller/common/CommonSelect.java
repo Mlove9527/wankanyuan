@@ -394,13 +394,13 @@ public class CommonSelect {
 		String jsonStr = "{\n" +
                 "\t\"userid\":[],\n" +
                 "\t\"projectid\":[],\n" +
-                "\t\"select\":{\"condition\":\"select ABC.ziduanming1, ABC.analysis_1.ziduanming2 from ABC, ABC.analysis_1 where ABC.id =1\"},\n" +
+                "\t\"select\":{\"condition\":\"select t.ft_col1,t.ft_col2 from test_1203.format_type_1 t\"},\n" +
                 "\t\"selectContdation\": \"\",\n" +
                 "\t\"page\": {\"pageSize\": 10,\"currPage\": 1}\n" +
                 "}";
 		parameters.put("jsonStr", jsonStr);
 		String result =sendGet("http://localhost:8080/wankangyuan/common/commonSelectJson", parameters);
-		System.out.println(result);
+		System.out.println("---------result:"+result);
 	}
 
 	@SuppressWarnings("unused")
