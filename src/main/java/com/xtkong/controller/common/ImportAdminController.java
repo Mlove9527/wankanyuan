@@ -102,7 +102,7 @@ public class ImportAdminController {
 				
 				if (importBean.getAnalysisList() != null) {
 					for (Analysis analysis : importBean.getAnalysisList()) {
-						if (analysis.getToBCol() != null) {
+						if (analysis.getToBCol() != null&&analysis.getToBCol().size()>0) {
 							map = formatDataToBCol(importBean.getSourceid(), cs_id, userName,String.valueOf(userId), analysis.getName(),
 									analysis.getNodeName(), analysis.getFileurl(), analysis.getBCol(),
 									analysis.getToBCol(), analysis.getSrcMCol(), analysis.getDistMCol(),
@@ -279,7 +279,7 @@ public class ImportAdminController {
 		}
 		Map<Map<String, String>, String> sourceDataIds = new HashMap<>();
 		Map<String, String> formatNodeIds = new HashMap<>();
-	    int j = 1;//数据行数
+	    int j = 0;//数据行数
 	    //node、format表是否存在
 		if(!HBaseDB.getInstance().existTable(ConstantsHBase.TABLE_PREFIX_NODE_ + cs_id)) {
 			sourceService.insertNodeByCsId(cs_id);
@@ -289,6 +289,7 @@ public class ImportAdminController {
 		};
 	    while (scanner.hasNextLine()) {
 	    	try {
+	    		j = j+1;
 			String[] datas = scanner.nextLine().split("\t");
 			String sourceDataId = null;
 			Map<String, String> sourceFieldDatas = new HashMap<>();
@@ -365,7 +366,6 @@ public class ImportAdminController {
 					HBaseFormatDataDao.insertFormatData(String.valueOf(cs_id), String.valueOf(ft_id), sourceDataId,
 							formatNodeId, dataDatas);
 			}
-			j++;
 	    	}catch(Exception e) {
 	    		e.printStackTrace();
 				map.put("code", "1");
@@ -424,7 +424,7 @@ public class ImportAdminController {
 			FileInputStream fileIn;
 			fileIn = new FileInputStream(fileurl);
 			Scanner scanner = new Scanner(fileIn);
-			String sourceDataId = HBaseSourceDataDao.getSourceDataId(userid, String.valueOf(cs_id),
+			String sourceDataId = HBaseSourceDataDao.getSourceDataId( String.valueOf(cs_id),userid,
 					sourceFieldDatas);
 			if ((sourceDataId != null) && (!sourceDataId.isEmpty())) {
 
@@ -460,7 +460,7 @@ public class ImportAdminController {
 					}
 				}
 				Map<String, String> formatNodeIds = new HashMap<>();
-				int j=1;//数据行数
+				int j=0;//数据行数
 				//node、format表是否存在
 				if(!HBaseDB.getInstance().existTable(ConstantsHBase.TABLE_PREFIX_NODE_ + cs_id)) {
 					sourceService.insertNodeByCsId(cs_id);
@@ -469,6 +469,7 @@ public class ImportAdminController {
 					sourceService.insertFormatByCsId(cs_id,ft_id);
 				};
 				while (scanner.hasNextLine()) {
+					j = j+1;
 					String[] datas = scanner.nextLine().split("\t");
 					Map<String, String> metaDatas = new HashMap<>();
 					Map<String, String> dataDatas = new HashMap<>();
@@ -515,7 +516,6 @@ public class ImportAdminController {
 							HBaseFormatDataDao.insertFormatData(String.valueOf(cs_id), String.valueOf(ft_id),
 									sourceDataId, formatNodeId, dataDatas);
 					}
-					j++;
 				}
 				map.put("code", "0");
 				map.put("message", "success");
