@@ -1017,6 +1017,7 @@
 	var searchWord="";//搜索词
 	var desc_asc="${desc_asc}";//排序
 	var oldCondition=$("#oldCondition").html();//累加筛选条件
+	var searchFirstWord = $(".searchCt").val();
 	var page="${page}";//页码
 	var ft_id = $('#ft_id').val();//类型id
 	var nodeName = $("#dataNodeTextArea").val();//结点名
@@ -1037,6 +1038,7 @@
    $(".searchCt").bind("keypress" , function(event){
 		if(event.keyCode == 13){
 			reset();
+			searchFirstWord=$(".searchCt").val();
 			window.location.href="/wankangyuan/formatNode/getFormatNodeById?cs_id="+cs_id
 					+"&sourceDataId="+sourceDataId+"&type=2&ft_id="+ft_id+"&formatNodeId="+formatNodeId
 					+"&searchFirstWord="+this.value+"&ids="+$("#ids2").val()+"&isAll="+$("#isAll2").val();
@@ -1632,7 +1634,7 @@
              } */
               //刷新页面
             window.location.href="/wankangyuan/export/formatData?cs_id="
-            				+cs_id+"&ft_id="+ft_id+"&sourceDataId="+sourceDataId+"&formatNodeId="+formatNodeId+"&type=2"
+            				+cs_id+"&ft_id="+ft_id+"&sourceDataId="+sourceDataId+"&formatNodeId="+formatNodeId+"&type=2"+"&searchFirstWord="+searchFirstWord
             				+"&searchId="+searchId+"&searchWord="+searchWord+"&oldCondition="+oldCondition+"&ids="+ids3+"&isAll="+idQuanXuan;
            	
     	});

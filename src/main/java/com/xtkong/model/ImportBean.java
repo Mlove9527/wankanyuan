@@ -27,24 +27,29 @@ public class ImportBean {
 	    String basicStr = jsonObject.getString("basic");
 	    String analysisListStr = jsonObject.getString("analysis");
 	    //basic
-	    jsonObject = JSON.parseObject(basicStr);
-	    Basic basicTemp = new Basic(jsonObject);
-	    String fileurl1 = basicTemp.getFileurl();
-	    System.out.println("fileurl1："+fileurl1);
-	    basic = basicTemp;
+	    if(null!=basicStr) {
+	    	jsonObject = JSON.parseObject(basicStr);
+		    Basic basicTemp = new Basic(jsonObject);
+		    String fileurl1 = basicTemp.getFileurl();
+		    System.out.println("fileurl1："+fileurl1);
+		    basic = basicTemp;
+	    }
+	    
 	    //analysis
-	    JSONArray analysisArray = JSON.parseArray(analysisListStr);
-	    List<Analysis> analyList = new ArrayList<Analysis>();
-	    if(analysisArray.size()>0){
-	    	  for(int i=0;i<analysisArray.size();i++){
-	    	    JSONObject defUniqueJson = analysisArray.getJSONObject(i);
-	    	    Analysis analysis = new Analysis(defUniqueJson);
-	    	    String url = analysis.getFileurl();
-	    	    System.out.println("url2："+url);
-	    	    analyList.add(analysis);
-	    	  }
-	    	}
-	    analysisList = analyList;
+	    if(null!=analysisListStr) {
+	    	JSONArray analysisArray = JSON.parseArray(analysisListStr);
+		    List<Analysis> analyList = new ArrayList<Analysis>();
+		    if(analysisArray.size()>0){
+		    	  for(int i=0;i<analysisArray.size();i++){
+		    	    JSONObject defUniqueJson = analysisArray.getJSONObject(i);
+		    	    Analysis analysis = new Analysis(defUniqueJson);
+		    	    String url = analysis.getFileurl();
+		    	    System.out.println("url2："+url);
+		    	    analyList.add(analysis);
+		    	  }
+		    	}
+		    analysisList = analyList;
+	    }
 	}
 
 	public String getSourceid() {
