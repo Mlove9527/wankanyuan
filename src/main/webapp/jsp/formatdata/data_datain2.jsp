@@ -510,7 +510,6 @@
 				for(var i=0; i<$('.prodainmRip').length; i++) {
 					if($('.prodainmRip')[index].id==$('.prodainmRfile')[i].id)
 					{
-						alert($('.prodainmRip')[index].value);
 						$('.prodainmRfile').eq(i).text($('.prodainmRip')[index].value+"");
 					}
 				}
