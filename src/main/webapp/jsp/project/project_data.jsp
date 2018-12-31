@@ -555,7 +555,7 @@
         		//是否全选
         		var is_all = isAll();
         		 if(page!=${page}){ 
-                 	window.location.href="/wankangyuan/sourceData/getSourceDatas?type=4&p_id="+p_id+"&searchId="+searchId+
+                 	window.location.href="/wankangyuan/sourceData/getSourceDatas?type=4&p_id="+p_id+"&searchId="+searchId+"&cs_id="+cs_id+
      	    		"&desc_asc="+desc_asc+"&searchWord="+searchWord+"&oldCondition="+oldCondition+"&page="+page+"&strip=${rows}&ids="+$("#ids2").val()+"&isAll="+$("#isAll2").val();
                  }
             }
