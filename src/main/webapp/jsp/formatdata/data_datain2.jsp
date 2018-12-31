@@ -507,26 +507,13 @@
 		//图片修改
 		$('.prodainmRib').each(function(index) {
 			$('.prodainmRip')[index].addEventListener("change",function () {
-				alert("----"+$('.prodainmRfile').length);
-
 				for(var i=0; i<$('.prodainmRip').length; i++) {
-
-					alert("============"+$('.prodainmRip')[index].id+"----"+$('.prodainmRfile')[i].id);
 					if($('.prodainmRip')[index].id==$('.prodainmRfile')[i].id)
 					{
 						alert($('.prodainmRip')[index].value);
-						//$('.prodainmRfile')[i].html($('.prodainmRip')[index].value+"");
+						$('.prodainmRfile').eq(i).text($('.prodainmRip')[index].value+"");
 					}
 				}
-
-//				var parentNode=$('.prodainmRfile')[index].parent();
-//				alert("----"+parentNode.text());
-//				var nameDivs=parentNode.children(".prodainmRfile");
-//				alert(nameDivs.length());
-//				if(nameDivs.length()>0)
-//				{
-//					nameDivs[0].text($('.prodainmRip')[index].value);
-//				}
 			});
 
 			$(this).click(function() {
