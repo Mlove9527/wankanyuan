@@ -461,7 +461,8 @@
 	//更换采集源，刷新页面
 	$("#source_Select").change(function(){
 		cs_id = $("#source_Select").val();
-			window.location.href="/wankangyuan/sourceData/getSourceDatas?type=2&cs_id="+cs_id+"&ids="+$("#ids2").val()+"&isAll="+$("#isAll2").val();
+			//window.location.href="/wankangyuan/sourceData/getSourceDatas?type=2&cs_id="+cs_id+"&ids="+$("#ids2").val()+"&isAll="+$("#isAll2").val();
+			window.location.href="/wankangyuan/sourceData/getSourceDatas?type=2&cs_id="+cs_id;
 	});
 	//选择待操作字段
 	$('.PJListli').click(function(){

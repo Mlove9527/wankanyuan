@@ -571,6 +571,10 @@ public class ExportController {
 			String likeSearch,String ids,boolean isAll) {
 		response.setContentType("application/vnd.ms-excel");
 
+		if (ids.startsWith(",")) {
+			ids = ids.substring(1, ids.length()).replaceAll("check4_", "");
+		}
+		
 		HSSFWorkbook workbook = new HSSFWorkbook();
 		HSSFCellStyle style = workbook.createCellStyle();
 		style.setAlignment(HorizontalAlignment.CENTER);
@@ -611,7 +615,7 @@ public class ExportController {
 						row = sheet.createRow((short) iRow + 1);
 						for (int j = 0; j < formatFields.size(); j++) {
 							cell = row.createCell(j);
-							cell.setCellValue(dataDataLists.get(iRow).get(j));
+							cell.setCellValue(dataDataLists.get(iRow).get(j+1));
 							cell.setCellStyle(style);
 						}
 					}

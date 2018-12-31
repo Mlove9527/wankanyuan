@@ -287,7 +287,7 @@ public class FormatNodeController {
 				String excludeCondition="ID NOT IN (";
 				if(excludeIDs!=null && !excludeIDs.trim().equals(""))
 				{
-					String[] splitIds=excludeIDs.trim().replaceAll("check", "").split(",");
+					String[] splitIds=excludeIDs.trim().replaceAll("check4_", "").split(",");
 					if(splitIds.length>0)
 					{
 						for(String id : splitIds)
@@ -298,15 +298,22 @@ public class FormatNodeController {
 						excludeCondition=excludeCondition.substring(0,excludeCondition.length()-1);
 						excludeCondition+=")";
 
-						oldCondition+=" "+excludeCondition;
+						if(oldCondition==null||oldCondition.trim().isEmpty()) {
+							oldCondition = " "+excludeCondition;
+						}else {
+							oldCondition+=" "+excludeCondition;
+						}
+						
+						
 					}
 				}
 				if (oldCondition != null && !oldCondition.trim().isEmpty()) {
-					if (type.equals("1")) {
-						condition = condition + " AND " + oldCondition;
-					} else {
-						condition = oldCondition;
-					}
+//					if (type.equals("1")) {
+//						condition = condition + " AND " + oldCondition;
+//					} else {
+//						condition = oldCondition;
+//					}
+					condition = condition + " AND " + oldCondition;//查询需去掉format数据中meta数据
 				}
 				
 				String dataphoenixSQL = PhoenixClient.getPhoenixSQL(tableName, isOnlySelectPK ? null : dataQualifiers, conditionEqual,
