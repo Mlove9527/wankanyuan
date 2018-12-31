@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ page import="java.text.*" %>
 <%@ page import="java.util.*" %>
 <%
@@ -175,7 +176,7 @@
 							<%-- <c:if test="sourceFieldTemp.type=='文件'"></c:if> --%>
 							<c:if test="${sourceFieldTemp.type=='文件' }">
 								<div class="prodainmRfilek">
-										<div class="prodainmRfile">${sourceData[status.index+1]}</div>
+										<div class="prodainmRfile" id="${sourceFieldTemp.csf_id }">${fn:substringAfter(sourceData[status.index+1], "_")}</div>
 										<input type="file" class="prodainmRip" id=${sourceFieldTemp.csf_id } value="${sourceData[status.index+1] }" style="display: none;">
 										<a class="prodainmRib2" href="<%=path%>/export/downloadFile?sourceDataId=${sourceData[0]}&cs_id=${sourceFieldTemp.cs_id }&csf_id=${sourceFieldTemp.csf_id}">下载</a>
 										<div class="prodainmRib" id="">修改</div>
@@ -502,8 +503,32 @@
 									+ sourceDataId
 									+ "&ft_id=" + ft_id;
 						});
+
 		//图片修改
 		$('.prodainmRib').each(function(index) {
+			$('.prodainmRip')[index].addEventListener("change",function () {
+				alert("----"+$('.prodainmRfile').length);
+
+				for(var i=0; i<$('.prodainmRip').length; i++) {
+
+					alert("============"+$('.prodainmRip')[index].id+"----"+$('.prodainmRfile')[i].id);
+					if($('.prodainmRip')[index].id==$('.prodainmRfile')[i].id)
+					{
+						alert($('.prodainmRip')[index].value);
+						$('.prodainmRfile')[i].html($('.prodainmRip')[index].value+"");
+					}
+				}
+
+//				var parentNode=$('.prodainmRfile')[index].parent();
+//				alert("----"+parentNode.text());
+//				var nameDivs=parentNode.children(".prodainmRfile");
+//				alert(nameDivs.length());
+//				if(nameDivs.length()>0)
+//				{
+//					nameDivs[0].text($('.prodainmRip')[index].value);
+//				}
+			});
+
 			$(this).click(function() {
 				$('.prodainmRip')[index].click();
 			})

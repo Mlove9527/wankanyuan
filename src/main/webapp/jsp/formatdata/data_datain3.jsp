@@ -4,6 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%
 	String path = request.getContextPath();
 	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
@@ -120,7 +121,7 @@
              		<c:forEach items="${source.sourceFields}" var="sourceFieldTemp" varStatus="status">
 						<div class="prodainmRz1">
 	                        <div class="prodainmRz1L">${sourceFieldTemp.csf_name}</div>
-	                        <div class="prodainmRz1R">${sourceData[status.index+1] }</div>
+	                        <div class="prodainmRz1R">${fn:substringAfter(sourceData[status.index+1], "_")}</div>
                     	</div>
 					</c:forEach>
                 </div>
