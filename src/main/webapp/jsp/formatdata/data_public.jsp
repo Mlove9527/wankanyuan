@@ -395,8 +395,8 @@
 
 	$("#source_Select").change(function(){
 		cs_id = $("#source_Select").val();
-			window.location.href="/wankangyuan/sourceData/getSourceDatas?type=3&cs_id="+cs_id+"&ids="+$("#ids2").val()+"&isAll="+$("#isAll2").val();
-	
+			//window.location.href="/wankangyuan/sourceData/getSourceDatas?type=3&cs_id="+cs_id+"&ids="+$("#ids2").val()+"&isAll="+$("#isAll2").val();
+			window.location.href="/wankangyuan/sourceData/getSourceDatas?type=3&cs_id="+cs_id;
 	});
 
 	$('.PJListli').click(function(){
