@@ -515,7 +515,7 @@
 					if($('.prodainmRip')[index].id==$('.prodainmRfile')[i].id)
 					{
 						alert($('.prodainmRip')[index].value);
-						$('.prodainmRfile')[i].html($('.prodainmRip')[index].value+"");
+						//$('.prodainmRfile')[i].html($('.prodainmRip')[index].value+"");
 					}
 				}
 
