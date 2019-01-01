@@ -84,7 +84,7 @@ public class ImportController {
 		}
 		else
 		{
-			if(csf.getType().equals("图片"))
+			if(csf.getType().equals(ConstantsHBase.DATA_TYPE_TUPIAN))
 			{
 				if(!ifImgExists(username,val.trim()))
 				{
@@ -97,7 +97,7 @@ public class ImportController {
 					throw new Exception(csf.getError_msg());
 				}
 			}
-			else if(csf.getType().equals("文件"))
+			else if(csf.getType().equals(ConstantsHBase.DATA_TYPE_WENJIAN))
 			{
 				if(!ifFileExists(username,val.trim()))
 				{
@@ -108,6 +108,17 @@ public class ImportController {
 //					}
 					logger.warn("username: "+username+", file: "+val.trim()+" not exists.");
 					throw new Exception(csf.getError_msg());
+				}
+			}
+			else if(csf.getType().equals(ConstantsHBase.DATA_TYPE_SHUZHI))
+			{
+				try
+				{
+					Double.parseDouble(val.trim());
+				}
+				catch(Exception e)
+				{
+					throw new Exception("非法的数值类型.");
 				}
 			}
 			//是枚举值
@@ -169,7 +180,7 @@ public class ImportController {
 		}
 		else
 		{
-			if(ff.getType().equals("图片"))
+			if(ff.getType().equals(ConstantsHBase.DATA_TYPE_TUPIAN))
 			{
 				if(!ifImgExists(username,val.trim()))
 				{
@@ -182,7 +193,7 @@ public class ImportController {
 					throw new Exception(ff.getError_msg());
 				}
 			}
-			else if(ff.getType().equals("文件"))
+			else if(ff.getType().equals(ConstantsHBase.DATA_TYPE_WENJIAN))
 			{
 				if(!ifFileExists(username,val.trim()))
 				{
@@ -193,6 +204,17 @@ public class ImportController {
 //					}
 					logger.warn("username: "+username+", file: "+val.trim()+" not exists.");
 					throw new Exception(ff.getError_msg());
+				}
+			}
+			else if(ff.getType().equals(ConstantsHBase.DATA_TYPE_SHUZHI))
+			{
+				try
+				{
+					Double.parseDouble(val.trim());
+				}
+				catch(Exception e)
+				{
+					throw new Exception("非法的数值类型.");
 				}
 			}
 			//是枚举值
