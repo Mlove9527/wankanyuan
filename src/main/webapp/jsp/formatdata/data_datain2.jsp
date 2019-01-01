@@ -466,9 +466,9 @@
 							var formatNodeId = formatNodeIds.join(",");
 							window.location.href = "/wankangyuan/export/formatNode?cs_id="
 									+ cs_id
-									+ "&ft_id="
+									+ "&ft_ids="
 									+ ft_id
-									+ "&formatNodeId=" + formatNodeId;
+									+ "&formatNodeIds=" + formatNodeId;
 						});
 		$(".app_expexport_type")
 				.click(

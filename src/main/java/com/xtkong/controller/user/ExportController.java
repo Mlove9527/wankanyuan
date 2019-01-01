@@ -561,7 +561,6 @@ public class ExportController {
 	 * @param response
 	 * @param cs_id
 	 * @param ft_id
-	 * @param formatDataIds
 	 *            1公共，0非公共
 	 */
 	@RequestMapping("/formatData")
@@ -612,7 +611,7 @@ public class ExportController {
 				// 写入各条记录，每条记录对应Excel中的一行
 				if(dataDataLists.size()>0) {
 					for (int iRow = 0; iRow < dataDataLists.size(); iRow++) {
-						row = sheet.createRow((short) iRow + 1);
+						row = sheet.createRow( iRow + 1);
 						for (int j = 0; j < formatFields.size(); j++) {
 							cell = row.createCell(j);
 							cell.setCellValue(dataDataLists.get(iRow).get(j+1));
@@ -661,7 +660,7 @@ public class ExportController {
 		
 		for(int a=0;a<=source.getSourceFields().size();a++) {
 			// 4.在sheet中添加表头第0行，老版本poi对excel行数列数有限制short
-			HSSFRow row = sheet.createRow((short)a);
+			HSSFRow row = sheet.createRow(a);
 			
 //			HSSFCell createCell = row.createCell(0);
 //			createCell.setCellValue(source.getSourceFields().get(a).getCsf_name());
@@ -738,7 +737,7 @@ public class ExportController {
 				return sheet;
 			}
 			for (int iRow = 0; iRow < sourceDatas.size(); iRow++) {
-				row = sheet.createRow((short) iRow + 1);
+				row = sheet.createRow(iRow + 1);
 				for (int j = 0; j < source.getSourceFields().size(); j++) {
 					cell = row.createCell(j);
 					cell.setCellValue(sourceDatas.get(iRow).get(j + 1));
@@ -852,7 +851,7 @@ public class ExportController {
 		// 写入各条记录，每条记录对应Excel中的一行
 
 		for (int iRow = 0; iRow < formatDatas.size(); iRow++) {
-			row = sheet.createRow((short) iRow + 1);
+			row = sheet.createRow( iRow + 1);
 			for (int j = 0; j < formatFields.size(); j++) {
 				cell = row.createCell(j);
 				cell.setCellValue(formatDatas.get(iRow).get(j));
@@ -893,7 +892,11 @@ public class ExportController {
 			}
 		} else {
 			for (int iRow = 0; iRow < formatDatas.size(); iRow++) {
-				row = sheet.createRow((short) iRow + 1);
+//				if(iRow>30000)
+//				{
+//					break;
+//				}
+				row = sheet.createRow(iRow + 1);
 				for (int j = 0; j < formatFields.size(); j++) {
 					cell = row.createCell(j);
 					cell.setCellValue(formatDatas.get(iRow).get(j + 1));
