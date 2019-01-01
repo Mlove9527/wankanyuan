@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%
 	String path = request.getContextPath();
 	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
@@ -123,10 +124,17 @@
 												</div>
 											</c:if>
 											<c:if test="${status.index!=0}">
-                                				<td onclick="datainHref('${sourceData[0]}')" style="cursor:pointer;">
+                                				<td style="cursor:pointer;">
                                 				<div class="PJliCli2">
-                                 				   <a href="#" >
-                                        <span>${sourceDataField}</span>
+                                 				   <a href="#" onclick="datainHref('${sourceData[0]}')">
+													   <c:choose>
+														   <c:when test="${source.sourceFields[status.index-1].type=='图片' || source.sourceFields[status.index-1].type=='文件'}">
+															   <span>${fn:substringAfter(sourceDataField, "_")}</span>
+														   </c:when>
+														   <c:otherwise>
+															   <span>${sourceDataField}</span>
+														   </c:otherwise>
+													   </c:choose>
                                     </a>
                                 </div>
                                 </td>
@@ -149,8 +157,8 @@
     <script type="text/javascript" src="/wankangyuan/static/js/jquery.min.js"></script>
     <script type="text/javascript" src="/wankangyuan/static/js/layer/layer.js"></script>
     <script type="text/javascript">
-    
-    
+
+		var p_id = ${p_id};
     //进入详情页
     function datainHref(sourceDataId){
 		var cs_id = $("#source_Select option:selected").val();
@@ -161,8 +169,8 @@
   	//切换数据源
    $("#source_Select").change(function(){
 	var cs_id = $("#source_Select option:selected").val();
-	var p_id = ${p_id};
-	window.location.href="/wankangyuan/sourceData/getSourceDatas?type=5&cs_id="+cs_id+"&p_id="+p_id;
+
+	window.location.href="/wankangyuan/projectFormatData/getAllSourceDatas?type=5&cs_id="+cs_id+"&p_id="+p_id;
     });
   	//提交勾选的数据
   	$("#submit_data").click(function (){
