@@ -171,9 +171,9 @@
 						</tr>
 							<c:forEach items="${metaDatas}" var="metaDataListTemp">
 						 <tr class="PJli">
-									<td><div class="prodaclmRzBzt prodaclmRzTtmz">${metaDataListTemp[1] }</div></td>
+									<td><div class="prodaclmRzBzt prodaclmRzTtmz">${metaDataListTemp.ff_name }</div></td>
 									<td><div class="prodaclmRzBzt prodaclmRzTtmz">
-										${metaDataListTemp[2] }</div></td>
+										${metaDataListTemp.mete}</div></td>
 						</tr>
 							</c:forEach>
 						</table>

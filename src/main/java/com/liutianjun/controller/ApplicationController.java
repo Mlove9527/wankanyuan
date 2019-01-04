@@ -77,7 +77,7 @@ public class ApplicationController {
 	    User user = userService.selectByUsername(username);
 	    List<String> authority_numbers = new ArrayList<>();
 //		authority_numbers.add("30");
-		authority_numbers.add("43");
+		authority_numbers.add("32");
 		List<ProjectCustomRole> projects = projectCustomRoleService.selectProjectCustomRolesByUID(user.getId(),
 				authority_numbers);
 		model.addAttribute("projectList", projects);

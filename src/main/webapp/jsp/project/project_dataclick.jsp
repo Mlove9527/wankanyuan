@@ -148,9 +148,9 @@
 						<div class="prodaclmRzB">
 							<c:forEach items="${metaDatas}" var="metaDataListTemp">
 								<div class="prodaclmRzBz">
-									<div class="prodaclmRzBzt prodaclmRzTtmz">${metaDataListTemp[1] }</div>
+									<div class="prodaclmRzBzt prodaclmRzTtmz">${metaDataListTemp.ff_name }</div>
 									<div class="prodaclmRzBzt prodaclmRzTtmz">
-										${metaDataListTemp[2] }</div>
+										${metaDataListTemp.mete}</div>
 								</div>
 							</c:forEach>
 						</div>
