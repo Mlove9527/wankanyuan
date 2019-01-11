@@ -24,6 +24,8 @@ import com.xtkong.controller.user.SourceDataController.SourceDataSQLInfo;
 import com.xtkong.dao.hbase.HBaseFormatNodeDao;
 import com.xtkong.dao.hbase.HBaseProjectDataDao;
 import com.xtkong.dao.hbase.HBaseSourceDataDao;
+import com.xtkong.model.FormatDataSQLInfo;
+import com.xtkong.model.FormatField1;
 import com.xtkong.model.Source;
 import com.xtkong.model.SourceField;
 import com.xtkong.service.FormatFieldService;
@@ -55,7 +57,10 @@ public class ProjectFormatDataController {
 	ProjectCustomRoleService projectCustomRoleService;
 	@Autowired
 	SourceDataController sourceDataController;
-
+	@Autowired
+	FormatNodeController formatNodeController;
+	
+	
 	@RequestMapping("/insert")
 	@ResponseBody
 	public Map<String, Object> insert(HttpServletRequest request, HttpServletResponse response, HttpSession session,
@@ -90,7 +95,6 @@ public class ProjectFormatDataController {
 				}
 			}
             
-			String idsStr = "";
 			if(sourceDatas!=null)
 			{
 				for (List<String> record : sourceDatas)
@@ -141,6 +145,66 @@ public class ProjectFormatDataController {
 			map.put("message", "成功添加" + count + "条，剩余" + (sum - count) + "条关系添加失败！");
 		}
 		return map;
+	}
+	
+	/**
+	 * 节点数据 添加到项目
+	 * 
+	 * @param response
+	 * @param cs_id
+	 * @param ft_id
+	 *            1公共，0非公共
+	 */
+	@RequestMapping("/nodeDataToProject")
+	public void formatData(HttpServletRequest request,HttpServletResponse response,HttpSession httpSession, String cs_id, String sourceDataId, String ft_id,
+			String formatNodeId, String type, Integer page, Integer strip, Integer searchId, String desc_asc,
+			String chooseDatas, String oldConditionNode8, String searchWord, String searchFirstWord, String fieldIds,
+			String likeSearch,String ids,boolean isAll) {
+//TODO 未完成
+		if (ids.startsWith(",")) {
+			ids = ids.substring(1, ids.length()).replaceAll("check4_", "");
+		}
+		Integer sum = 0;
+		Integer count = 0;
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		List<SourceField> sourceFields = sourceFieldService.getSourceFields(Integer.valueOf(cs_id));//采集源字段列表
+		User user = (User) request.getAttribute("user");
+		Integer uid = user.getId();
+		String sourceTableName = ConstantsHBase.TABLE_PREFIX_SOURCE_ + cs_id;
+		
+		if(isAll) {
+			//全选
+			List<List<String>> dataDataLists = new ArrayList<>();
+			String formatTableName = ConstantsHBase.TABLE_PREFIX_FORMAT_ + cs_id + "_" + ft_id;
+			FormatDataSQLInfo formatDataSQLInfo = formatNodeController.getFormatDataSQL(cs_id, user, ft_id, sourceDataId, formatNodeId, httpSession, type, desc_asc, searchFirstWord, null, fieldIds, null, searchId, chooseDatas, likeSearch, searchWord, false, ids);
+			Map<String, Map<String, Object>> dataDatas = PhoenixClient.select(formatDataSQLInfo.getSql());
+			String dataMsg = String.valueOf((dataDatas.get("msg")).get("msg"));
+			for (int j = 0; j < 6; j++) {
+				dataMsg = String.valueOf((dataDatas.get("msg")).get("msg"));
+				if (dataMsg.equals("success")) {
+					dataDataLists = (List<List<String>>) dataDatas.get("records").get("data");
+					break;
+				} else {
+					PhoenixClient.undefined(dataMsg, formatTableName, formatDataSQLInfo.getQualifiers(), formatDataSQLInfo.getConditionEqual(), formatDataSQLInfo.getConditionLike());
+					dataDatas = PhoenixClient.select(formatDataSQLInfo.getSql());
+				}
+			}
+			
+			List<FormatField1> formatFields = formatDataSQLInfo.getData1();
+			if (!formatFields.isEmpty()&&formatFields.size()>0) {
+				for (int i = 0; i < formatFields.size(); i++) {
+				}
+				if(dataDataLists.size()>0) {
+					for (int iRow = 0; iRow < dataDataLists.size(); iRow++) {
+						for (int j = 0; j < formatFields.size(); j++) {
+						}
+					}
+				}
+			}
+		}else {
+		}
+
 	}
 
 	@RequestMapping("/remove")
