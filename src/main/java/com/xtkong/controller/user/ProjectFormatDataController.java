@@ -147,6 +147,7 @@ public class ProjectFormatDataController {
 		return map;
 	}
 	
+	
 	/**
 	 * 节点数据 添加到项目
 	 * 
@@ -156,23 +157,64 @@ public class ProjectFormatDataController {
 	 *            1公共，0非公共
 	 */
 	@RequestMapping("/nodeDataToProject")
-	public void formatData(HttpServletRequest request,HttpServletResponse response,HttpSession httpSession, String cs_id, String sourceDataId, String ft_id,
-			String formatNodeId, String type, Integer page, Integer strip, Integer searchId, String desc_asc,
+	public Map<String, Object> nodeDataToProject(HttpServletRequest request,HttpServletResponse response,HttpSession httpSession, String cs_id, String sourceDataId, String ft_id,
+			String p_id, String formatNodeId, String type, Integer page, Integer strip, Integer searchId, String desc_asc,
 			String chooseDatas, String oldConditionNode8, String searchWord, String searchFirstWord, String fieldIds,
 			String likeSearch,String ids,boolean isAll) {
-//TODO 未完成
+		
+		Map<String, Object> map = new HashMap<String, Object>();
 		if (ids.startsWith(",")) {
 			ids = ids.substring(1, ids.length()).replaceAll("check4_", "");
 		}
 		Integer sum = 0;
 		Integer count = 0;
 		
-		Map<String, Object> map = new HashMap<String, Object>();
 		List<SourceField> sourceFields = sourceFieldService.getSourceFields(Integer.valueOf(cs_id));//采集源字段列表
 		User user = (User) request.getAttribute("user");
 		Integer uid = user.getId();
 		String sourceTableName = ConstantsHBase.TABLE_PREFIX_SOURCE_ + cs_id;
 		
+		if(sourceDataId!=null&&!"".equals(sourceDataId)) {
+			map.put("result", false);
+			map.put("message", "添加失败！缺少参数sourceDataId");
+		}
+		if(formatNodeId!=null&&!"".equals(formatNodeId)) {
+			map.put("result", false);
+			map.put("message", "添加失败！缺少参数formatNodeId");
+		}
+		
+		String nodeName = "";
+		List<String> nodeList = HBaseFormatNodeDao.getFormatNodeById(cs_id,formatNodeId);
+		if(nodeList!=null&&nodeList.size()>0) {
+			nodeName = nodeList.get(2);
+		}
+		
+		//source处理：判断project_data_relation是否存在p_data_id，不存在新增
+		String pDataId = projectDataService.selectPDataId(Integer.valueOf(p_id), sourceDataId, Integer.valueOf(cs_id));
+		if(null==pDataId||"".equals(pDataId)) {
+			if (projectDataService.insert(Integer.valueOf(p_id), sourceDataId, Integer.valueOf(cs_id)) == 1) {
+				String pSourceDataId = HBaseProjectDataDao.addProjectPartSource( p_id, cs_id, String.valueOf(uid),sourceDataId, sourceFields);
+				if (pSourceDataId != null) {
+					if (projectDataService.updataPDataId(Integer.valueOf(p_id), sourceDataId, Integer.valueOf(cs_id),
+							pSourceDataId) == 1) {
+						pDataId = pSourceDataId;
+					}
+				}
+			}
+		}
+		//node处理：判断project_node_relation是否存在p_node_id，不存在新增
+		String pNodeId = projectNodeService.selectPNoId(Integer.valueOf(p_id), formatNodeId, Integer.valueOf(cs_id), Integer.valueOf(ft_id));
+		if(null==pNodeId||"".equals(pNodeId)) {
+			if (projectNodeService.insert(Integer.valueOf(p_id), formatNodeId, Integer.valueOf(cs_id), Integer.valueOf(ft_id), pDataId)==1) {
+				String pNodeId1 = HBaseProjectDataDao.addProjectPartNode(cs_id, pDataId, formatNodeId, ft_id,nodeName);
+				if (pNodeId1 != null) {
+					if (projectNodeService.updadaPNodeId(Integer.valueOf(p_id), formatNodeId, Integer.valueOf(cs_id), Integer.valueOf(ft_id), pNodeId1) == 1) {
+						pNodeId = pNodeId1;
+					}
+				}
+			}
+		}
+		//格式数据处理
 		if(isAll) {
 			//全选
 			List<List<String>> dataDataLists = new ArrayList<>();
@@ -191,21 +233,46 @@ public class ProjectFormatDataController {
 				}
 			}
 			
-			List<FormatField1> formatFields = formatDataSQLInfo.getData1();
-			if (!formatFields.isEmpty()&&formatFields.size()>0) {
-				for (int i = 0; i < formatFields.size(); i++) {
-				}
-				if(dataDataLists.size()>0) {
-					for (int iRow = 0; iRow < dataDataLists.size(); iRow++) {
-						for (int j = 0; j < formatFields.size(); j++) {
+			if(dataDataLists.size()>0) {
+				for (List<String> record : dataDataLists)
+				{
+					String idTemp = record.get(0);
+					if (projectNodeDataService.insert(Integer.valueOf(p_id), idTemp, Integer.valueOf(cs_id), Integer.valueOf(ft_id), pDataId) == 1) {
+						String pFormatDataId = HBaseProjectDataDao.addProjectByData(cs_id, pDataId, ft_id, pNodeId, idTemp);
+						if (pFormatDataId != null) {
+							count++;
 						}
+					} else {
+						count++;
 					}
+					sum++;
 				}
 			}
 		}else {
+            for (String formatDataId : ids.split(",")) {
+            	if (projectNodeDataService.insert(Integer.valueOf(p_id), formatDataId, Integer.valueOf(cs_id), Integer.valueOf(ft_id), pDataId) == 1) {
+					String pFormatDataId = HBaseProjectDataDao.addProjectByData(cs_id, pDataId, ft_id, pNodeId, formatDataId);
+					if (pFormatDataId != null) {
+						count++;
+					}
+				} else {
+					count++;
+				}
+				sum++;
+			}
 		}
+		if (count.equals(sum)) {
+			map.put("result", true);
+			map.put("message", "添加成功！");
+		} else {
+			map.put("result", false);
+			map.put("message", "成功添加" + count + "条，剩余" + (sum - count) + "条关系添加失败！");
+		}
+		return map;
 
 	}
+	
+	
 
 	@RequestMapping("/remove")
 	@ResponseBody

@@ -62,6 +62,7 @@ public class HBaseProjectDataDao {
 	@SuppressWarnings("unchecked")
 	public static String addProjectByData(String cs_id, String pSourceDataId, String ft_id, String pFormatNodeId,
 			String oldFormatDataId) {
+		String newId = "";
 		try {
 			String tableStr = ConstantsHBase.TABLE_PREFIX_FORMAT_ + cs_id + "_" + ft_id;
 			Map<String, Map<String, Object>> records = PhoenixClient
@@ -79,12 +80,12 @@ public class HBaseProjectDataDao {
 						}
 					}
 				}
-				HBaseFormatDataDao.insertFormatData(cs_id, ft_id, pSourceDataId, pFormatNodeId, formatFieldDatas);
+				newId = HBaseFormatDataDao.insertFormatData(cs_id, ft_id, pSourceDataId, pFormatNodeId, formatFieldDatas);
 			}
 		} catch (Exception e) {
 			return null;
 		}
-		return pFormatNodeId;
+		return newId;
 	}
 
 	/**
