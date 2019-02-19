@@ -151,12 +151,323 @@
 							<div class="prodaclmRzTt prodaclmRzTtnr">内容</div>
 						</div>
 						<div class="prodaclmRzB">
-							<c:forEach items="${metaDatas}" var="metaDataListTemp">
+							<%-- <c:forEach items="${metaDatas}" var="metaDataListTemp">
 								<div class="prodaclmRzBz">
 									<div class="prodaclmRzBzt prodaclmRzTtmz">${metaDataListTemp[1] }</div>
 									<div class="prodaclmRzBzt prodaclmRzTtmz">
 										${metaDataListTemp[2] }</div>
 								</div>
+							</c:forEach> --%>
+							<c:forEach items="${metaDatas}" var="metaDataListTemp"><!-- 判断是否是必填，接着判断是否枚举 -->
+								<c:if test="${metaDataListTemp.not_null==true }">
+									<div class="prodaclmRzBz">
+										<div class="prodaclmRzBzt prodaclmRzTtmz" title="${metaDataListTemp.description }">${metaDataListTemp.ff_name }<span class="redstar" style="color: red;">*</span></div>
+											<c:if test="${metaDataListTemp.type=='字符' }">
+												<div class="prodaclmRzBzt prodaclmRzTtmz">
+													<div class="ff_name" style="display:none;">${metaDataListTemp.ff_name}</div>
+													<div class="error_msg" style="display:none;">${metaDataListTemp.error_msg}</div>
+													<c:if test="${metaDataListTemp.enumerated==true }">
+														<c:if test="${metaDataListTemp.emvalue !=null}">
+															<select class="meta_input" id="${metaDataListTemp.ff_id }">
+																<c:forEach items="${metaDataListTemp.emvalue }" var="emvalue">
+																<option  value="${emvalue}">${emvalue}</option>
+																</c:forEach>
+															</select>
+														</c:if>
+														<c:if test="${metaDataListTemp.emvalue ==null}">
+															<input class="meta_input" type="text" id="${metaDataListTemp.ff_id }" value="${metaDataListTemp.mete }" />
+														</c:if>
+													</c:if>
+													<c:if test="${metaDataListTemp.enumerated==false }">
+														<input class="meta_input" id="${metaDataListTemp.ff_id }" type="text" value="${metaDataListTemp.mete }" />
+													</c:if>
+													<div class="pdclmRz_li pdclmRz_edit"
+													onclick="meta_input_submit('${metaDataListTemp.ff_id }')">保存</div>
+												</div>
+											</c:if>
+											<c:if test="${metaDataListTemp.type=='数值' }">
+												<div class="prodaclmRzBzt prodaclmRzTtmz">
+													<div class="ff_name" style="display:none;">${metaDataListTemp.ff_name}</div>
+													<div class="error_msg" style="display:none;">${metaDataListTemp.error_msg}</div>
+													<c:if test="${metaDataListTemp.enumerated==true }">
+														<c:if test="${metaDataListTemp.emvalue !=null}">
+															<select class="meta_input" id="${metaDataListTemp.ff_id }">
+																<c:forEach items="${metaDataListTemp.emvalue }" var="emvalue">
+																<option  value="${emvalue}">${emvalue}</option>
+																</c:forEach>
+															</select>
+														</c:if>
+														<c:if test="${metaDataListTemp.emvalue ==null}">
+															<input class="meta_input" type="number" id="${metaDataListTemp.ff_id }" value="${metaDataListTemp.mete }" />
+														</c:if>
+													</c:if>
+													<c:if test="${metaDataListTemp.enumerated==false }">
+														<input class="meta_input" id="${metaDataListTemp.ff_id }" type="number" value="${metaDataListTemp.mete }" />
+													</c:if>
+													<div class="pdclmRz_li pdclmRz_edit"
+													onclick="meta_input_submit('${metaDataListTemp.ff_id }')">保存</div>
+												</div>
+											</c:if>
+											<c:if test="${metaDataListTemp.type=='日期' }">
+												<div class="prodaclmRzBzt prodaclmRzTtmz">
+													<div class="ff_name" style="display:none;">${metaDataListTemp.ff_name}</div>
+													<div class="error_msg" style="display:none;">${metaDataListTemp.error_msg}</div>
+													<c:if test="${metaDataListTemp.enumerated==true }">
+														<c:if test="${metaDataListTemp.emvalue !=null}">
+															<select class="meta_input" id="${metaDataListTemp.ff_id }">
+																<c:forEach items="${metaDataListTemp.emvalue }" var="emvalue">
+																<option  value="${emvalue}">${emvalue}</option>
+																</c:forEach>
+															</select>
+														</c:if>
+														<c:if test="${metaDataListTemp.emvalue ==null}">
+															<input class="meta_input" type="datetime-local" step="01" id="${metaDataListTemp.ff_id }" value="${metaDataListTemp.mete }" />
+														</c:if>
+													</c:if>
+													<c:if test="${metaDataListTemp.enumerated==false }">
+														<input class="meta_input" id="${metaDataListTemp.ff_id }" type="datetime-local" step="01" value="${metaDataListTemp.mete }" />
+													</c:if>
+													<div class="pdclmRz_li pdclmRz_edit"
+													onclick="meta_input_submit('${metaDataListTemp.ff_id }')">保存</div>
+												</div>
+											</c:if>
+											<c:if test="${metaDataListTemp.type=='图片' }">
+												<div class="prodaclmRzBzt prodaclmRzTtmz">
+													<div class="ff_name" style="display:none;">${metaDataListTemp.ff_name}</div>
+													<div class="error_msg" style="display:none;">${metaDataListTemp.error_msg}</div>
+													<c:if test="${metaDataListTemp.enumerated==true }">
+														<c:if test="${metaDataListTemp.emvalue !=null}">
+															<select class="meta_input" id="${metaDataListTemp.ff_id }">
+																<c:forEach items="${metaDataListTemp.emvalue }" var="emvalue">
+																<option  value="${emvalue}">${emvalue}</option>
+																</c:forEach>
+															</select>
+														</c:if>
+														<c:if test="${metaDataListTemp.emvalue ==null}">
+															<input class="meta_input" type="file" id="${metaDataListTemp.ff_id }" value="${metaDataListTemp.mete }" />
+														</c:if>
+													</c:if>
+													<c:if test="${metaDataListTemp.enumerated==false }">
+														<input class="meta_input" id="${metaDataListTemp.ff_id }" type="file" value="${metaDataListTemp.mete }" />
+													</c:if>
+													<div class="pdclmRz_li pdclmRz_edit"
+													onclick="meta_input_submit('${metaDataListTemp.ff_id }')">保存</div>
+												</div>
+											</c:if>
+											<c:if test="${metaDataListTemp.type=='文件' }">
+												<div class="prodaclmRzBzt prodaclmRzTtmz">
+													<div class="ff_name" style="display:none;">${metaDataListTemp.ff_name}</div>
+													<div class="error_msg" style="display:none;">${metaDataListTemp.error_msg}</div>
+													<c:if test="${metaDataListTemp.enumerated==true }">
+														<c:if test="${metaDataListTemp.emvalue !=null}">
+															<select class="meta_input" id="${metaDataListTemp.ff_id }">
+																<c:forEach items="${metaDataListTemp.emvalue }" var="emvalue">
+																<option  value="${emvalue}">${emvalue}</option>
+																</c:forEach>
+															</select>
+														</c:if>
+														<c:if test="${metaDataListTemp.emvalue ==null}">
+															<input class="meta_input" type="file" id="${metaDataListTemp.ff_id }" value="${metaDataListTemp.mete }" />
+														</c:if>
+													</c:if>
+													<c:if test="${metaDataListTemp.enumerated==false }">
+														<input class="meta_input" id="${metaDataListTemp.ff_id }" type="file" value="${metaDataListTemp.mete }" />
+													</c:if>
+													<div class="pdclmRz_li pdclmRz_edit"
+													onclick="meta_input_submit('${metaDataListTemp.ff_id }')">保存</div>
+												</div>
+											</c:if>
+									</div>
+								
+								</c:if>
+								<c:if test="${metaDataListTemp.not_null==false }">
+									<div class="prodaclmRzBz">
+										<div class="prodaclmRzBzt prodaclmRzTtmz" title="${metaDataListTemp.description }">${metaDataListTemp.ff_name }</div>
+											<c:if test="${metaDataListTemp.type=='字符' }">
+												<div class="prodaclmRzBzt prodaclmRzTtmz">
+													<div class="ff_name" style="display:none;">${metaDataListTemp.ff_name}</div>
+													<div class="error_msg" style="display:none;">${metaDataListTemp.error_msg}</div>
+													<c:if test="${metaDataListTemp.enumerated==true }">
+														<c:if test="${metaDataListTemp.emvalue !=null}">
+															<select class="meta_input" id="${metaDataListTemp.ff_id }">
+																<c:forEach items="${metaDataListTemp.emvalue }" var="emvalue">
+																<option  value="${emvalue}">${emvalue}</option>
+																</c:forEach>
+															</select>
+														</c:if>
+														<c:if test="${metaDataListTemp.emvalue ==null}">
+															<input class="meta_input" type="text" id="${metaDataListTemp.ff_id }" value="${metaDataListTemp.mete }" />
+														</c:if>
+													</c:if>
+													<c:if test="${metaDataListTemp.enumerated==false }">
+														<input class="meta_input" id="${metaDataListTemp.ff_id }" type="text" value="${metaDataListTemp.mete }" />
+													</c:if>
+													<div class="pdclmRz_li pdclmRz_edit"
+													onclick="meta_input_submit('${metaDataListTemp.ff_id }')">保存</div>
+												</div>
+											</c:if>
+											<c:if test="${metaDataListTemp.type=='数值' }">
+												<div class="prodaclmRzBzt prodaclmRzTtmz">
+													<div class="ff_name" style="display:none;">${metaDataListTemp.ff_name}</div>
+													<div class="error_msg" style="display:none;">${metaDataListTemp.error_msg}</div>
+													<c:if test="${metaDataListTemp.enumerated==true }">
+														<c:if test="${metaDataListTemp.emvalue !=null}">
+															<select class="meta_input" id="${metaDataListTemp.ff_id }">
+																<c:forEach items="${metaDataListTemp.emvalue }" var="emvalue">
+																<option  value="${emvalue}">${emvalue}</option>
+																</c:forEach>
+															</select>
+														</c:if>
+														<c:if test="${metaDataListTemp.emvalue ==null}">
+															<input class="meta_input" type="number" id="${metaDataListTemp.ff_id }" value="${metaDataListTemp.mete }" />
+														</c:if>
+													</c:if>
+													<c:if test="${metaDataListTemp.enumerated==false }">
+														<input class="meta_input" id="${metaDataListTemp.ff_id }" type="number" value="${metaDataListTemp.mete }" />
+													</c:if>
+													<div class="pdclmRz_li pdclmRz_edit"
+													onclick="meta_input_submit('${metaDataListTemp.ff_id }')">保存</div>
+												</div>
+											</c:if>
+											<c:if test="${metaDataListTemp.type=='日期' }">
+												<div class="prodaclmRzBzt prodaclmRzTtmz">
+													<div class="ff_name" style="display:none;">${metaDataListTemp.ff_name}</div>
+													<div class="error_msg" style="display:none;">${metaDataListTemp.error_msg}</div>
+													<c:if test="${metaDataListTemp.enumerated==true }">
+														<c:if test="${metaDataListTemp.emvalue !=null}">
+															<select class="meta_input" id="${metaDataListTemp.ff_id }">
+																<c:forEach items="${metaDataListTemp.emvalue }" var="emvalue">
+																<option  value="${emvalue}">${emvalue}</option>
+																</c:forEach>
+															</select>
+														</c:if>
+														<c:if test="${metaDataListTemp.emvalue ==null}">
+															<input class="meta_input" type="datetime-local" step="01" id="${metaDataListTemp.ff_id }" value="${metaDataListTemp.mete }" />
+														</c:if>
+													</c:if>
+													<c:if test="${metaDataListTemp.enumerated==false }">
+														<input class="meta_input" id="${metaDataListTemp.ff_id }" type="datetime-local" step="01" value="${metaDataListTemp.mete }" />
+													</c:if>
+													<div class="pdclmRz_li pdclmRz_edit"
+													onclick="meta_input_submit('${metaDataListTemp.ff_id }')">保存</div>
+												</div>
+											</c:if>
+											<c:if test="${metaDataListTemp.type=='图片' }">
+												<div class="prodaclmRzBzt prodaclmRzTtmz">
+													<div class="ff_name" style="display:none;">${metaDataListTemp.ff_name}</div>
+													<div class="error_msg" style="display:none;">${metaDataListTemp.error_msg}</div>
+													<c:if test="${metaDataListTemp.enumerated==true }">
+														<c:if test="${metaDataListTemp.emvalue !=null}">
+															<select class="meta_input" id="${metaDataListTemp.ff_id }">
+																<c:forEach items="${metaDataListTemp.emvalue }" var="emvalue">
+																<option  value="${emvalue}">${emvalue}</option>
+																</c:forEach>
+															</select>
+														</c:if>
+														<c:if test="${metaDataListTemp.emvalue ==null}">
+															<input class="meta_input" type="file" id="${metaDataListTemp.ff_id }" value="${metaDataListTemp.mete }" />
+														</c:if>
+													</c:if>
+													<c:if test="${metaDataListTemp.enumerated==false }">
+														<input class="meta_input" id="${metaDataListTemp.ff_id }" type="file" value="${metaDataListTemp.mete }" />
+													</c:if>
+													<div class="pdclmRz_li pdclmRz_edit"
+													onclick="meta_input_submit('${metaDataListTemp.ff_id }')">保存</div>
+												</div>
+											</c:if>
+											<c:if test="${metaDataListTemp.type=='文件' }">
+												<div class="prodaclmRzBzt prodaclmRzTtmz">
+													<div class="ff_name" style="display:none;">${metaDataListTemp.ff_name}</div>
+													<div class="error_msg" style="display:none;">${metaDataListTemp.error_msg}</div>
+													<c:if test="${metaDataListTemp.enumerated==true }">
+														<c:if test="${metaDataListTemp.emvalue !=null}">
+															<select class="meta_input" id="${metaDataListTemp.ff_id }">
+																<c:forEach items="${metaDataListTemp.emvalue }" var="emvalue">
+																<option  value="${emvalue}">${emvalue}</option>
+																</c:forEach>
+															</select>
+														</c:if>
+														<c:if test="${metaDataListTemp.emvalue ==null}">
+															<input class="meta_input" type="file" id="${metaDataListTemp.ff_id }" value="${metaDataListTemp.mete }" />
+														</c:if>
+													</c:if>
+													<c:if test="${metaDataListTemp.enumerated==false }">
+														<input class="meta_input" id="${metaDataListTemp.ff_id }" type="file" value="${metaDataListTemp.mete }" />
+													</c:if>
+													<div class="pdclmRz_li pdclmRz_edit"
+													onclick="meta_input_submit('${metaDataListTemp.ff_id }')">保存</div>
+												</div>
+											</c:if>
+									</div>
+									<%-- <div class="prodaclmRzBz">
+										<div class="prodaclmRzBzt prodaclmRzTtmz" title="${metaDataListTemp.description }">${metaDataListTemp.ff_name }</div>
+										<div class="prodaclmRzBzt prodaclmRzTtmz">
+											<div class="error_msg" style="display:none;">${metaDataListTemp.error_msg}</div>
+											<c:if test="${metaDataListTemp.enumerated==true }">
+												<c:if test="${metaDataListTemp.emvalue !=null}">
+													<select class="meta_input" id="${metaDataListTemp.ff_id }">
+														<c:forEach items="${metaDataListTemp.emvalue }" var="emvalue">
+														<option  value="${emvalue}">${emvalue}</option>
+														</c:forEach>
+													</select>
+												</c:if>
+												<c:if test="${metaDataListTemp.emvalue ==null}">
+													<input class="meta_input" id="${metaDataListTemp.ff_id }" value="${metaDataListTemp.mete }" />
+												</c:if>
+											</c:if>
+											<c:if test="${metaDataListTemp.enumerated==false }">
+												<input class="meta_input" id="${metaDataListTemp.ff_id }" value="${metaDataListTemp.mete }" />
+											</c:if>
+											<div class="pdclmRz_li pdclmRz_edit"
+											onclick="meta_input_submit('${metaDataListTemp.ff_id }')">保存</div>
+										</div>
+									</div> --%>
+								</c:if>
+								<%-- <c:if test="${metaDataListTemp[7]=='是' }">
+									<div class="prodaclmRzBz">
+										<div class="prodaclmRzBzt prodaclmRzTtmz" title="${metaDataListTemp[3] }">${metaDataListTemp[1] }<span style="color: red;">*</span></div>
+										<div class="prodaclmRzBzt prodaclmRzTtmz">
+										<c:if test="${metaDataListTemp[6] =='是'}"><!-- 判断是否枚举，是的话则将枚举值放到option里 -->
+										<input type="hidden" class="meta_input" id="meta${metaDataListTemp[0] +2}"
+												value="${metaDataListTemp[4] }" />
+												<select onclick="strToarr('#'meta${metaDataListTemp[0] +2})">
+													<option>请选择</option>
+												</select>
+										
+											
+										</c:if>
+										<c:if test="${metaDataListTemp[6] =='否'}">
+										
+											<input class="meta_input" id="${metaDataListTemp[0] }"
+												value="${metaDataListTemp[2] }" />
+										</c:if>
+										</div>
+										<input type="hidden" id="${metaDataListTemp[0] +1}" value="${metaDataListTemp[5] }"><!-- 错误提示信息 -->
+										<div class="pdclmRz_li pdclmRz_edit"
+											onclick="meta_input_submit('${metaDataListTemp[0] }')">保存</div>
+	
+									</div>
+								</c:if>
+								<c:if test="${metaDataListTemp[7]=='否' }">
+									<div class="prodaclmRzBz">
+										<div class="prodaclmRzBzt prodaclmRzTtmz" title="${metaDataListTemp[3] }">${metaDataListTemp[1] }</div>
+										<div class="prodaclmRzBzt prodaclmRzTtmz">
+										<c:if test="${metaDataListTemp[6] =='是'}"><!-- 判断是否枚举，是的话则将枚举值放到option里 -->
+											<input class="meta_input" id="${metaDataListTemp[0] }"
+												value="${metaDataListTemp[4] }" />
+										</c:if>
+										<c:if test="${metaDataListTemp[6] =='否'}">
+										
+											<input class="meta_input" id="${metaDataListTemp[0] }"
+												value="${metaDataListTemp[2] }" />
+										</c:if>
+										</div>
+										<input type="hidden" id="${metaDataListTemp[0] +1}" value="${metaDataListTemp[5] }"><!-- 错误提示信息 -->
+										<div class="pdclmRz_li pdclmRz_edit"
+											onclick="meta_input_submit('${metaDataListTemp[0] }')">保存</div>
+	
+									</div>
+								</c:if> --%>
 							</c:forEach>
 						</div>
 					</div>
