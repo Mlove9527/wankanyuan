@@ -430,6 +430,7 @@ for(var i=0;i<aprodaclmRzTt2.length;i++){
         }
     })(i)
 }
+
 // window.onclick=function(){
 // console.log(1222);
 // oBTSX.style.display="none";
@@ -1080,22 +1081,30 @@ function data_mine(){
         event.stopPropagation();
     }
     }
-    document.onclick=function(){
+//    document.onclick=function(){
+//    	if(opro_addul){
+//    		opro_addul.style.display="none";
+//    	}
+//    }
+    $(document).click(function(){
     	if(opro_addul){
-        opro_addul.style.display="none";
+    		opro_addul.style.display="none";
     	}
-    }
+    	if(oBTSX){
+    		oBTSX.style.display="none";
+    	}
+    })
     if(apro_addli){
     	
     
-    for(var i=0;i<apro_addli.length;i++){
-        (function(index){
-            apro_addli[index].onclick=function(){
-                opro_addul.style.display="none";
-                pro_addkPD=0;
-            }
-        })(i)
-    }
+	    for(var i=0;i<apro_addli.length;i++){
+	        (function(index){
+	            apro_addli[index].onclick=function(){
+	                opro_addul.style.display="none";
+	                pro_addkPD=0;
+	            }
+	        })(i)
+	    }
     }
 
     var opro_addul=document.querySelectorAll('.pro_addul')[0];
