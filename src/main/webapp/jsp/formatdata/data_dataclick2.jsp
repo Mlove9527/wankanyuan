@@ -15,10 +15,8 @@
 <meta charset="UTF-8" />
 <title>Document</title>
 </head>
-<link rel="stylesheet" type="text/css"
-	href="/wankangyuan/static/css/project1.css" />
-<script type="text/javascript"
-	src="/wankangyuan/jsp/formatdata/js/project1.js"></script>
+<link rel="stylesheet" type="text/css" href="/wankangyuan/static/css/project1.css" />
+<script type="text/javascript" src="/wankangyuan/jsp/formatdata/js/project1.js"></script>
 <script type="text/javascript">
     window.onload=function(){
         project0();
@@ -28,8 +26,15 @@
         pro_data();
         pro_dataclick();
         data_dataclick2();
+        data_mine();
         //data_click_guanxi();
         data_dataclick();
+        
+        var opro_addul=document.querySelectorAll('.pro_addul')[0];
+        if(opro_addul){
+        	opro_addul.style.right="490px";
+        	opro_addul.style.top="40px";
+        }
     }
 </script>
 <body>
@@ -495,6 +500,7 @@
 								<img src="/wankangyuan/static/img/sanjiao_blue.png" alt=""
 									class="prodaclmRsxI" />
 							</div>
+							
 
 							<!-- <div class="prodaclmRss" style="display: none;">
 								<div class="prodaclmRssC">
@@ -510,6 +516,7 @@
 								<div class="prodaclmRsb clmRsb_modify">修改</div>
 								<div class="prodaclmRsb clmRsb_add">添加</div>
 							</div>
+							
 
 							<div class="search" style="margin-top:0px;">
 								<div class="searchC">
@@ -518,6 +525,17 @@
 										placeholder="搜索数据" value="${searchFirstWordNode}" />
 								</div>
 							</div>
+							<div class="pro_menu pro_addK">
+								<div class="pro_addk">
+									<div class="pro_addT">添加至项目</div>
+									<div class="pro_addI"></div>
+								</div>
+							</div>
+						</div>
+						<div class="pro_addul">
+							<c:forEach items="${projects}" var="projectTemp">
+								<div class="pro_addli" id="${projectTemp.p_id }">${projectTemp.p_name}</div>
+							</c:forEach>
 						</div>
 
 						<div class="shaixuanZK">
@@ -1868,6 +1886,64 @@
             	}
             	return isAll; */
             }
+            
+          //将格式数据添加到项目
+    		/* $(".pro_addli").click(function (){
+
+    			 var idQuanXuan= $(" #isAll2").val();
+    	         var ids3=$(" #ids2").val();
+    	        
+    	         if(idQuanXuan =="false"){
+    	         	 if(ids3 == ""){
+    	         		alert("请勾选待移出的选项！");
+    	              	return;
+    	              }
+    	         }
+    	        
+    	        var cs_id=$('#source_Select option:selected').val();//采集源id
+    	     	var searchId="${searchId}";//操作字段id
+    	     	var searchWord=$(".BTSXcliGLK").val();//过滤条件
+    	     	var desc_asc="${desc_asc}";//排序
+    	     	var oldCondition=$("#oldCondition").html();//累加筛选条件
+    	     	var searchFirstWord = $(".searchCt").val();
+    	     	var chooseDatas = "${chooseDatas}";
+    	     	var likeSearch = "${likeSearch}";
+    	     	
+    			var p_id = this.id;
+    	        $.ajax({
+    	        	url:"/wankangyuan/projectFormatData/insert",
+    	        	type:"post",
+    				async:true,
+    	        	data:{
+    	        		type:1,
+                		//cs_id:cs_id,
+                		ids:ids3,
+                		isAll:idQuanXuan,
+                		searchId:searchId,
+                		searchWord:searchWord,
+                		desc_asc:desc_asc,
+                		oldCondition:oldCondition,
+                		searchFirstWord:searchFirstWord,
+                		chooseDatas:chooseDatas,
+                		likeSearch:likeSearch,
+    	        		p_id:p_id
+    	        		//sourceDataIds:sourceDataIds.join(","),
+                		//cs_id:cs_id
+    	        	},
+    	        	dataType:"json",
+    	        	success : function(data){
+    	        		if(data.result == true){
+    	        			alert(data.message);
+    	        		}else{
+    	        			alert(data.message);
+    	        		}
+    	        	},
+    	        	error : function(){
+    	        		alert("网络异常，请稍后重试！");
+    	        	}
+    	        });
+    	        alert("数据添加中，您可先进行其他操作！");
+    		}); */
         
         
         
