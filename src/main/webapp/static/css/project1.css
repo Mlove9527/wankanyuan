@@ -2252,8 +2252,9 @@ tr.PJli td{
     float:right;
     font-size:16px;
     color:#5ca0e5;
-    margin-left:40px;
+    margin-left:20px;
     cursor:pointer;
+    line-height:30px;
 }
 
 .prodaclmRsjK{
