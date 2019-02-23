@@ -1888,19 +1888,22 @@
             }
             
           //将格式数据添加到项目
-    		/* $(".pro_addli").click(function (){
+    		 $(".pro_addli").click(function (){
 
-    			 var idQuanXuan= $(" #isAll2").val();
+    			 var idQuanXuan= $("#isAll2").val();
     	         var ids3=$(" #ids2").val();
     	        
     	         if(idQuanXuan =="false"){
     	         	 if(ids3 == ""){
-    	         		alert("请勾选待移出的选项！");
+    	         		alert("请先勾选数据！");
     	              	return;
     	              }
     	         }
-    	        
-    	        var cs_id=$('#source_Select option:selected').val();//采集源id
+    	         
+    	        var cs_id = $("#cs_id").val();
+         		var ft_id = $("#ft_id").val();
+         		var formatNodeId = $("#formatNodeId").val();
+         		var sourceDataId = $("#sourceDataId").val();
     	     	var searchId="${searchId}";//操作字段id
     	     	var searchWord=$(".BTSXcliGLK").val();//过滤条件
     	     	var desc_asc="${desc_asc}";//排序
@@ -1908,15 +1911,20 @@
     	     	var searchFirstWord = $(".searchCt").val();
     	     	var chooseDatas = "${chooseDatas}";
     	     	var likeSearch = "${likeSearch}";
-    	     	
+        		
     			var p_id = this.id;
+    			
     	        $.ajax({
-    	        	url:"/wankangyuan/projectFormatData/insert",
+    	        	url:"/wankangyuan/projectFormatData/nodeDataToProject",
     	        	type:"post",
     				async:true,
     	        	data:{
-    	        		type:1,
-                		//cs_id:cs_id,
+    	        		type:2,
+                		cs_id:cs_id,
+                		ft_id:ft_id,
+                		sourceDataId:sourceDataId,
+                		formatNodeId:formatNodeId,
+                		p_id:p_id,
                 		ids:ids3,
                 		isAll:idQuanXuan,
                 		searchId:searchId,
@@ -1926,9 +1934,6 @@
                 		searchFirstWord:searchFirstWord,
                 		chooseDatas:chooseDatas,
                 		likeSearch:likeSearch,
-    	        		p_id:p_id
-    	        		//sourceDataIds:sourceDataIds.join(","),
-                		//cs_id:cs_id
     	        	},
     	        	dataType:"json",
     	        	success : function(data){
@@ -1943,7 +1948,7 @@
     	        	}
     	        });
     	        alert("数据添加中，您可先进行其他操作！");
-    		}); */
+    		}); 
         
         
         

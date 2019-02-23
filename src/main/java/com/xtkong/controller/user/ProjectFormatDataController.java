@@ -157,6 +157,7 @@ public class ProjectFormatDataController {
 	 *            1公共，0非公共
 	 */
 	@RequestMapping("/nodeDataToProject")
+	@ResponseBody
 	public Map<String, Object> nodeDataToProject(HttpServletRequest request,HttpServletResponse response,HttpSession httpSession, String cs_id, String sourceDataId, String ft_id,
 			String p_id, String formatNodeId, String type, Integer page, Integer strip, Integer searchId, String desc_asc,
 			String chooseDatas, String oldConditionNode8, String searchWord, String searchFirstWord, String fieldIds,
@@ -174,11 +175,11 @@ public class ProjectFormatDataController {
 		Integer uid = user.getId();
 		String sourceTableName = ConstantsHBase.TABLE_PREFIX_SOURCE_ + cs_id;
 		
-		if(sourceDataId!=null&&!"".equals(sourceDataId)) {
+		if(sourceDataId==null||"".equals(sourceDataId)) {
 			map.put("result", false);
 			map.put("message", "添加失败！缺少参数sourceDataId");
 		}
-		if(formatNodeId!=null&&!"".equals(formatNodeId)) {
+		if(formatNodeId==null||"".equals(formatNodeId)) {
 			map.put("result", false);
 			map.put("message", "添加失败！缺少参数formatNodeId");
 		}
@@ -324,6 +325,9 @@ public class ProjectFormatDataController {
 					idsStr=idsStr+idTemp+",";
 					try {
 						projectDataService.remove(p_id, idTemp, Integer.valueOf(cs_id));
+						//新增2019-02-23
+						projectNodeService.removeByPDataId(p_id,Integer.valueOf(cs_id), idTemp);
+						projectNodeDataService.remove(p_id,Integer.valueOf(cs_id),idTemp);
 					} catch (NumberFormatException e) {
 						continue;
 					}
@@ -341,6 +345,9 @@ public class ProjectFormatDataController {
 		for (int i = 0; i < source_data_id.length; i++) {
 			try {
 				projectDataService.remove(p_id, source_data_id[i], Integer.valueOf(cs_id));
+				//新增2019-02-23
+				projectNodeService.removeByPDataId(p_id,Integer.valueOf(cs_id), source_data_id[i]);
+				projectNodeDataService.remove(p_id,Integer.valueOf(cs_id),source_data_id[i]);
 			} catch (NumberFormatException e) {
 				continue;
 			}
