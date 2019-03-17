@@ -196,7 +196,10 @@
 										<c:if test="${sourceFieldTemp.emvalue!=null }">
 											<select value="${sourceData[status.index+1] }">
 												<c:forEach items="${sourceFieldTemp.emvalue}" var="emvalue">
-													<option value="${emvalue}">${emvalue}</option>
+												    <c:if test="${sourceData[status.index+1]==emvalue}">
+												       <option value="${emvalue}" selected="true">${emvalue}</option>
+												    </c:if>
+													   <option value="${emvalue}">${emvalue}</option>
 												</c:forEach>
 											</select>
 											<%-- <input class="prodainmRz1R" type="text" id=${sourceFieldTemp.csf_id }
