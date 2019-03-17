@@ -58,6 +58,7 @@ public class SourceDataController {
 		private Map<String, String> conditionEqual;
 		private Map<String, String> conditionLike;
 		private Source source;
+		private String oldCondition;
 
 		public String getSql() {
 			return sql;
@@ -97,6 +98,14 @@ public class SourceDataController {
 
 		public void setSource(Source source) {
 			this.source = source;
+		}
+
+		public String getOldCondition() {
+			return oldCondition;
+		}
+
+		public void setOldCondition(String oldCondition) {
+			this.oldCondition = oldCondition;
 		}
 	}
 
@@ -324,6 +333,7 @@ public class SourceDataController {
 		result.setConditionEqual(conditionEqual);
 		result.setConditionLike(conditionLike);
 		result.setSource(source);
+		result.setOldCondition(oldCondition);
 		logger.info("---------------"+condition);
 		logger.info("---------------"+oldCondition);
 		logger.info("---------------"+phoenixSQL);
@@ -357,6 +367,7 @@ public class SourceDataController {
 			String oldCond8ition, Integer p_id, String searchFirstWord, String fieldIds, String likeSearch, String ids,
 			boolean isAll, String block) {
 		//logger.info("SourceDataController-getSourceDatas: "+ids);
+		logger.info("SourceDataController-oldCond8ition: "+oldCond8ition);
 		User user = (User) request.getAttribute("user");
 
 		if (page == null) {
@@ -371,11 +382,13 @@ public class SourceDataController {
 
 		Source source = null; // 采集源为空
 		String oldCondition = null; // 原来的状态
+		logger.info("SourceDataController-oldCondition: "+(String) httpSession.getAttribute("oldCondition"));
 		if (!sources.isEmpty()) { // 用户源不为空，不为null
 			try {
 				if ((type.equals((String) httpSession.getAttribute("oldSourceType")))// 类型为原类型
 						&& (cs_id.equals((Integer) httpSession.getAttribute("thiscs_id")))) {// 采集源id为原id
-					oldCondition = (String) httpSession.getAttribute("oldCondition");// 状态为原来的状态
+								oldCondition = (String) httpSession.getAttribute("oldCondition");// 状态为原来的状态
+					logger.info("SourceDataController-oldCondition: get old condition");
 				}
 			} catch (Exception e1) {
 			}
@@ -400,6 +413,11 @@ public class SourceDataController {
 
 			SourceDataSQLInfo sourceDataSQLInfo=getSourceDataSQL(cs_id,user,type,searchFirstWord,oldCondition,fieldIds,p_id,searchId,chooseDatas,likeSearch,searchWord,false,null);
 			source=sourceDataSQLInfo.getSource();
+
+			if(sourceDataSQLInfo.getOldCondition()!=null && !sourceDataSQLInfo.getOldCondition().equals(""))
+			{
+				oldCondition=sourceDataSQLInfo.getOldCondition();
+			}
 
 			//不知道这代码什么意思,暂时放在这
 			if(cs_id!=0) {
