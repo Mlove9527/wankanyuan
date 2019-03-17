@@ -413,7 +413,6 @@ public class SourceDataController {
 
 			SourceDataSQLInfo sourceDataSQLInfo=getSourceDataSQL(cs_id,user,type,searchFirstWord,oldCondition,fieldIds,p_id,searchId,chooseDatas,likeSearch,searchWord,false,null);
 			source=sourceDataSQLInfo.getSource();
-
 			if(sourceDataSQLInfo.getOldCondition()!=null && !sourceDataSQLInfo.getOldCondition().equals(""))
 			{
 				oldCondition=sourceDataSQLInfo.getOldCondition();
