@@ -381,8 +381,8 @@ public class SourceDataController {
 		Integer total = 0; // 总数为零
 
 		Source source = null; // 采集源为空
-		String oldCondition = null; // 原来的状态
-		logger.info("SourceDataController-oldCondition: "+(String) httpSession.getAttribute("oldCondition"));
+		String oldCondition = null; // 原来的查询条件
+		logger.info("SourceDataController-oldCondition: "+ httpSession.getAttribute("oldCondition"));
 		if (!sources.isEmpty()) { // 用户源不为空，不为null
 			try {
 				if ((type.equals((String) httpSession.getAttribute("oldSourceType")))// 类型为原类型
@@ -726,6 +726,10 @@ public class SourceDataController {
 
 			SourceDataSQLInfo sourceDataSQLInfo=getSourceDataSQL(cs_id,user,type,searchFirstWord,oldCondition,fieldIds,p_id,searchId,chooseDatas,likeSearch,searchWord,false,null);
 			source=sourceDataSQLInfo.getSource();
+            if(sourceDataSQLInfo.getOldCondition()!=null && !sourceDataSQLInfo.getOldCondition().equals(""))
+            {
+                oldCondition=sourceDataSQLInfo.getOldCondition();
+            }
 
 			String phoenixSQL=sourceDataSQLInfo.getSql();
 
