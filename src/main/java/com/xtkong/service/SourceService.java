@@ -44,6 +44,10 @@ public class SourceService {
 	public List<Source> getSourcesForUserLimit(Integer num) {
 		return sourceDao.getSourcesForUserLimit(num);
 	}
+
+	public List<Source> getSourcesForUserAndProjectLimit(Integer uid,Integer num) {
+		return sourceDao.getSourcesForUserAndProjectLimit(uid,num);
+	}
 	/**
 	 * 选取数据源，管理
 	 * @return	数据源列表

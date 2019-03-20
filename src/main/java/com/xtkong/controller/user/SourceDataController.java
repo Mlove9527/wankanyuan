@@ -393,7 +393,15 @@ public class SourceDataController {
 			} catch (Exception e1) {
 			}
 			if (cs_id == null) {// 采集源为null
-				cs_id = sourceService.getSourcesForUserLimit(1).get(0).getCs_id();
+				//如果传递了p_id和用户id，则查询用户在某个项目下的source
+				if(p_id!=null && user!=null)
+				{
+					cs_id = sourceService.getSourcesForUserLimit(1).get(0).getCs_id();
+				}
+				else
+				{
+					cs_id = sourceService.getSourcesForUserAndProjectLimit(user.getId(),1).get(0).getCs_id();
+				}
 				oldCondition = null;
 			}
 
@@ -577,7 +585,15 @@ public class SourceDataController {
 			} catch (Exception e1) {
 			}
 			if (cs_id == null) {// 采集源为null
-				cs_id = sourceService.getSourcesForUserLimit(1).get(0).getCs_id();
+				//如果传递了p_id和用户id，则查询用户在某个项目下的source
+				if(p_id!=null && user!=null)
+				{
+					cs_id = sourceService.getSourcesForUserLimit(1).get(0).getCs_id();
+				}
+				else
+				{
+					cs_id = sourceService.getSourcesForUserAndProjectLimit(user.getId(),1).get(0).getCs_id();
+				}
 				oldCondition = null;
 			}
 
