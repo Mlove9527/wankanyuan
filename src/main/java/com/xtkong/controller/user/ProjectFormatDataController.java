@@ -545,10 +545,13 @@ public class ProjectFormatDataController {
 		map.put("sum", sum);
 		return map;
 	}
-	
+
+	//modified by tangye
+	//sourceData/getSourceDatas接口看起来已经实现了数据选择的功能,直接redirect
 	@RequestMapping("/getAllSourceDatas")
 	public String getAllSourceDatas(HttpSession httpSession, Integer p_id, Integer cs_id) {
-		List<Source> sources = sourceService.getSourcesForUser();
+		return "redirect:/sourceData/getSourceDatas?type=5&p_id="+p_id+"&cs_id="+cs_id;
+		/*List<Source> sources = sourceService.getSourcesForUser();
 		httpSession.setAttribute("p_id", p_id);
 		httpSession.setAttribute("sources", sources);// 采集源列表
 
@@ -594,7 +597,7 @@ public class ProjectFormatDataController {
 			httpSession.setAttribute("sourceDatas", result.get("records").get("data"));// 源数据字段数据，注：每个列表第一个值sourceDataId不显示
 
 		}
-		return "/jsp/project/data_reselect.jsp";
+		return "/jsp/project/data_reselect.jsp";*/
 	}
 
 }
