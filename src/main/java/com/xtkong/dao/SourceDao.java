@@ -32,7 +32,7 @@ public interface SourceDao {
 	@Select("select * from collection_source where is_view=1 order by cs_id asc	limit #{num}")
 	public List<Source> getSourcesForUserLimit(@Param("num") Integer num);
 
-	@Select("select cs.* from collection_source cs where exists(select null from project_data_relation pdr,project_user pu where pdr.cs_id=cs.cs_id and pu.user_id and pu.project_id=pdr.p_id and pu.user_id={uid}) order by cs.cs_id asc limit {num}")
+	@Select("select cs.* from collection_source cs where exists(select null from project_data_relation pdr,project_user pu where pdr.cs_id=cs.cs_id and pu.user_id and pu.project_id=pdr.p_id and pu.user_id=#{uid}) order by cs.cs_id asc limit #{num}")
 	public List<Source> getSourcesForUserAndProjectLimit(@Param("uid") Integer uid,@Param("num") Integer num);
 
 	@Select("select cs_id from collection_source where cs_name=#{cs_name} order by	cs_id desc	limit 1")
