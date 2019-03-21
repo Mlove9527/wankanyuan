@@ -187,7 +187,7 @@ public class HBaseProjectDataDao {
 	 * @param sourceFields
 	 * @return
 	 */
-	public static String addProjectPartSource(String p_id, String cs_id, String uid, String sourceDataId,
+	public static String addProjectPartSource(String p_id, String cs_id, String uid,String username, String sourceDataId,
 			List<SourceField> sourceFields) {
 		try {
 			HBaseDB db = HBaseDB.getInstance();
@@ -205,6 +205,12 @@ public class HBaseProjectDataDao {
 					Bytes.toBytes(ConstantsHBase.VALUE_PUBLIC_FALSE));
 			put.addColumn(Bytes.toBytes(family), Bytes.toBytes(ConstantsHBase.QUALIFIER_PROJECT),
 					Bytes.toBytes(String.valueOf(p_id)));
+			put.addColumn(Bytes.toBytes(ConstantsHBase.FAMILY_INFO), Bytes.toBytes(ConstantsHBase.QUALIFIER_CREATOR),//格式数据--添加创建人 
+					Bytes.toBytes(username));
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			put.addColumn(Bytes.toBytes(ConstantsHBase.FAMILY_INFO),//格式数据--添加创建时间
+					Bytes.toBytes(ConstantsHBase.QUALIFIER_CREATE_DATETIME),
+					Bytes.toBytes(String.valueOf(simpleDateFormat.format(new Date()))));
 
 			String oldSourceDataId = Bytes.toString(result.getRow());
 			put.addColumn(Bytes.toBytes(family), Bytes.toBytes(ConstantsHBase.QUALIFIER_SOURCEDATAID),
@@ -224,6 +230,7 @@ public class HBaseProjectDataDao {
 		}
 	}
 
+	
 	/**
 	 * 添加源数据及其所有下层数据
 	 * 
@@ -261,9 +268,6 @@ public class HBaseProjectDataDao {
 					Bytes.toBytes(ConstantsHBase.QUALIFIER_CREATE_DATETIME),
 					Bytes.toBytes(String.valueOf(simpleDateFormat.format(new Date()))));
 			
-			
-			
-
 			String oldSourceDataId = Bytes.toString(result.getRow());
 			put.addColumn(Bytes.toBytes(family), Bytes.toBytes(ConstantsHBase.QUALIFIER_SOURCEDATAID),
 					Bytes.toBytes(String.valueOf(oldSourceDataId)));

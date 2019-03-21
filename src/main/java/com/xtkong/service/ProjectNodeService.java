@@ -14,6 +14,10 @@ public class ProjectNodeService {
 	public int insert(Integer p_id, String nodeId, Integer cs_id, Integer ft_id, String p_data_id) {
 		return projectNodeDao.insert(p_id, nodeId, cs_id, ft_id, p_data_id);
 	}
+	
+	public int insertAll(Integer p_id, String nodeId, Integer cs_id, Integer ft_id, String p_node_id, String p_data_id) {
+		return projectNodeDao.insertAll(p_id, nodeId, cs_id, ft_id, p_node_id, p_data_id);
+	}
 
 	public int remove(Integer p_id, String nodeId, Integer cs_id, Integer ft_id) {
 		return projectNodeDao.remove(p_id, nodeId, cs_id, ft_id);

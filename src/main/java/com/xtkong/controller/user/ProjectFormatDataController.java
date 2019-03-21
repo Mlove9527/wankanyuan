@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.xtkong.service.ProjectDataService;
+import com.xtkong.service.ProjectFormatDataService;
 import com.xtkong.service.ProjectNodeDataService;
 import com.xtkong.service.ProjectNodeService;
 import com.dzjin.model.ProjectCustomRole;
@@ -59,7 +60,8 @@ public class ProjectFormatDataController {
 	SourceDataController sourceDataController;
 	@Autowired
 	FormatNodeController formatNodeController;
-	
+	@Autowired
+	ProjectFormatDataService projectFormatDataService;
 	
 	@RequestMapping("/insert")
 	@ResponseBody
@@ -101,7 +103,7 @@ public class ProjectFormatDataController {
 				{
 					String idTemp = record.get(0);
 					if (projectDataService.insert(Integer.valueOf(p_id), idTemp, Integer.valueOf(cs_id)) == 1) {
-						String pSourceDataId = HBaseProjectDataDao.addProjectWholeSource(p_id, cs_id, String.valueOf(uid),
+						String pSourceDataId = projectFormatDataService.addProjectWholeSourceNew(p_id, cs_id, String.valueOf(uid),
 								idTemp, sourceFields,user.getUsername());
 						if (pSourceDataId != null) {
 							if (projectDataService.updataPDataId(Integer.valueOf(p_id), idTemp, Integer.valueOf(cs_id),
@@ -122,7 +124,7 @@ public class ProjectFormatDataController {
 			for (String sourceDataId : ids.split(",")) {
 				
 				if (projectDataService.insert(Integer.valueOf(p_id), sourceDataId, Integer.valueOf(cs_id)) == 1) {
-					String pSourceDataId = HBaseProjectDataDao.addProjectWholeSource(p_id, cs_id, String.valueOf(uid),
+					String pSourceDataId = projectFormatDataService.addProjectWholeSourceNew(p_id, cs_id, String.valueOf(uid),
 							sourceDataId, sourceFields,user.getUsername());
 					if (pSourceDataId != null) {
 						if (projectDataService.updataPDataId(Integer.valueOf(p_id), sourceDataId, Integer.valueOf(cs_id),
@@ -173,6 +175,7 @@ public class ProjectFormatDataController {
 		List<SourceField> sourceFields = sourceFieldService.getSourceFields(Integer.valueOf(cs_id));//采集源字段列表
 		User user = (User) request.getAttribute("user");
 		Integer uid = user.getId();
+		String userName = user.getUsername();
 		String sourceTableName = ConstantsHBase.TABLE_PREFIX_SOURCE_ + cs_id;
 		
 		if(sourceDataId==null||"".equals(sourceDataId)) {
@@ -194,7 +197,7 @@ public class ProjectFormatDataController {
 		String pDataId = projectDataService.selectPDataId(Integer.valueOf(p_id), sourceDataId, Integer.valueOf(cs_id));
 		if(null==pDataId||"".equals(pDataId)) {
 			if (projectDataService.insert(Integer.valueOf(p_id), sourceDataId, Integer.valueOf(cs_id)) == 1) {
-				String pSourceDataId = HBaseProjectDataDao.addProjectPartSource( p_id, cs_id, String.valueOf(uid),sourceDataId, sourceFields);
+				String pSourceDataId = HBaseProjectDataDao.addProjectPartSource( p_id, cs_id, String.valueOf(uid),userName,sourceDataId, sourceFields);
 				if (pSourceDataId != null) {
 					if (projectDataService.updataPDataId(Integer.valueOf(p_id), sourceDataId, Integer.valueOf(cs_id),
 							pSourceDataId) == 1) {
@@ -366,7 +369,8 @@ public class ProjectFormatDataController {
 		if (projectDataService.insert(Integer.valueOf(p_id), sourceDataId, Integer.valueOf(cs_id)) == 1) {
 			User user = (User) request.getAttribute("user");
 			Integer uid = user.getId();
-			pSourceDataId = HBaseProjectDataDao.addProjectPartSource(p_id, cs_id, String.valueOf(uid), sourceDataId,
+			String userName = user.getUsername();
+			pSourceDataId = HBaseProjectDataDao.addProjectPartSource(p_id, cs_id, String.valueOf(uid), userName,sourceDataId,
 					sourceFieldService.getSourceFields(Integer.valueOf(cs_id)));
 			projectDataService.updataPDataId(Integer.valueOf(p_id), sourceDataId, Integer.valueOf(cs_id),
 					pSourceDataId);

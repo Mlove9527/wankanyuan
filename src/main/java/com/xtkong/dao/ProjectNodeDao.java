@@ -11,6 +11,12 @@ public interface ProjectNodeDao {
 			+ "values(#{p_id},#{node_id},#{cs_id},#{ft_id},#{p_data_id})")
 	public int insert(@Param("p_id") Integer p_id, @Param("node_id") String nodeId, @Param("cs_id") Integer cs_id,
 			@Param("ft_id") Integer ft_id,@Param("p_data_id") String p_data_id);
+	
+	@Insert("insert ignore into project_node_relation(p_id,node_id,cs_id,ft_id,p_node_id,p_data_id) "
+			+ "values(#{p_id},#{node_id},#{cs_id},#{ft_id},#{p_node_id},#{p_data_id})")
+	public int insertAll(@Param("p_id") Integer p_id, @Param("node_id") String nodeId, @Param("cs_id") Integer cs_id,
+			@Param("ft_id") Integer ft_id,@Param("p_node_id") String p_node_id,@Param("p_data_id") String p_data_id);
+	
 
 	@Select("select node_id from project_node_relation where p_id=#{p_id} and cs_id=#{cs_id} and ft_id=#{ft_id} "
 			+ " ORDER BY node_id desc limit 1")
